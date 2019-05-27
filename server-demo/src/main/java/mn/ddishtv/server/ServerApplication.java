@@ -35,6 +35,7 @@ public class ServerApplication {
                 genres.add("Sci-Fi");
                 genres.add("Adventure");
                 movie.setGenres(genres);
+                movie.setPosterUrl("https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg");
                 repo.saveAndFlush(movie);
             });
         };

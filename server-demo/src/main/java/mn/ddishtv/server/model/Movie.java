@@ -33,6 +33,8 @@ public class Movie {
     private String overview;
 
     private Long rental;
+    
+    private String posterUrl;
 
     public Movie() {
         // TODO Auto-generated constructor stub
@@ -100,5 +102,13 @@ public class Movie {
 
     public void setRental(Long rental) {
         this.rental = rental;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 }
