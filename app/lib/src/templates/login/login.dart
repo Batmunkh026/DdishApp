@@ -6,23 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginView extends StatefulWidget {
+  final LoginBloc loginBloc;
+  final AuthenticationBloc authenticationBloc;
+
+  LoginView({
+    Key key,
+    @required this.loginBloc,
+    @required this.authenticationBloc,
+  }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => LoginViewState();
 }
 
 class LoginViewState extends State<LoginView> {
-  LoginBloc _loginBloc;
-  AuthenticationBloc _authenticationBloc;
+  LoginBloc get _loginBloc => widget.loginBloc;
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  @override
-  void initState() {
-    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    _loginBloc = LoginBloc(authenticationBloc: _authenticationBloc);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
