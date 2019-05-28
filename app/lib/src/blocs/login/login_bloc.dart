@@ -34,6 +34,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
       } catch (error) {
         yield LoginFailure(error: error.toString());
       }
+    }else if(event is ForgotPass){
+      //TODO нууц үг сэргээх зааваргаа бүхий dialog нээх
+      //....
     }
   }
 
