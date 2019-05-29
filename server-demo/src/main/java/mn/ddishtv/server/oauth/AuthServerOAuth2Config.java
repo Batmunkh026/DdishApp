@@ -1,7 +1,6 @@
-package mn.ddishtv.demo.server.resource;
+package mn.ddishtv.server.oauth;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.Email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,8 +25,8 @@ import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHand
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-import mn.ddishtv.demo.server.domain.service.UserService;
-import mn.ddishtv.demo.server.security.SecurityConfig;
+import mn.ddishtv.server.model.service.UserService;
+import mn.ddishtv.server.security.SecurityConfig;
 
 @Configuration
 @EnableAuthorizationServer

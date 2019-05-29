@@ -1,4 +1,4 @@
-package mn.ddishtv.demo.server;
+package mn.ddishtv.server;
 
 import java.util.stream.Stream;
 
@@ -8,11 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import mn.ddishtv.demo.server.domain.User;
-import mn.ddishtv.demo.server.domain.repo.UserRepo;
+import mn.ddishtv.server.model.User;
+import mn.ddishtv.server.model.repo.UserRepo;
 
 @SpringBootApplication
-public class AuthServerApplication {
+public class ServerApplication {
 
     @Bean
     CommandLineRunner commandLineRunner(UserRepo repo) {
@@ -27,7 +27,7 @@ public class AuthServerApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthServerApplication.class, args);
+        SpringApplication.run(ServerApplication.class, args);
     }
 
 }

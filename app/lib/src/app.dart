@@ -8,7 +8,7 @@ import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/authentication/authentication_state.dart';
 import 'package:ddish/src/blocs/authentication/authentication_event.dart';
 import 'package:ddish/src/templates/login/login_page.dart';
-import 'package:ddish/src/ui/movie_list.dart';
+import 'package:ddish/src/templates/main/main.dart';
 
 class App extends StatefulWidget {
   final UserRepository userRepository;

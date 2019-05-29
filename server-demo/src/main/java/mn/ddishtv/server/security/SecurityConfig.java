@@ -1,4 +1,4 @@
-package mn.ddishtv.demo.server.security;
+package mn.ddishtv.server.security;
 
 import java.util.Arrays;
 
@@ -19,7 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import mn.ddishtv.demo.server.domain.service.UserService;
+import mn.ddishtv.server.model.service.UserService;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.cors().and().csrf().disable().anonymous().disable();
+        http.cors().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
     }
 
     @Override

@@ -1,8 +1,8 @@
-package mn.ddishtv.demo.server.domain.repo;
+package mn.ddishtv.server.model.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import mn.ddishtv.demo.server.domain.User;
+import mn.ddishtv.server.model.User;
 
 public interface UserRepo extends JpaRepository<User, Long> {
 

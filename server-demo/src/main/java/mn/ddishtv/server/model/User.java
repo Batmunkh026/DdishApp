@@ -1,4 +1,4 @@
-package mn.ddishtv.demo.server.domain;
+package mn.ddishtv.server.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,12 +12,6 @@ import javax.persistence.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-/**
- * A user.
- */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 public class User implements Serializable, UserDetails {
     private static final long serialVersionUID = 1L;
@@ -26,10 +20,10 @@ public class User implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-	private String username;
-	private String password;
-	
-	public User() {
+    private String username;
+    private String password;
+
+    public User() {
         // TODO Auto-generated constructor stub
     }
 

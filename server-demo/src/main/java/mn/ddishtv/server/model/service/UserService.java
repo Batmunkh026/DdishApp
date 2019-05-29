@@ -1,4 +1,4 @@
-package mn.ddishtv.demo.server.domain.service;
+package mn.ddishtv.server.model.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import mn.ddishtv.demo.server.domain.User;
-import mn.ddishtv.demo.server.domain.repo.UserRepo;
+import mn.ddishtv.server.model.User;
+import mn.ddishtv.server.model.repo.UserRepo;
 
 @Service
 public class UserService implements UserDetailsService {
