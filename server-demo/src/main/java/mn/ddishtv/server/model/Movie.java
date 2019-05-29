@@ -33,7 +33,7 @@ public class Movie {
     private String overview;
 
     private Long rental;
-    
+
     private String posterUrl;
 
     public Movie() {
