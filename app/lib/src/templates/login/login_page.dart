@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
     _loginBloc = LoginBloc(
       userRepository: _userRepository,
       authenticationBloc: _authenticationBloc,
@@ -35,11 +35,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: LoginView(
+    return Container(
+      child: LoginView(
         authenticationBloc: _authenticationBloc,
         loginBloc: _loginBloc,
       ),

@@ -13,5 +13,8 @@ class SimpleBlocDelegate extends BlocDelegate {
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  runApp(App(userRepository: UserRepository()));
+  runApp(MaterialApp(
+      home: App(
+    userRepository: UserRepository(),
+  )));
 }
