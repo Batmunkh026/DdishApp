@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 ///Багц
 ///TODO Багцын үнийг сараар яаж тооцох?
-class Collection {
-  Collection(
+class Pack {
+  Pack(
       @required this.name,
       @required this.totalPrice,
       @required this.expireTime,
