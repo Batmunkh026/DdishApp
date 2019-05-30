@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
+import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:ddish/src/templates/service/service_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
+import 'package:ddish/src/templates/login/login_page.dart';
 
 class App extends StatefulWidget {
   final UserRepository userRepository;
@@ -16,12 +18,14 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   NavigationBloc navigationBloc;
+  AuthenticationBloc authenticationBloc;
 
   UserRepository get userRepository => widget.userRepository;
 
   @override
   void initState() {
     navigationBloc = NavigationBloc();
+    authenticationBloc = AuthenticationBloc(userRepository: userRepository);
     super.initState();
   }
 
@@ -32,41 +36,55 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-//        stream: navigationBloc.itemStream,
-//        initialData: navigationBloc.defaultItem,
     return Scaffold(
-      appBar: AppBar(
-        title: Text("DDISH"),
-      ),
-      body: BlocBuilder<NavigationEvent, int>(
-        bloc: navigationBloc,
-        builder: (BuildContext context, int index) {
-          switch (index) {
-            case 0:
-              return MenuPage();
-            case 1:
-              return ServicePage();
-            case 2:
-              return Text("NOTIFICATION");
-          }
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationBloc.currentState,
-        onTap: (index) => setState(() => navigationBloc.dispatch(NavigationEvent.values.elementAt(index))),
-        backgroundColor: Colors.indigoAccent,
-        unselectedItemColor: Colors.black26,
-        selectedItemColor: Colors.white,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.menu), title: SizedBox.shrink()),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings_input_antenna),
-              title: SizedBox.shrink()),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), title: SizedBox.shrink()),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text("DDISH"),
+        ),
+        body: BlocBuilder<NavigationEvent, int>(
+          bloc: navigationBloc,
+          builder: (BuildContext context, int index) {
+            switch (index) {
+              case 0:
+                return MenuPage();
+              case 1:
+                return ServicePage();
+              case 2:
+                return Text("NOTIFICATION");
+              case 3:
+                return LoginPage(userRepository: userRepository);
+            }
+          },
+        ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.indigoAccent,
+          child: new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.menu),
+                  disabledColor: Colors.grey,
+                  onPressed: navigationBloc.currentState == 0 ? null : () => onTap(0)),
+              Visibility(
+                child: IconButton(
+                    icon: Icon(Icons.settings_input_antenna),
+                    disabledColor: Colors.grey,
+                    onPressed: navigationBloc.currentState == 1 ? null : () => onTap(1)),
+                visible: authenticationBloc.currentState.toString() == 'AuthenticationAuthenticated',
+              ),
+              Visibility(
+                child: IconButton(
+                    icon: Icon(Icons.notifications),
+                    disabledColor: Colors.grey,
+                    onPressed: navigationBloc.currentState == 2 ? null : () => onTap(2)),
+                visible: authenticationBloc.currentState.toString() == 'AuthenticationAuthenticated',
+              )
+            ],
+        )));
+  }
+
+  onTap(int index) {
+    setState(
+        () => navigationBloc.dispatch(NavigationEvent.values.elementAt(index)));
   }
 }
