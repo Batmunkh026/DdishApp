@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
 import 'package:ddish/src/templates/menu/menu_page.dart';
+import 'package:ddish/src/templates/service/service_page.dart';
 
 class App extends StatefulWidget {
   final UserRepository userRepository;
@@ -44,7 +45,7 @@ class _AppState extends State<App> {
             case 0:
               return MenuPage();
             case 1:
-              return Text("SERVICE");
+              return ServicePage();
             case 2:
               return Text("NOTIFICATION");
           }
