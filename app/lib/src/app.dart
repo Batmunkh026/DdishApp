@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
 import 'package:ddish/src/templates/menu/menu_page.dart';
@@ -13,7 +14,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  var _tabIndex = 0;
   NavigationBloc navigationBloc;
 
   UserRepository get userRepository => widget.userRepository;
@@ -31,45 +31,40 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+//        stream: navigationBloc.itemStream,
+//        initialData: navigationBloc.defaultItem,
     return Scaffold(
       appBar: AppBar(
         title: Text("DDISH"),
       ),
-      body: StreamBuilder<NavBarItem>(
-        stream: navigationBloc.itemStream,
-        initialData: navigationBloc.defaultItem,
-        builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
-          switch (snapshot.data) {
-            case NavBarItem.MENU:
+      body: BlocBuilder<NavigationEvent, int>(
+        bloc: navigationBloc,
+        builder: (BuildContext context, int index) {
+          switch (index) {
+            case 0:
               return MenuPage();
-            case NavBarItem.SERVICE:
+            case 1:
               return Text("SERVICE");
-            case NavBarItem.NOTIFICATION:
+            case 2:
               return Text("NOTIFICATION");
           }
         },
       ),
-      bottomNavigationBar: StreamBuilder(
-        stream: navigationBloc.itemStream,
-        initialData: navigationBloc.defaultItem,
-        builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
-          return BottomNavigationBar(
-            currentIndex: snapshot.data.index,
-            onTap: (index) => navigationBloc.onTap(index),
-            backgroundColor: Colors.indigoAccent,
-            unselectedItemColor: Colors.black26,
-            selectedItemColor: Colors.white,
-            items: [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.menu), title: SizedBox.shrink()),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings_input_antenna),
-                  title: SizedBox.shrink()),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications), title: SizedBox.shrink()),
-            ],
-          );
-        },
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: navigationBloc.currentState,
+        onTap: (index) => setState(() => navigationBloc.dispatch(NavigationEvent.values.elementAt(index))),
+        backgroundColor: Colors.indigoAccent,
+        unselectedItemColor: Colors.black26,
+        selectedItemColor: Colors.white,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.menu), title: SizedBox.shrink()),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings_input_antenna),
+              title: SizedBox.shrink()),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications), title: SizedBox.shrink()),
+        ],
       ),
     );
   }
