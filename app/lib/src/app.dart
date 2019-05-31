@@ -73,38 +73,48 @@ class _AppState extends State<App> {
           builder: (BuildContext context, AuthenticationState state) {
             bool loggedIn = state == AuthenticationAuthenticated();
             onTap(loggedIn ? 1 : 3);
-            return BottomAppBar(
-                color: Colors.indigoAccent,
-                child: new Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.menu),
-                        disabledColor: Colors.white,
-                        onPressed: navigationBloc.currentState == 0
-                            ? null
-                            : () => onTap(0)),
-                    Visibility(
-                      child: IconButton(
-                          icon: Icon(Icons.settings_input_antenna),
+            if(state is! AuthenticationAuthenticated) {
+              return IconButton(
+                icon: Icon(Icons.menu),
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.all(20.0),
+                onPressed: () => onTap(0),
+              );
+            }
+            else if(state is AuthenticationAuthenticated) {
+              return BottomAppBar(
+                  color: Colors.indigoAccent,
+                  child: new Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Visibility(
+                        child: IconButton(
+                            icon: Icon(Icons.settings_input_antenna),
+                            disabledColor: Colors.white,
+                            onPressed: navigationBloc.currentState == 1
+                                ? null
+                                : () => onTap(1)),
+                        visible: loggedIn,
+                      ),
+                      Visibility(
+                        child: IconButton(
+                            icon: Icon(Icons.notifications),
+                            disabledColor: Colors.white,
+                            onPressed: navigationBloc.currentState == 2
+                                ? null
+                                : () => onTap(2)),
+                        visible: loggedIn,
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.menu),
                           disabledColor: Colors.white,
-                          onPressed: navigationBloc.currentState == 1
+                          onPressed: navigationBloc.currentState == 0
                               ? null
-                              : () => onTap(1)),
-                      visible: loggedIn,
-                    ),
-                    Visibility(
-                      child: IconButton(
-                          icon: Icon(Icons.notifications),
-                          disabledColor: Colors.white,
-                          onPressed: navigationBloc.currentState == 2
-                              ? null
-                              : () => onTap(2)),
-                      visible: loggedIn,
-                    ),
-                  ],
-                ));
+                              : () => onTap(0)),
+                    ],
+                  ));
+            }
           },
         ),
       ),
@@ -112,6 +122,7 @@ class _AppState extends State<App> {
   }
 
   onTap(int index) {
+    debugPrint(index.toString());
     navigationBloc.dispatch(NavigationEvent.values.elementAt(index));
   }
 
