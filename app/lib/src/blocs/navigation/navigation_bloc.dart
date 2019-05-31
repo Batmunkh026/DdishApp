@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 
-enum NavigationEvent { MENU, SERVICE, NOTIFICATION }
+enum NavigationEvent { MENU, SERVICE, NOTIFICATION, INACTIVE }
 
 class NavigationBloc extends Bloc<NavigationEvent, int> {
   @override
