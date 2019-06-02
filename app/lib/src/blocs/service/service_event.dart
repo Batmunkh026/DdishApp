@@ -6,15 +6,13 @@ abstract class ServiceEvent extends Equatable {
   ServiceEvent([List props = const []]) : super(props);
 }
 
-class ChangeCollection extends ServiceEvent {
-  @override
-  String toString() => 'changing collection...';
-}
-class TabSelected extends ServiceEvent{
-  ServiceTab selectedTab;
+/// Үйлчилгээний төрлүүдийг солих
+///Данс, Багц, Кино зэрэг табуудыг солих үед ажиллах эвент
+class ServiceTabSelected extends ServiceEvent {
+  ServiceTabType selectedTab;
 
-  TabSelected(this.selectedTab) : super([selectedTab]);
+  ServiceTabSelected(this.selectedTab) : super([selectedTab]);
 
   @override
-  String toString() => "selected tab : $selectedTab";
+  String toString() => "сонгогдсон таб ${selectedTab}";
 }
