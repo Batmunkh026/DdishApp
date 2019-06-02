@@ -11,9 +11,12 @@ abstract class PackState extends Equatable {
 class ServicePackTabState extends PackState {
   PackTabType selectedTab;
   Stream<dynamic> initialItems; //Тухайн таб д хамаарах initial data
-  ServicePackTabState(@required this.selectedTab, @required this.initialItems)
+  List<dynamic> packTypes;
+
+  ServicePackTabState(@required this.selectedTab, @required this.initialItems, @required this.packTypes)
       : assert(selectedTab != null),
         assert(initialItems != null),
+        assert(packTypes != null),
         super([selectedTab]);
 }
 

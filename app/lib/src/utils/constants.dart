@@ -14,4 +14,10 @@ class Constants{
     TabMenuItem("Багц", Icons.arrow_drop_down, ServiceTabType.PACK),
     TabMenuItem("Кино", Icons.arrow_drop_down, ServiceTabType.MOVIE),
   ];
+
+  static const servicePackTabs = const[
+    TabMenuItem("Сунгах", Icons.arrow_drop_down, PackTabType.EXTEND),
+    TabMenuItem("Нэмэлт сувгууд", Icons.arrow_drop_down, PackTabType.ADDITIONAL_CHANNEL),
+    TabMenuItem("Ахиулах", Icons.arrow_drop_down, PackTabType.UPGRADE),
+  ];
 }

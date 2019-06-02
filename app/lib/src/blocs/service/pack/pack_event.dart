@@ -21,9 +21,7 @@ class PackTypeSelectorClicked extends PackEvent {
 ///<Нэмэлт сувгууд> сонгогдсон бол нэмэлт сувгуудын дата
 class PackServiceSelected extends PackEvent {
   PackTabType selectedPackType;
-  List<dynamic> itemsForSelectedPackType;
-  PackServiceSelected(this.selectedPackType, this.itemsForSelectedPackType)
-      : assert(selectedPackType != null);
+  PackServiceSelected(this.selectedPackType);
 }
 
 //нэмэлт суваг сонгох
