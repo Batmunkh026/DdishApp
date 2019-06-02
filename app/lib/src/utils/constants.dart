@@ -10,8 +10,8 @@ class Constants{
   ];
 
   static const serviceTabs = const[
-    TabMenuItem("Данс", Icons.arrow_drop_down, ServiceTab.ACCOUNT),
-    TabMenuItem("Багц", Icons.arrow_drop_down, ServiceTab.COLLECTION),
-    TabMenuItem("Кино", Icons.arrow_drop_down, ServiceTab.MOVIE),
+    TabMenuItem("Данс", Icons.arrow_drop_down, ServiceTabType.ACCOUNT),
+    TabMenuItem("Багц", Icons.arrow_drop_down, ServiceTabType.PACK),
+    TabMenuItem("Кино", Icons.arrow_drop_down, ServiceTabType.MOVIE),
   ];
 }

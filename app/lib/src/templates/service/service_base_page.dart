@@ -1,6 +1,5 @@
 import 'package:ddish/src/blocs/service/service_bloc.dart';
 import 'package:ddish/src/blocs/service/service_event.dart';
-import 'package:ddish/src/templates/base_page.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,13 +20,14 @@ class ServiceBasePageState extends State<ServiceBasePage> {
         tabs: serviceTabs
             .map((tabItem) => Tab(child: Text(tabItem.title)))
             .toList(),
-        onTap: (tabIndex) =>
-            _serviceBloc.dispatch(TabSelected(serviceTabs[tabIndex].state)),
+        onTap: (tabIndex) => _serviceBloc
+            .dispatch(ServiceTabSelected(serviceTabs[tabIndex].state)),
       );
 
   @override
   void initState() {
-    _serviceBloc = BlocProvider.of<ServiceBloc>(context);
+//    _serviceBloc = BlocProvider.of<ServiceBloc>(context);
+    _serviceBloc = ServiceBloc();
     super.initState();
   }
 
