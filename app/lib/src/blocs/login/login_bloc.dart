@@ -30,6 +30,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
         final token = await userRepository.authenticate(
           username: event.username,
           password: event.password,
+          rememberUsername: event.rememberUsername,
+          useFingerprint: event.useFingerprint,
         );
 
         authenticationBloc.dispatch(LoggedIn(token: token));
