@@ -33,7 +33,9 @@ class _AppState extends State<App> {
   void initState() {
     navigationBloc = NavigationBloc();
     authenticationBloc = AuthenticationBloc(userRepository: userRepository);
-    menuPage = MenuPage(navigationBloc: navigationBloc,);
+    menuPage = MenuPage(
+      navigationBloc: navigationBloc,
+    );
     servicePage = ServicePage();
     notificationText = Text("NOTIFICATION");
     loginPage = LoginPage(userRepository: userRepository);
@@ -53,76 +55,86 @@ class _AppState extends State<App> {
     return BlocProvider<AuthenticationBloc>(
       bloc: authenticationBloc,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.indigoAccent,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => onBackPress(),
-          ),
-          title: Text("DDISH"),
-        ),
-        body: BlocBuilder<NavigationEvent, int>(
-          bloc: navigationBloc,
-          builder: (BuildContext context, int index) {
-            return content[index];
-          },
-        ),
-        bottomNavigationBar:
-            BlocBuilder<AuthenticationEvent, AuthenticationState>(
-          bloc: authenticationBloc,
-          builder: (BuildContext context, AuthenticationState state) {
-            bool loggedIn = state == AuthenticationAuthenticated();
-            onTap(loggedIn ? 1 : 3);
-            if(state is! AuthenticationAuthenticated) {
-              return IconButton(
-                icon: Icon(Icons.menu),
-                alignment: Alignment.bottomLeft,
-                padding: EdgeInsets.all(20.0),
-                onPressed: () => onTap(0),
-              );
-            }
-            else if(state is AuthenticationAuthenticated) {
-              return BottomAppBar(
-                  color: Colors.indigoAccent,
-                  child: new Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Visibility(
-                        child: IconButton(
-                            icon: Icon(Icons.settings_input_antenna),
-                            disabledColor: Colors.white,
-                            onPressed: navigationBloc.currentState == 1
-                                ? null
-                                : () => onTap(1)),
-                        visible: loggedIn,
-                      ),
-                      Visibility(
-                        child: IconButton(
-                            icon: Icon(Icons.notifications),
-                            disabledColor: Colors.white,
-                            onPressed: navigationBloc.currentState == 2
-                                ? null
-                                : () => onTap(2)),
-                        visible: loggedIn,
-                      ),
-                      IconButton(
-                          icon: Icon(Icons.menu),
-                          disabledColor: Colors.white,
-                          onPressed: navigationBloc.currentState == 0
-                              ? null
-                              : () => onTap(0)),
-                    ],
-                  ));
-            }
-          },
+        resizeToAvoidBottomPadding: false,
+        body: Stack(
+          children: <Widget>[
+            Container(
+              decoration: new BoxDecoration(
+                image: new DecorationImage(
+                  image: new AssetImage("assets/satellite_background.jpg"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: BlocBuilder<NavigationEvent, int>(
+                bloc: navigationBloc,
+                builder: (BuildContext context, int index) {
+                  return content[index];
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Theme(
+                data: Theme.of(context)
+                    .copyWith(canvasColor: Colors.transparent),
+                child: BlocBuilder<AuthenticationEvent, AuthenticationState>(
+                  bloc: authenticationBloc,
+                  builder: (BuildContext context, AuthenticationState state) {
+                    bool loggedIn = state == AuthenticationAuthenticated();
+                    onTap(loggedIn ? 1 : 3);
+                    if (state is! AuthenticationAuthenticated) {
+                      return IconButton(
+                        icon: Icon(Icons.more_horiz, color: Colors.grey,),
+                        alignment: Alignment.bottomLeft,
+                        padding: EdgeInsets.all(20.0),
+                        onPressed: () => onTap(0),
+                      );
+                    } else
+                    if (state is AuthenticationAuthenticated) {
+                      return BottomAppBar(
+                          color: Colors.indigoAccent,
+                          child: new Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Visibility(
+                                child: IconButton(
+                                    icon: Icon(Icons.settings_input_antenna, color: Colors.grey,),
+                                    disabledColor: Colors.white,
+                                    onPressed: navigationBloc.currentState == 1
+                                        ? null
+                                        : () => onTap(1)),
+                                visible: loggedIn,
+                              ),
+                              Visibility(
+                                child: IconButton(
+                                    icon: Icon(Icons.notifications),
+                                    disabledColor: Colors.white,
+                                    onPressed: navigationBloc.currentState == 2
+                                        ? null
+                                        : () => onTap(2)),
+                                visible: loggedIn,
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.menu),
+                                  disabledColor: Colors.white,
+                                  onPressed: navigationBloc.currentState == 0
+                                      ? null
+                                      : () => onTap(0)),
+                            ],
+                          ));
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   onTap(int index) {
-    debugPrint(index.toString());
     navigationBloc.dispatch(NavigationEvent.values.elementAt(index));
   }
 
