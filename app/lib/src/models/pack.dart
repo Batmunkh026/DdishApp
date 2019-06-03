@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 
 ///Багц
-///TODO Багцын үнийг сараар яаж тооцох?
 class Pack {
-  Pack(
-      @required this.name,
-      @required this.totalPrice,
-      @required this.expireTime,
-      @required this.image,
-      @required this.monthToExtend)
+  Pack(@required this.name, @required this.expireTime, @required this.image,
+      @required this.packsForMonth)
       : assert(name != null),
-        assert(totalPrice != null),
         assert(expireTime != null),
         assert(image != null),
-        assert(monthToExtend != null);
+        assert(packsForMonth != null);
 
   String name;
-  NetworkImage image; //TODO өгөгдлийн төрлийг тодруулах
+  String image;
   DateTime
-      expireTime; //TODO дуусах хугацааны өгөгдлийн төрлийг тодруулах. Date or DateTime
+      expireTime;
 
-  //TODO үнийн дүн сунгах сар 2 тусдаа байх эсэхийг тодруулах
-  int monthToExtend;
-  int totalPrice; //TODO үнийн дүнгийн өгөглийн төрлийг тодруулах
+//  сарын багцууд
+  List<MonthAndPriceToExtend> packsForMonth;
+}
+
+class MonthAndPriceToExtend {
+  int monthToExtend;//Сунгах сар
+  int price; //<long> On the Dart VM an int is arbitrary precision and has no limit.
+
+  MonthAndPriceToExtend(@required this.monthToExtend, @required this.price)
+      : assert(monthToExtend != null);
 }
