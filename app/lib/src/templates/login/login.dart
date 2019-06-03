@@ -25,7 +25,6 @@ class LoginViewState extends State<LoginView> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginEvent, LoginState>(
@@ -67,6 +66,7 @@ class LoginViewState extends State<LoginView> {
   }
 
   _onLoginButtonPressed() {
+    FocusScope.of(context).requestFocus(new FocusNode());
     _loginBloc.dispatch(LoginButtonPressed(
         username: _usernameController.text,
         password: _passwordController.text));

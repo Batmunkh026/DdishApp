@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
         super(key: key);
 
   @override
-  State<LoginPage> createState()  => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    _authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginBloc = LoginBloc(
       userRepository: _userRepository,
       authenticationBloc: _authenticationBloc,
