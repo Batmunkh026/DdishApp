@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import 'month_price.dart';
 
 ///Багц
 class Pack {
@@ -9,6 +13,12 @@ class Pack {
         assert(image != null),
         assert(packsForMonth != null);
 
+  Pack.fromJson(Map<String, dynamic> packMap)
+      : name = packMap['name'],
+        expireTime = packMap['expireTime'],
+        image = packMap['image'],
+        packsForMonth = (json.decode(packMap["packs"]) as List).map((v)=>MonthAndPriceToExtend.fromJson(v)).toList();
+
   String name;
   String image;
   DateTime
@@ -18,10 +28,3 @@ class Pack {
   List<MonthAndPriceToExtend> packsForMonth;
 }
 
-class MonthAndPriceToExtend {
-  int monthToExtend;//Сунгах сар
-  int price; //<long> On the Dart VM an int is arbitrary precision and has no limit.
-
-  MonthAndPriceToExtend(@required this.monthToExtend, @required this.price)
-      : assert(monthToExtend != null);
-}
