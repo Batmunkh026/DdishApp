@@ -74,7 +74,7 @@ class _AppState extends State<App> {
               ),
             ),
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.bottomLeft,
               child: Theme(
                 data:
                     Theme.of(context).copyWith(canvasColor: Colors.transparent),

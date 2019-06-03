@@ -20,8 +20,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   LoginBloc _loginBloc;
   AuthenticationBloc _authenticationBloc;
-
+  String username = null;
+  bool useFingerprint = null;
   UserRepository get _userRepository => widget.userRepository;
+  bool prefsLoaded = false;
 
   @override
   void initState() {
@@ -30,17 +32,26 @@ class _LoginPageState extends State<LoginPage> {
       userRepository: _userRepository,
       authenticationBloc: _authenticationBloc,
     );
+    readPreferences();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: LoginView(
+    return prefsLoaded ? LoginView(
         authenticationBloc: _authenticationBloc,
         loginBloc: _loginBloc,
-      ),
-    );
+        username: username,
+        useFingerprint: useFingerprint,
+    ) : Container();
+  }
+
+  readPreferences() async {
+    username = await _userRepository.getUsername();
+    var value = await _userRepository.useFingerprint();
+    useFingerprint = value != null ? value : false;
+    if(this.mounted)
+      setState(() => prefsLoaded = true);
   }
 
   @override

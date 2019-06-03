@@ -2,6 +2,7 @@ import 'package:ddish/src/api/user_api_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'globals.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository{
   final userApiProvider = UserApiProvider();
@@ -11,6 +12,8 @@ class UserRepository{
   Future<String> authenticate({
     @required String username,
     @required String password,
+    @required bool rememberUsername,
+    @required bool useFingerprint,
   }) async {
     final clientId = "ddish-oauth2-client";
     final clientSecret = "ddish-oauth2-secret-password1234";
@@ -25,7 +28,25 @@ class UserRepository{
     }
 
     globals.client = client;
+    var sharedPref = await SharedPreferences.getInstance();
+    if(rememberUsername)
+      sharedPref.setString('username', username);
+    else if(sharedPref.getString('username') != null)
+      sharedPref.remove('username');
+
+    sharedPref.setBool('useFingerprint', useFingerprint);
+
     return client.credentials.accessToken;
+  }
+
+  Future<String> getUsername() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username');
+  }
+
+  Future<bool> useFingerprint() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('useFingerprint');
   }
 
   Future<void> deleteToken() async {
