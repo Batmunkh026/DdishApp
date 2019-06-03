@@ -33,7 +33,7 @@ class _AppState extends State<App> {
   void initState() {
     navigationBloc = NavigationBloc();
     authenticationBloc = AuthenticationBloc(userRepository: userRepository);
-    menuPage = MenuPage();
+    menuPage = MenuPage(navigationBloc: navigationBloc,);
     servicePage = ServicePage();
     notificationText = Text("NOTIFICATION");
     loginPage = LoginPage(userRepository: userRepository);

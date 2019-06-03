@@ -4,15 +4,19 @@ import 'package:ddish/src/templates/order/order.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
+import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
 
 class MenuPage extends StatefulWidget {
+  final NavigationBloc navigationBloc;
+
+  MenuPage({Key key, @required this.navigationBloc}) : super(key: key);
   @override
   State<StatefulWidget> createState() => MenuPageState();
 }
 
 class MenuPageState extends State<MenuPage> {
   MenuBloc menuBloc;
-
+  NavigationBloc _navigationBloc;
   List<Menu> menuItems = <Menu>[
     Menu(
       title: 'Антен тохируулах заавар', screen :null,
@@ -40,11 +44,12 @@ class MenuPageState extends State<MenuPage> {
   @override
   void initState() {
     menuBloc = MenuBloc();
+    _navigationBloc = widget.navigationBloc;
     super.initState();
   }
 
   @override
-  void disponse() {
+  void dispose() {
     menuBloc.dispose();
     super.dispose();
   }
@@ -74,7 +79,7 @@ class MenuPageState extends State<MenuPage> {
     if (menu.children == null || menu.children.isEmpty)
       return ListTile(
         title: _buildTitle(menu.title),
-        onTap: () => menuBloc.dispatch(MenuClicked(selectedMenu: menu)),
+        onTap: () => onMenuTap(menu),
       );
     return ExpansionTile(
       key: PageStorageKey<Menu>(menu),
@@ -84,6 +89,10 @@ class MenuPageState extends State<MenuPage> {
     );
   }
 
+  onMenuTap(Menu menu) {
+    _navigationBloc.dispatch(NavigationEvent.INACTIVE);
+    menuBloc.dispatch(MenuClicked(selectedMenu: menu));
+  }
   _buildTitle(String title) {
     return Text(
       title,
