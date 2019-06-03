@@ -52,6 +52,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     List<Widget> content = [menuPage, servicePage, notificationText, loginPage];
+    final double height = MediaQuery.of(context).size.height;
     return BlocProvider<AuthenticationBloc>(
       bloc: authenticationBloc,
       child: Scaffold(
@@ -73,10 +74,10 @@ class _AppState extends State<App> {
               ),
             ),
             Align(
-              alignment: Alignment.bottomLeft,
+              alignment: Alignment.bottomCenter,
               child: Theme(
-                data: Theme.of(context)
-                    .copyWith(canvasColor: Colors.transparent),
+                data:
+                    Theme.of(context).copyWith(canvasColor: Colors.transparent),
                 child: BlocBuilder<AuthenticationEvent, AuthenticationState>(
                   bloc: authenticationBloc,
                   builder: (BuildContext context, AuthenticationState state) {
@@ -84,45 +85,51 @@ class _AppState extends State<App> {
                     onTap(loggedIn ? 1 : 3);
                     if (state is! AuthenticationAuthenticated) {
                       return IconButton(
-                        icon: Icon(Icons.more_horiz, color: Colors.grey,),
+                        icon: Icon(
+                          Icons.more_horiz,
+                          color: Colors.grey,
+                        ),
                         alignment: Alignment.bottomLeft,
                         padding: EdgeInsets.all(20.0),
                         onPressed: () => onTap(0),
                       );
-                    } else
-                    if (state is AuthenticationAuthenticated) {
-                      return BottomAppBar(
-                          color: Colors.indigoAccent,
-                          child: new Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Visibility(
-                                child: IconButton(
-                                    icon: Icon(Icons.settings_input_antenna, color: Colors.grey,),
-                                    disabledColor: Colors.white,
-                                    onPressed: navigationBloc.currentState == 1
-                                        ? null
-                                        : () => onTap(1)),
-                                visible: loggedIn,
-                              ),
-                              Visibility(
-                                child: IconButton(
-                                    icon: Icon(Icons.notifications),
-                                    disabledColor: Colors.white,
-                                    onPressed: navigationBloc.currentState == 2
-                                        ? null
-                                        : () => onTap(2)),
-                                visible: loggedIn,
-                              ),
-                              IconButton(
-                                  icon: Icon(Icons.menu),
-                                  disabledColor: Colors.white,
-                                  onPressed: navigationBloc.currentState == 0
-                                      ? null
-                                      : () => onTap(0)),
-                            ],
-                          ));
+                    } else if (state is AuthenticationAuthenticated) {
+                      return MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        child: Container(
+                          height: height * 0.07,
+                          child: BottomAppBar(
+                              color: Color(0xFF2a68b8),
+                              child: new Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  IconButton(
+                                      icon: Icon(
+                                        Icons.settings_input_antenna,
+                                      ),
+                                      disabledColor: Colors.white,
+                                      onPressed: navigationBloc.currentState == 1
+                                          ? null
+                                          : () => onTap(1)),
+                                  IconButton(
+                                      icon: Icon(Icons.notifications),
+                                      disabledColor: Colors.white,
+                                      onPressed: navigationBloc.currentState == 2
+                                          ? null
+                                          : () => onTap(2)),
+                                  IconButton(
+                                      icon: Icon(Icons.more_horiz),
+                                      disabledColor: Colors.white,
+                                      onPressed: navigationBloc.currentState == 0
+                                          ? null
+                                          : () => onTap(0)),
+                                ],
+                              )),
+                        ),
+                      );
                     }
                   },
                 ),
