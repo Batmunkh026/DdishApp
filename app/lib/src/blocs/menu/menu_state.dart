@@ -12,10 +12,16 @@ class MenuInitial extends MenuState {
 }
 
 class MenuOpened extends MenuState {
+  MenuOpened();
+  @override
+  String toString() => 'menu opened: {}';
+}
+
+class ChildMenuOpened extends MenuState {
   final Menu menu;
-  MenuOpened({
+  ChildMenuOpened({
     @required this.menu,
   });
   @override
-  String toString() => 'menu opened: {}';
+  String toString() => 'sub menu opened: {}';
 }

@@ -8,6 +8,9 @@ import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/authentication/authentication_event.dart';
 import 'package:ddish/src/blocs/authentication/authentication_state.dart';
 import 'package:ddish/src/templates/login/login_page.dart';
+import 'package:ddish/src/blocs/menu/menu_bloc.dart';
+import 'package:ddish/src/blocs/menu/menu_event.dart';
+import 'package:ddish/src/blocs/menu/menu_state.dart';
 
 class App extends StatefulWidget {
   final UserRepository userRepository;
@@ -25,6 +28,7 @@ class _AppState extends State<App> {
   UserRepository get userRepository => widget.userRepository;
 
   MenuPage menuPage;
+  MenuBloc menuBloc;
   ServicePage servicePage;
   Text notificationText;
   LoginPage loginPage;
@@ -33,8 +37,10 @@ class _AppState extends State<App> {
   void initState() {
     navigationBloc = NavigationBloc();
     authenticationBloc = AuthenticationBloc(userRepository: userRepository);
+    menuBloc = MenuBloc();
     menuPage = MenuPage(
       navigationBloc: navigationBloc,
+      menuBloc: menuBloc,
     );
     servicePage = ServicePage();
     notificationText = Text("NOTIFICATION");
@@ -46,6 +52,7 @@ class _AppState extends State<App> {
   void dispose() {
     navigationBloc.dispose();
     authenticationBloc.dispose();
+    menuBloc.dispose();
     super.dispose();
   }
 
@@ -142,6 +149,18 @@ class _AppState extends State<App> {
   }
 
   onTap(int index) {
+    if(index == NavigationEvent.MENU.index) {
+      if(menuBloc.currentState == MenuOpened()) {
+        index = authenticationBloc.currentState == AuthenticationAuthenticated()
+            ? NavigationEvent.SERVICE.index
+            : NavigationEvent.INACTIVE.index;
+        menuBloc.dispatch(MenuHidden());
+      }
+      else {
+        debugPrint(menuBloc.currentState.toString());
+        menuBloc.dispatch(MenuNavigationClicked());
+      }
+    }
     navigationBloc.dispatch(NavigationEvent.values.elementAt(index));
   }
 

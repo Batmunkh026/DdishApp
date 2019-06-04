@@ -8,22 +8,23 @@ import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
 
 class MenuPage extends StatefulWidget {
   final NavigationBloc navigationBloc;
+  final MenuBloc menuBloc;
 
-  MenuPage({Key key, @required this.navigationBloc}) : super(key: key);
+  MenuPage({Key key, @required this.navigationBloc, @required this.menuBloc}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MenuPageState();
 }
 
 class MenuPageState extends State<MenuPage> {
-  MenuBloc menuBloc;
+  MenuBloc _menuBloc;
   NavigationBloc _navigationBloc;
   List<Menu> menuItems;
   Order orderWidget;
 
   @override
   void initState() {
-    menuBloc = MenuBloc();
+    _menuBloc = widget.menuBloc;
     menuItems = initMenu();
     _navigationBloc = widget.navigationBloc;
     super.initState();
@@ -31,7 +32,7 @@ class MenuPageState extends State<MenuPage> {
 
   @override
   void dispose() {
-    menuBloc.dispose();
+    _menuBloc.dispose();
     super.dispose();
   }
 
@@ -40,14 +41,14 @@ class MenuPageState extends State<MenuPage> {
     return Container(
       padding: const EdgeInsets.only(top: 80.0),
       child: BlocProvider(
-        bloc: menuBloc,
+        bloc: _menuBloc,
         child: BlocBuilder<MenuEvent, MenuState>(
-            bloc: menuBloc,
+            bloc: _menuBloc,
             builder: (BuildContext context, MenuState state) {
-              if (state is MenuOpened && state.menu.screen != null) {
+              if (state is ChildMenuOpened && state.menu.screen != null) {
                 return state.menu.screen;
               }
-              if (state is MenuInitial) {
+              if (state is MenuOpened || state is MenuInitial) {
                 return ListView.builder(
                     itemCount: menuItems.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -88,8 +89,7 @@ class MenuPageState extends State<MenuPage> {
   }
 
   onMenuTap(Menu menu) {
-    _navigationBloc.dispatch(NavigationEvent.INACTIVE);
-    menuBloc.dispatch(MenuClicked(selectedMenu: menu));
+    _menuBloc.dispatch(MenuClicked(selectedMenu: menu));
   }
 
   _buildTitle(String title) {
@@ -134,6 +134,7 @@ class MenuPageState extends State<MenuPage> {
         title: '7777-1434',
       ),
     ];
+
     return menuItems;
   }
 }

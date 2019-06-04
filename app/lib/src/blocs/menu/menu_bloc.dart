@@ -9,8 +9,14 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
 
   @override
   Stream<MenuState> mapEventToState(MenuEvent event) async* {
+    if(event is MenuHidden) {
+      yield MenuInitial();
+    }
+    if (event is MenuNavigationClicked) {
+      yield MenuOpened();
+    }
     if (event is MenuClicked) {
-      yield MenuOpened(menu: event.selectedMenu);
+      yield ChildMenuOpened(menu: event.selectedMenu);
     }
   }
 }
