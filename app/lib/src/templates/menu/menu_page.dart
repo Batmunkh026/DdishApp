@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
+import 'package:ddish/src/widgets/line.dart';
 
 class MenuPage extends StatefulWidget {
   final NavigationBloc navigationBloc;
@@ -55,12 +56,7 @@ class MenuPageState extends State<MenuPage> {
                       return Column(
                         children: <Widget>[
                           _buildMenuItem(menuItems[index], true),
-                          Container(
-                            margin:
-                            EdgeInsetsDirectional.only(start: 15.0, end: 15.0),
-                            height: 1.0,
-                            color: Color(0xFF3069b2),
-                          ),
+                          Line(color: Color(0xFF3069b2), margin: EdgeInsets.symmetric(horizontal: 15.0), thickness: 1.0,)
                         ],
                       );
                     },

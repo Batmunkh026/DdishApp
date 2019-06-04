@@ -11,6 +11,7 @@ import 'package:ddish/src/templates/login/login_page.dart';
 import 'package:ddish/src/blocs/menu/menu_bloc.dart';
 import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
+import 'package:ddish/src/widgets/header.dart';
 
 class App extends StatefulWidget {
   final UserRepository userRepository;
