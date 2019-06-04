@@ -6,6 +6,7 @@ import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
 import 'package:ddish/src/widgets/line.dart';
+import 'package:ddish/src/widgets/dialog.dart';
 
 class MenuPage extends StatefulWidget {
   final NavigationBloc navigationBloc;

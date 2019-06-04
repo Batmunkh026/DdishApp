@@ -8,6 +8,8 @@ import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'style.dart' as style;
 import 'package:ddish/src/widgets/toggle_switch.dart';
+import 'package:ddish/src/widgets/dialog.dart';
+import 'dart:ui';
 
 class LoginView extends StatefulWidget {
   final LoginBloc loginBloc;
@@ -89,13 +91,14 @@ class LoginViewState extends State<LoginView> {
                     ),
                     FlatButton(
                       // TODO нууц үгээ мартсан уу? popup
+                      onPressed: () => _showDialog(context),
                       padding: EdgeInsets.all(0.0),
                       child: Text(
                         'Нууц үгээ мартсан уу?',
                         style: TextStyle(
                           color: Color(0xffe4f0ff),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Montserrat",
+//                          fontFamily: "Montserrat",
                           fontStyle: FontStyle.normal,
                           fontSize: 15.0,
                         ),
@@ -130,6 +133,22 @@ class LoginViewState extends State<LoginView> {
           ),
         );
       },
+    );
+  }
+
+  Future _showDialog(BuildContext context) async {
+    List<Widget> actions = new List();
+    FlatButton closeButton = FlatButton(onPressed: null, child: Text('Хаах'));
+    actions.add(closeButton);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: CustomDialog(title: 'Нууц кодоо мартсан уу?', content: style.forgotPasswordHint, actions: actions,),
+          );
+          return CustomDialog(title: 'Нууц кодоо мартсан уу?');
+        }
     );
   }
 
