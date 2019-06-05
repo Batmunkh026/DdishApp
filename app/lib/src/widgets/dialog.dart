@@ -4,13 +4,14 @@ import 'package:ddish/src/widgets/line.dart';
 class CustomDialog extends StatelessWidget {
   String title;
   Widget content;
-  List actions;
+  List<Widget> actions;
 
   CustomDialog({this.title, this.content, this.actions});
 
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
+      contentPadding: const EdgeInsets.all(0.0),
       title: Text(title,
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -31,16 +32,11 @@ class CustomDialog extends StatelessWidget {
         ),
 //        Line(thickness: 1.0, color: Color(0xFFFFFFFF),),
         Container(
+          padding: const EdgeInsets.only(bottom: 0.0),
             child: Row(
-          children: <Widget>[
-            FlatButton(
-              child: Text('Yes'),
-            ),
-            VerticalDivider(),
-            FlatButton(
-              child: Text('No'),
-            ),
-          ],
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: actions,
         ))
       ],
     );

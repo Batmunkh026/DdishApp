@@ -9,6 +9,7 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'style.dart' as style;
 import 'package:ddish/src/widgets/toggle_switch.dart';
 import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/dialog_action.dart';
 import 'dart:ui';
 
 class LoginView extends StatefulWidget {
@@ -23,7 +24,6 @@ class LoginView extends StatefulWidget {
     @required this.authenticationBloc,
     this.username,
     this.useFingerprint,
-
   }) : super(key: key);
 
   @override
@@ -123,7 +123,8 @@ class LoginViewState extends State<LoginView> {
                 text: "НЭВТРЭХ",
                 verticalMargin: 10.0,
                 horizontalMargin: 70.0,
-                onPressed: state is! LoginLoading ? _onLoginButtonPressed : null,
+                onPressed:
+                    state is! LoginLoading ? _onLoginButtonPressed : null,
               ),
               Container(
                 child:
@@ -138,27 +139,30 @@ class LoginViewState extends State<LoginView> {
 
   Future _showDialog(BuildContext context) async {
     List<Widget> actions = new List();
-    FlatButton closeButton = FlatButton(onPressed: null, child: Text('Хаах'));
-    actions.add(closeButton);
+    ActionButton closeDialog = ActionButton(title: 'Хаах', onTap: () => Navigator.pop(context),);
+    actions.add(closeDialog);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(title: 'Нууц кодоо мартсан уу?', content: style.forgotPasswordHint, actions: actions,),
+            child: CustomDialog(
+              title: 'Нууц кодоо мартсан уу?',
+              content: style.forgotPasswordHint,
+              actions: actions,
+            ),
           );
           return CustomDialog(title: 'Нууц кодоо мартсан уу?');
-        }
-    );
+        });
   }
 
   _onLoginButtonPressed() {
     FocusScope.of(context).requestFocus(new FocusNode());
     _loginBloc.dispatch(LoginButtonPressed(
-        username: _usernameController.text,
-        password: _passwordController.text,
-        rememberUsername: rememberUsername,
-        useFingerprint: useFingerprint,
+      username: _usernameController.text,
+      password: _passwordController.text,
+      rememberUsername: rememberUsername,
+      useFingerprint: useFingerprint,
     ));
   }
 }
