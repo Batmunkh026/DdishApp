@@ -6,13 +6,14 @@ import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
 import 'package:ddish/src/widgets/line.dart';
-import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/header.dart';
 
 class MenuPage extends StatefulWidget {
   final NavigationBloc navigationBloc;
   final MenuBloc menuBloc;
 
-  MenuPage({Key key, @required this.navigationBloc, @required this.menuBloc}) : super(key: key);
+  MenuPage({Key key, @required this.navigationBloc, @required this.menuBloc})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MenuPageState();
@@ -20,15 +21,12 @@ class MenuPage extends StatefulWidget {
 
 class MenuPageState extends State<MenuPage> {
   MenuBloc _menuBloc;
-  NavigationBloc _navigationBloc;
   List<Menu> menuItems;
-  Order orderWidget;
 
   @override
   void initState() {
     _menuBloc = widget.menuBloc;
     menuItems = initMenu();
-    _navigationBloc = widget.navigationBloc;
     super.initState();
   }
 
@@ -40,36 +38,43 @@ class MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 80.0),
-      child: BlocProvider(
-        bloc: _menuBloc,
-        child: BlocBuilder<MenuEvent, MenuState>(
-            bloc: _menuBloc,
-            builder: (BuildContext context, MenuState state) {
-              if (state is ChildMenuOpened && state.menu.screen != null) {
-                return state.menu.screen;
-              }
-              if (state is MenuOpened || state is MenuInitial) {
-                return ListView.builder(
-                    itemCount: menuItems.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: <Widget>[
-                          _buildMenuItem(menuItems[index], true),
-                          Line(color: Color(0xFF3069b2), margin: EdgeInsets.symmetric(horizontal: 15.0), thickness: 1.0,)
-                        ],
-                      );
-                    },
+    return BlocProvider(
+      bloc: _menuBloc,
+      child: BlocBuilder<MenuEvent, MenuState>(
+          bloc: _menuBloc,
+          builder: (BuildContext context, MenuState state) {
+            if (state is ChildMenuOpened && state.menu.screen != null) {
+              return Column(
+                children: <Widget>[
+                  Header(title: state.menu.title, onBackPressed: () => _menuBloc.dispatch(MenuNavigationClicked()),),
+                  state.menu.screen
+                ],
+              );
+            }
+            else if (state is MenuOpened || state is MenuInitial) {
+              return ListView.builder(
+                padding: const EdgeInsets.only(top: 80.0),
+                itemCount: menuItems.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: <Widget>[
+                      _buildMenuItem(menuItems[index], true),
+                      Line(
+                        color: Color(0xFF3069b2),
+                        margin: EdgeInsets.symmetric(horizontal: 15.0),
+                        thickness: 1.0,
+                      )
+                    ],
                   );
-              }
-            }),
-      ),
+                },
+              );
+            } else
+              return Container();
+          }),
     );
   }
 
   Widget _buildMenuItem(Menu menu, bool root) {
-    bool expanded = false;
     if (menu.children == null || menu.children.isEmpty)
       return ListTile(
         contentPadding: root ? null : const EdgeInsets.only(left: 30.0),
@@ -77,7 +82,6 @@ class MenuPageState extends State<MenuPage> {
         onTap: () => onMenuTap(menu),
       );
     return ExpansionTile(
-      onExpansionChanged: (v) => expanded = v,
       key: PageStorageKey<Menu>(menu),
       trailing: SizedBox.shrink(),
       title: _buildTitle(menu.title),
@@ -91,7 +95,7 @@ class MenuPageState extends State<MenuPage> {
 
   _buildTitle(String title) {
     return Container(
-      color:  null,
+      color: null,
       child: Text(
         title,
         style: TextStyle(
@@ -110,15 +114,17 @@ class MenuPageState extends State<MenuPage> {
         title: 'Антен тохируулах заавар',
         screen: null,
         children: <Menu>[
-          Menu(title: 'Зурган заавар', screen: Order('Зурган заавар')),
-          Menu(title: 'Видео заавар', screen: Order('Видео заавар'))
+          Menu(title: 'Зурган заавар',),
+          Menu(title: 'Видео заавар',)
         ],
       ),
       Menu(
         title: 'Захиалга өгөх',
         children: <Menu>[
-          Menu(title: 'Антен тохируулах захиалга өгөх'),
-          Menu(title: 'Шинэ хэрэглэгчийн захиалга өгөх')
+          Menu(
+              title: 'Антен тохируулах захиалга өгөх', screen: Order('Антен тохируулах')),
+          Menu(
+              title: 'Шинэ хэрэглэгчийн захиалга өгөх', screen: Order('Шинэ хэрэглэгч'))
         ],
       ),
       Menu(
