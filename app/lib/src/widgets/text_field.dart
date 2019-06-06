@@ -20,7 +20,7 @@ class InputField extends StatelessWidget {
         this.initialValue,
         this.placeholder,
         this.textFieldColor,
-        this.obscureText,
+        this.obscureText = false,
         this.textInputType,
         this.bottomMargin,
         this.validateFunction,

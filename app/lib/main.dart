@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'src/app.dart';
 import 'package:bloc/bloc.dart';
-import 'package:ddish/src/repositiories/user_repository.dart';
+import 'package:ddish/src/templates/login/login_page.dart';
+import 'package:ddish/src/templates/main/main_widget.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -12,9 +12,14 @@ class SimpleBlocDelegate extends BlocDelegate {
 }
 
 void main() {
+  var routes = <String, WidgetBuilder>{
+    "/Login": (BuildContext context) => new LoginWidget(),
+    "/Main": (BuildContext context) => new MainView(),
+  };
+
   BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(MaterialApp(
-      home: App(
-    userRepository: UserRepository(),
-  )));
+    home: LoginWidget(),
+    routes: routes,
+  ));
 }

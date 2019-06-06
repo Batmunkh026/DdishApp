@@ -21,3 +21,9 @@ class AuthenticationLoading extends AuthenticationState {
   @override
   String toString() => 'AuthenticationLoading';
 }
+
+class AuthenticationCompleted extends AuthenticationState {
+  @override
+  String toString() => 'AuthenticationCompleted';
+}
+

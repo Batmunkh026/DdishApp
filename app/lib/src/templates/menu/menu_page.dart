@@ -4,15 +4,13 @@ import 'package:ddish/src/templates/order/order.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
-import 'package:ddish/src/blocs/navigation/navigation_bloc.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/header.dart';
 
 class MenuPage extends StatefulWidget {
-  final NavigationBloc navigationBloc;
-  final MenuBloc menuBloc;
+  var onBackButtonTap;
 
-  MenuPage({Key key, @required this.navigationBloc, @required this.menuBloc})
+  MenuPage({Key key, this.onBackButtonTap})
       : super(key: key);
 
   @override
@@ -25,7 +23,7 @@ class MenuPageState extends State<MenuPage> {
 
   @override
   void initState() {
-    _menuBloc = widget.menuBloc;
+    _menuBloc = MenuBloc();
     menuItems = initMenu();
     super.initState();
   }
@@ -38,39 +36,58 @@ class MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      bloc: _menuBloc,
-      child: BlocBuilder<MenuEvent, MenuState>(
-          bloc: _menuBloc,
-          builder: (BuildContext context, MenuState state) {
-            if (state is ChildMenuOpened && state.menu.screen != null) {
-              return Column(
-                children: <Widget>[
-                  Header(title: state.menu.title, onBackPressed: () => _menuBloc.dispatch(MenuNavigationClicked()),),
-                  state.menu.screen
-                ],
-              );
-            }
-            else if (state is MenuOpened || state is MenuInitial) {
-              return ListView.builder(
-                padding: const EdgeInsets.only(top: 80.0),
-                itemCount: menuItems.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: <Widget>[
-                      _buildMenuItem(menuItems[index], true),
-                      Line(
-                        color: Color(0xFF3069b2),
-                        margin: EdgeInsets.symmetric(horizontal: 15.0),
-                        thickness: 1.0,
-                      )
-                    ],
-                  );
-                },
-              );
-            } else
-              return Container();
-          }),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: BlocProvider(
+        bloc: _menuBloc,
+        child: BlocBuilder<MenuEvent, MenuState>(
+            bloc: _menuBloc,
+            builder: (BuildContext context, MenuState state) {
+              if (state is ChildMenuOpened && state.menu.screen != null) {
+                return Column(
+                  children: <Widget>[
+                    Header(
+                      title: state.menu.title,
+                      onBackPressed: () =>
+                          _menuBloc.dispatch(MenuNavigationClicked()),
+                    ),
+                    state.menu.screen
+                  ],
+                );
+              }
+              else if (state is MenuOpened || state is MenuInitial) {
+                return Column(
+                  children: <Widget>[
+                    Visibility(
+                      maintainState: true,
+                      maintainAnimation: true,
+                      maintainSize: true,
+                      visible: widget.onBackButtonTap != null,
+                    child: Header(onBackPressed: widget.onBackButtonTap),
+                ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: menuItems.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Column(
+                            children: <Widget>[
+                              _buildMenuItem(menuItems[index], true),
+                              Line(
+                                color: Color(0xFF3069b2),
+                                margin: EdgeInsets.symmetric(horizontal: 15.0),
+                                thickness: 1.0,
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                );
+              } else
+                return Container();
+            }),
+      ),
     );
   }
 
@@ -112,26 +129,36 @@ class MenuPageState extends State<MenuPage> {
     List<Menu> menuItems = <Menu>[
       Menu(
         title: 'Антен тохируулах заавар',
-        screen: null,
+        screen: Container(),
         children: <Menu>[
-          Menu(title: 'Зурган заавар',),
-          Menu(title: 'Видео заавар',)
+          Menu(
+            title: 'Зурган заавар',
+            screen: Container(),
+          ),
+          Menu(
+            title: 'Видео заавар',
+            screen: Container(),
+          )
         ],
       ),
       Menu(
         title: 'Захиалга өгөх',
         children: <Menu>[
           Menu(
-              title: 'Антен тохируулах захиалга өгөх', screen: Order('Антен тохируулах')),
+              title: 'Антен тохируулах захиалга өгөх',
+              screen: Order('Антен тохируулах')),
           Menu(
-              title: 'Шинэ хэрэглэгчийн захиалга өгөх', screen: Order('Шинэ хэрэглэгч'))
+              title: 'Шинэ хэрэглэгчийн захиалга өгөх',
+              screen: Order('Шинэ хэрэглэгч'))
         ],
       ),
       Menu(
-        title: 'Мэдээ урамшуулах',
+        title: 'Мэдээ урамшуулал',
+        screen: Container(),
       ),
       Menu(
         title: 'Салбарын мэдээлэл',
+        screen: Container(),
       ),
       Menu(
         title: '7777-1434',
