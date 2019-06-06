@@ -3,13 +3,16 @@ import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 ///Багцын төлөв
 abstract class PackState extends Equatable{
   List<dynamic> initialItems;
   var selectedPack;
-  PackState(this.initialItems, this.selectedPack, [List props = const []]) : super(props){
+  PackTabType selectedTab;
+
+  PackState(this.selectedTab, this.initialItems, this.selectedPack, [List props = const []]) : super(props){
     if(selectedPack == null && initialItems.length > 0)
       selectedPack = initialItems.first;
   }
@@ -39,7 +42,7 @@ class PackTabState extends PackState {
   /// **initialItems** - тухайн сонгосон багцын үйлчилгээнд харгалзах дата
   PackTabState(@required this.selectedTab, @required List<dynamic> initialItems)
       : assert(selectedTab != null),
-        assert(initialItems != null), super(initialItems, null, [selectedTab]);
+        assert(initialItems != null), super(selectedTab, initialItems, null, [selectedTab]);
 
   @override
   String toString() => "PackTab state $selectedTab - $selectedPack";
@@ -50,10 +53,10 @@ class PackTabState extends PackState {
 class AdditionalChannelState extends PackState {
   Channel selectedChannel;
   List<dynamic> packsForChannel;
-  AdditionalChannelState(
+  AdditionalChannelState(PackTabType selectedPackType,
       @required this.selectedChannel, @required this.packsForChannel)
       : assert(selectedChannel != null),
-        assert(packsForChannel != null), super(packsForChannel, selectedChannel, [selectedChannel]);
+        assert(packsForChannel != null), super(selectedPackType, packsForChannel, selectedChannel, [selectedChannel]);
 }
 
 ///Багц сонголтын төлөв
@@ -62,8 +65,9 @@ class AdditionalChannelState extends PackState {
 class PackSelectionState extends PackState {
   PackTabType selectedTab;
   List<Pack> packs;
+  final Pack selectedPack;
 
-  PackSelectionState(this.packs, @required selectedPack):super(packs, selectedPack, [selectedPack]);
+  PackSelectionState(this.selectedTab, this.packs, @required this.selectedPack):super(selectedTab, packs, selectedPack, [selectedTab, packs, selectedPack]);
 
   @override
   String toString() => "Pack selection state $selectedPack";
@@ -73,7 +77,7 @@ class PackSelectionState extends PackState {
 ///
 ///selectedPackItem - сонгогдсон багцын утга \null байж болно\
 ///
-///хэрэв selectedPackItem null <өөр сонголт хийх> хүсэлт гэж ойлгож сунгах сарын тоогоо оруулах цонхрүү шилжүүлэх
+///хэрэв selectedPackItem == null бол <өөр сонголт хийх> хүсэлт гэж ойлгож сунгах сарын тоогоо оруулах цонхрүү шилжүүлэх
 class PackItemState extends PackState {
   ///сонгогдсон tab (сунгах, нэмэлт суваг)
   PackTabType selectedTab;
@@ -82,16 +86,37 @@ class PackItemState extends PackState {
   PackItemState(this.selectedTab, this.selectedPackItem):super(null, null, [selectedTab, selectedPackItem]);
 }
 
-///Сонгогдсон багцын төлбөр, хугацааны төлөв
+///нэмэлт суваг эсвэл аль нэг  багц ын хугацаа&үнийн дүнгийн төрлөөс сонгосон төлөв
+///
+///selectedPackItem - сонгогдсон багцын утга \null байж болно\
+///
+///хэрэв selectedPackItem == null бол <өөр сонголт хийх> хүсэлт гэж ойлгож сунгах сарын тоогоо оруулах цонхрүү шилжүүлэх
 class SelectedPackPreview extends PackState {
+  ///сонгогдсон tab (сунгах, нэмэлт суваг)
+  PackTabType selectedTab;
   var selectedPack;
-  SelectedPackPreview(@required this.selectedPack)
-      : assert(selectedPack != null), super(null, null);
+  int monthToExtend;
+
+  SelectedPackPreview(this.selectedTab, this.selectedPack, this.monthToExtend)
+      : assert(selectedPack != null), super(selectedTab, null, selectedPack);
+}
+class CustomPackSelector extends PackState {
+  ///сонгогдсон tab (сунгах, нэмэлт суваг)
+  var selectedPack;
+
+  CustomPackSelector(selectedTab, this.selectedPack, packs)
+      : super(selectedTab, packs, selectedPack, [selectedTab, packs, selectedPack]);
+
+  @override
+  String toString() => "custom selector : $selectedTab: $selectedPack";
 }
 
 ///Сонгогдсон багцын төлбөр төлөлтийн төлөв
 class PackPaymentState extends PackState {
-  PaymentState _paymentState;
-  PackPaymentState(@required this._paymentState)
-      : assert(_paymentState != null), super(null, null);
+  PaymentState paymentState;
+  int monthToExtend;
+  
+
+  PackPaymentState(PackTabType selectedPackType, Pack selectedPack, this.monthToExtend, this.paymentState)
+      : super(selectedPackType, null, selectedPack);
 }

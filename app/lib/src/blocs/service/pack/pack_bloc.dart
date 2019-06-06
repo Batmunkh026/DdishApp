@@ -10,6 +10,8 @@ import 'package:ddish/src/repositiories/pack_repository.dart';
 class PackBloc extends Bloc<PackEvent, PackState> {
   var packRepository = PackRepository();
 
+  var beforeEvent = null;
+
   List<Channel> channels;
   List<Pack> packs;
 
@@ -23,7 +25,6 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
     channels = packRepository.channels;
     packs = packRepository.packs;
-
 
 //    default таб нь <Багц Сунгах> байна
     //TODO api бэлэн болохоор хасаад api аас авсан датаг ашиглана,
@@ -46,23 +47,34 @@ class PackBloc extends Bloc<PackEvent, PackState> {
       PackTypeSelectorClicked e = event;
 //      Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
       //TODO нэмэлт сувгуудад багцын төрөл хамаатай эсэхийг тодруулах
-      yield PackSelectionState(packs, event.selectedPack);
+      yield PackSelectionState(event.selectedTab, packs, event.selectedPack);
     } else if (event is ChannelSelected) {
       //TODO  тухайн сонгосон сувгийн багцуудыг API аас авах
       List<dynamic> packsForChannel; //TODO channel ын төрлөөр шүүж авах
-      yield AdditionalChannelState(event.selectedChannel, packsForChannel);
+      yield AdditionalChannelState(
+          event.selectedTab, event.selectedChannel, packsForChannel);
     } else if (event is PackItemSelected) {
+      assert(event.selectedPack != null);
+      //багц сонгогдсон
+      yield SelectedPackPreview(event.selectedTab, event.selectedPack, event.selectedItemForPack.monthToExtend);
+    } else if (event is CustomPackSelected) {
       if (event.selectedPack != null) {
         //багц сонгогдсон
-        yield SelectedPackPreview(event.selectedPack);
+        yield CustomPackSelector(event.selectedTab, event.selectedPack, packs);
       }
     } else if (event is PreviewSelectedPack) {
-      yield SelectedPackPreview(event.selectedPack);
-    } else if (event is ExtendSelectedPack) {
-      //TODO төлбөр төлөлт хийх
-      PaymentState paymentState;
-      yield PackPaymentState(paymentState);
+      yield SelectedPackPreview(event.selectedTab, event.selectedPack, event.monthToExtend);
     }
+    else if (event is ExtendSelectedPack) {
+//      //TODO төлбөр төлөлт хийх
+      int monthToExtend = event.extendMonth; //сунгах сар
+      Pack selectedPack = event.selectedPack;
+//      TODO төлбөр төлөлтийн үр дүнг дамжуулах
+      PaymentState paymentState;
+      yield PackPaymentState(event.selectedTab, selectedPack, monthToExtend, paymentState);
+    }
+
+      beforeEvent = event;
   }
 
   /// Багц эсвэл нэмэлт суваг сонголт
@@ -71,7 +83,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   ///
   /// **dataForSelectedPackType** - сонгосон багцад харгалзах дата
   dynamic updateServicePackTabState(
-      PackTabType selectedPackType, dynamic dataForSelectedPackType) async*{
+      PackTabType selectedPackType, dynamic dataForSelectedPackType) async* {
     var items;
     if (selectedPackType == PackTabType.UPGRADE)
       items = packRepository.getPacks();

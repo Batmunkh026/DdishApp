@@ -4,7 +4,10 @@ import 'package:ddish/src/blocs/service/pack/pack_state.dart';
 import 'package:ddish/src/models/month_price.dart';
 import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/tab_models.dart';
+import 'package:ddish/src/templates/service/pack/widgets.dart';
 import 'package:ddish/src/utils/constants.dart';
+import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/pack_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,15 +45,7 @@ class PackPageState extends State<PackPage> {
         bloc: packBloc,
         builder: (BuildContext context, PackState state) {
           return DefaultTabController(
-              length: packTabs.length,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: buildAppBarHeader(context, state),
-                  backgroundColor: Colors.white,
-                  bottom: createTabBar,
-                ),
-                body: buildContents(state),
-              ));
+              length: packTabs.length, child: buildBody());
         });
   }
 
@@ -81,7 +76,11 @@ class PackPageState extends State<PackPage> {
         ),
       ],
     );
-    if (state is PackTabState || state is PackSelectionState)
+    if (state is SelectedPackPreview)
+      return Text("Сунгах");
+    else if (state is PackTabState ||
+        state is CustomPackSelector ||
+        state is PackSelectionState)
       packContentContainer.children.add(createPackPicker(state));
 
     return packContentContainer;
@@ -100,7 +99,7 @@ class PackPageState extends State<PackPage> {
           .toList(),
       value: state.selectedPack != null ? state.selectedPack : items.first,
       onChanged: (value) {
-        packBloc.dispatch(PackTypeSelectorClicked(value));
+        packBloc.dispatch(PackTypeSelectorClicked(state.selectedTab, value));
       },
     );
   }
@@ -111,39 +110,55 @@ class PackPageState extends State<PackPage> {
     super.dispose();
   }
 
-  Widget buildContents(PackState state) {
-    if (state is PackTabState || state is PackSelectionState) {
-      Pack pack = state.selectedPack;
+  Widget buildContents() {
+    var _state = packBloc.currentState;
+    if (_state is PackPaymentState) {//Багц сунгах төлбөр төлөлтийн үр дүн
+      ActionButton chargeAccountBtn =
+          ActionButton(title: 'Цэнэглэх', onTap: () {});
+      ActionButton closeDialog = ActionButton(title: 'Болих', onTap: () {});
 
-      var e =(Pack p, MonthAndPriceToExtend mp)=> packBloc.dispatch(PackItemSelected(p, mp));
+      var paymentResultDialog = CustomDialog(
+        title: 'Анхааруулга',
+//        TODO мэдэгдлийг хаа нэгтээ хадгалаад авч харуулах. хаана ???
+//        content: Text(Constants.paymentStates[_state.paymentState].values),
+        actions: [chargeAccountBtn, closeDialog],
+      );
 
-      var packPicker = PackGridPicker(context, 2, pack, e);
+    } else if (_state is PackTabState || _state is PackSelectionState) {
+      Pack pack = _state.selectedPack;
+
+      var packPicker = PackGridPicker(packBloc, pack);
       return packPicker;
+    } else if (_state is SelectedPackPreview) {
+      return PackPaymentPreview(packBloc);
+    } else if (_state is CustomPackSelector) {
+      return CustomPackChooser(packBloc);
+    } else
+      throw UnsupportedError("Тодорхойгүй state: $_state");
+  }
 
-//      var contents = pack.packsForMonth.map((pm) {
-//        return GestureDetector(child: Center(
-//          child: Card(
-//            color: Color.fromRGBO(49, 138, 255, 1),
-//            child: Padding(
-//              padding: EdgeInsets.all(12),
-//              child: Column(
-//                mainAxisSize: MainAxisSize.min,
-//                crossAxisAlignment: CrossAxisAlignment.center,
-//                children: <Widget>[
-//                  Text("${pm.monthToExtend} сар"),
-//                  Text("₮ ${pm.price}"),
-//                ],
-//              ),
-//            ),
-//          ),
-//        ),onTap: packBloc.dispatch(PackItemSelected(pack, pm)),);
-//      }).toList();
-//
-//      return GridView.count(
-//        crossAxisCount: 2,
-//        children: contents,
-//      );
-    }
-    return Container();
+  AppBar buildAppBar() {
+    var _state = packBloc.currentState;
+    if (_state is SelectedPackPreview)
+      return AppBar(
+        backgroundColor: Colors.white,
+        title: buildAppBarHeader(context, _state),
+//        backgroundColor: Colors.white,
+      );
+
+    return AppBar(
+      title: buildAppBarHeader(context, _state),
+      backgroundColor: Colors.white,
+      bottom: createTabBar,
+    );
+  }
+
+  Widget buildBody() {
+    if (packBloc.currentState is SelectedPackPreview) return buildContents();
+
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: buildContents(),
+    );
   }
 }
