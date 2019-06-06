@@ -10,19 +10,20 @@ import 'package:ddish/src/widgets/header.dart';
 class MenuPage extends StatefulWidget {
   var onBackButtonTap;
 
-  MenuPage({Key key, this.onBackButtonTap})
-      : super(key: key);
+  MenuPage({Key key, this.onBackButtonTap}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MenuPageState();
 }
 
 class MenuPageState extends State<MenuPage> {
+  bool authenticated;
   MenuBloc _menuBloc;
   List<Menu> menuItems;
 
   @override
   void initState() {
+    authenticated = widget.onBackButtonTap == null;
     _menuBloc = MenuBloc();
     menuItems = initMenu();
     super.initState();
@@ -54,28 +55,32 @@ class MenuPageState extends State<MenuPage> {
                     state.menu.screen
                   ],
                 );
-              }
-              else if (state is MenuOpened || state is MenuInitial) {
+              } else if (state is MenuOpened || state is MenuInitial) {
                 return Column(
                   children: <Widget>[
                     Visibility(
                       maintainState: true,
                       maintainAnimation: true,
                       maintainSize: true,
-                      visible: widget.onBackButtonTap != null,
-                    child: Header(onBackPressed: widget.onBackButtonTap),
-                ),
+                      visible: !authenticated,
+                      child: Header(onBackPressed: widget.onBackButtonTap),
+                    ),
                     Expanded(
                       child: ListView.builder(
                         itemCount: menuItems.length,
                         itemBuilder: (BuildContext context, int index) {
+                          var menuItem = _buildMenuItem(menuItems[index], true);
                           return Column(
                             children: <Widget>[
-                              _buildMenuItem(menuItems[index], true),
-                              Line(
-                                color: Color(0xFF3069b2),
-                                margin: EdgeInsets.symmetric(horizontal: 15.0),
-                                thickness: 1.0,
+                              menuItem != null ? menuItem : Container(),
+                              Visibility(
+                                visible: menuItem != null,
+                                child: Line(
+                                  color: Color(0xFF3069b2),
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 15.0),
+                                  thickness: 1.0,
+                                ),
                               )
                             ],
                           );
@@ -92,12 +97,15 @@ class MenuPageState extends State<MenuPage> {
   }
 
   Widget _buildMenuItem(Menu menu, bool root) {
-    if (menu.children == null || menu.children.isEmpty)
+    if (menu.children == null || menu.children.isEmpty) {
+      if (menu.secure && !authenticated) return null;
       return ListTile(
+        trailing: menu.trailing,
         contentPadding: root ? null : const EdgeInsets.only(left: 30.0),
         title: _buildTitle(menu.title),
         onTap: () => onMenuTap(menu),
       );
+    }
     return ExpansionTile(
       key: PageStorageKey<Menu>(menu),
       trailing: SizedBox.shrink(),
@@ -127,6 +135,11 @@ class MenuPageState extends State<MenuPage> {
 
   List initMenu() {
     List<Menu> menuItems = <Menu>[
+      Menu(
+        title: 'Хэрэглэгчийн мэдээлэл',
+        screen: Container(),
+        secure: true,
+      ),
       Menu(
         title: 'Антен тохируулах заавар',
         screen: Container(),
@@ -163,6 +176,13 @@ class MenuPageState extends State<MenuPage> {
       Menu(
         title: '7777-1434',
       ),
+      Menu(
+          title: 'Гарах',
+          secure: true,
+          trailing: Icon(
+            Icons.exit_to_app,
+            color: Colors.white,
+          )),
     ];
 
     return menuItems;
@@ -170,9 +190,16 @@ class MenuPageState extends State<MenuPage> {
 }
 
 class Menu {
-  Menu({this.title, this.screen, this.children});
+  Menu(
+      {this.title,
+      this.screen,
+      this.children,
+      this.secure = false,
+      this.trailing});
 
   String title;
   Widget screen;
+  bool secure;
+  Widget trailing;
   List<Menu> children = const <Menu>[];
 }
