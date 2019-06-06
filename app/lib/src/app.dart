@@ -13,6 +13,8 @@ import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/widgets/header.dart';
 
+import 'blocs/service/service_bloc.dart';
+
 class App extends StatefulWidget {
   final UserRepository userRepository;
 
@@ -25,6 +27,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   NavigationBloc navigationBloc;
   AuthenticationBloc authenticationBloc;
+  ServiceBloc serviceBloc;
 
   UserRepository get userRepository => widget.userRepository;
 
@@ -38,6 +41,7 @@ class _AppState extends State<App> {
   void initState() {
     navigationBloc = NavigationBloc();
     authenticationBloc = AuthenticationBloc(userRepository: userRepository);
+    serviceBloc = ServiceBloc();
     menuBloc = MenuBloc();
     menuPage = MenuPage(
       navigationBloc: navigationBloc,
@@ -53,6 +57,7 @@ class _AppState extends State<App> {
   void dispose() {
     navigationBloc.dispose();
     authenticationBloc.dispose();
+    serviceBloc.dispose();
     menuBloc.dispose();
     super.dispose();
   }
@@ -77,7 +82,10 @@ class _AppState extends State<App> {
               child: BlocBuilder<NavigationEvent, int>(
                 bloc: navigationBloc,
                 builder: (BuildContext context, int index) {
-                  return content[index];
+                  return BlocProviderTree(blocProviders: [
+                    BlocProvider<NavigationBloc>(bloc: navigationBloc),
+                    BlocProvider<ServiceBloc>(bloc: serviceBloc),
+                  ], child: content[index]);
                 },
               ),
             ),

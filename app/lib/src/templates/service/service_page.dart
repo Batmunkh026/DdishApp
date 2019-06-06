@@ -1,3 +1,4 @@
+import 'package:ddish/src/blocs/service/pack/pack_bloc.dart';
 import 'package:ddish/src/blocs/service/service_bloc.dart';
 import 'package:ddish/src/blocs/service/service_event.dart';
 import 'package:ddish/src/blocs/service/service_state.dart';
@@ -18,7 +19,7 @@ class ServicePage extends StatefulWidget {
 }
 
 class ServicePageState extends State<ServicePage> {
-  ServiceBloc bloc = ServiceBloc();
+  ServiceBloc bloc;
 
   var builder;
   Container tabContainer;
@@ -44,6 +45,8 @@ class ServicePageState extends State<ServicePage> {
 
   @override
   void initState() {
+    bloc = BlocProvider.of<ServiceBloc>(context);
+
     builder = BlocBuilder(bloc: bloc, builder: createBuilder);
     servicePackTabState =
         bloc.servicePackTabState; //үйлчилгээний багц ын дэд таб ын төлөв
