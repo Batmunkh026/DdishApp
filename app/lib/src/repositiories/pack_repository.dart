@@ -26,22 +26,22 @@ class PackRepository{
         DateTime.now(),
         "https://3.bp.blogspot.com/-oVcccKo3lJ8/WVCgHndUQ8I/AAAAAAAABrA/qolfO6zcNXgUrFfYBLgsQPA63O_Ay9uegCLcBGAs/s320/Eid%2Boffer.png",
         [
-          MonthAndPriceToExtend(1, 14900),
-          MonthAndPriceToExtend(2, 25700),
-          MonthAndPriceToExtend(3, 44700),
+          MonthAndPriceToExtend(1, 24900),
+          MonthAndPriceToExtend(2, 35700),
+          MonthAndPriceToExtend(3, 54700),
           MonthAndPriceToExtend(6, 89400),
-          MonthAndPriceToExtend(12, 100000),
+          MonthAndPriceToExtend(12, 110000),
         ]),
     Pack(
         "Илүү багц",
         DateTime.now(),
         "https://cdn.iconscout.com/icon/free/png-256/valentine-valentines-day-special-offer-sale-discount-ribbon-tag-label-12958.png",
         [
-          MonthAndPriceToExtend(1, 14900),
-          MonthAndPriceToExtend(2, 25700),
-          MonthAndPriceToExtend(3, 44700),
-          MonthAndPriceToExtend(6, 89400),
-          MonthAndPriceToExtend(12, 100000),
+          MonthAndPriceToExtend(1, 34900),
+          MonthAndPriceToExtend(2, 45700),
+          MonthAndPriceToExtend(3, 54700),
+          MonthAndPriceToExtend(6, 99400),
+          MonthAndPriceToExtend(12, 140000),
         ]),
   ];
   List<Channel> channels = [
