@@ -48,7 +48,7 @@ class PackRepository{
     Channel(
         "Суваг 1",
         DateTime.now(),
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYd8ogEfk_qErXUtY-ry3WBlk_IxTiEHg9xHzAaLMuhQRscRuD",
+        "https://bcassetcdn.com/asset/logo/d649b6be-aaef-4b9e-9413-48b6a3eb4081/logo?v=4&text=Logo+Text+Here",
         [
           MonthAndPriceToExtend(1, 7900),
           MonthAndPriceToExtend(2, 20000),
@@ -59,7 +59,7 @@ class PackRepository{
     Channel(
         "Суваг 2",
         DateTime.now(),
-        "https://3.bp.blogspot.com/-oVcccKo3lJ8/WVCgHndUQ8I/AAAAAAAABrA/qolfO6zcNXgUrFfYBLgsQPA63O_Ay9uegCLcBGAs/s320/Eid%2Boffer.png",
+        "https://fbcd.co/product-lg/16a0f903bf78c3bdc5366f285609ad17_resize.jpg",
         [
           MonthAndPriceToExtend(1, 7900),
           MonthAndPriceToExtend(2, 20000),
@@ -70,7 +70,7 @@ class PackRepository{
     Channel(
         "Суваг 3",
         DateTime.now(),
-        "https://cdn.iconscout.com/icon/free/png-256/valentine-valentines-day-special-offer-sale-discount-ribbon-tag-label-12958.png",
+        "https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/192693/580/386/m1/fpnw/wm0/kidz-tv-logo-preview-02-.png?1411673876&s=bcfc8640e02122416dcf0efa64849a00",
         [
           MonthAndPriceToExtend(1, 7900),
           MonthAndPriceToExtend(2, 20000),

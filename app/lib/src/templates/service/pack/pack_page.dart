@@ -78,16 +78,18 @@ class PackPageState extends State<PackPage> {
     );
     if (state is SelectedPackPreview)
       return Text("Сунгах");
-    else if (state is PackTabState ||
-        state is CustomPackSelector ||
-        state is PackSelectionState)
-      packContentContainer.children.add(createPackPicker(state));
+//    else if (state is PackTabState ||
+//        state is CustomPackSelector ||
+//        state is PackSelectionState)
+//      packContentContainer.children.add(createPackPicker(state));
 
     return packContentContainer;
   }
 
   DropdownButton createPackPicker(PackState state) {
-    List<Pack> items = state.initialItems != null ? state.initialItems : [];
+//    TODO нэмэлт суваг сонгоход яах ёстойг тодруулах
+//    List<dynamic> items = state.initialItems != null ? state.initialItems : [];
+      List<dynamic> items = packBloc.packs;
 
     return DropdownButton(
       items: items
@@ -97,7 +99,8 @@ class PackPageState extends State<PackPage> {
                 child: Image.network(pack.image),
               )))
           .toList(),
-      value: state.selectedPack != null ? state.selectedPack : items.first,
+      //TODO Багц сунгах таб биш бол яах?
+      value: state.selectedTab != PackTabType.EXTEND &&state.selectedPack == null ? items.first : state.selectedPack,
       onChanged: (value) {
         packBloc.dispatch(PackTypeSelectorClicked(state.selectedTab, value));
       },
@@ -125,10 +128,11 @@ class PackPageState extends State<PackPage> {
       );
 
     } else if (_state is PackTabState || _state is PackSelectionState) {
-      Pack pack = _state.selectedPack;
-
-      var packPicker = PackGridPicker(packBloc, pack);
+      var itemsForGrid = _state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ? _state.initialItems : _state.selectedPack;
+      var packPicker = PackGridPicker(packBloc, itemsForGrid);
       return packPicker;
+    }else if(_state is AdditionalChannelState){//нэмэлт суваг сонгосон төлөв
+      return PackGridPicker(packBloc, _state.selectedChannel);
     } else if (_state is SelectedPackPreview) {
       return PackPaymentPreview(packBloc);
     } else if (_state is CustomPackSelector) {

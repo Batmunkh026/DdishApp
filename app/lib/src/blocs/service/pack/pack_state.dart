@@ -34,15 +34,15 @@ abstract class PackState extends Equatable{
 ///  **initialItems** - Сонгосон багц дахь дата;
 class PackTabState extends PackState {
   PackTabType selectedTab;
-
+  bool isReload;
   /// parameters:
   ///
   /// **selectedTab** - сонгосон багцын үйлчилгээний төлөв
   ///
   /// **initialItems** - тухайн сонгосон багцын үйлчилгээнд харгалзах дата
-  PackTabState(@required this.selectedTab, @required List<dynamic> initialItems)
+  PackTabState(@required this.selectedTab, @required List<dynamic> initialItems, this.isReload)
       : assert(selectedTab != null),
-        assert(initialItems != null), super(selectedTab, initialItems, null, [selectedTab]);
+        assert(initialItems != null), super(selectedTab, initialItems, null, [isReload, selectedTab]);
 
   @override
   String toString() => "PackTab state $selectedTab - $selectedPack";
@@ -52,11 +52,9 @@ class PackTabState extends PackState {
 ///нэмэлт суваг сонгогдсон төлөв
 class AdditionalChannelState extends PackState {
   Channel selectedChannel;
-  List<dynamic> packsForChannel;
   AdditionalChannelState(PackTabType selectedPackType,
-      @required this.selectedChannel, @required this.packsForChannel)
-      : assert(selectedChannel != null),
-        assert(packsForChannel != null), super(selectedPackType, packsForChannel, selectedChannel, [selectedChannel]);
+      @required this.selectedChannel)
+      : assert(selectedChannel != null), super(selectedPackType, null,  selectedChannel, [selectedPackType,selectedChannel]);
 }
 
 ///Багц сонголтын төлөв
@@ -117,6 +115,6 @@ class PackPaymentState extends PackState {
   int monthToExtend;
   
 
-  PackPaymentState(PackTabType selectedPackType, Pack selectedPack, this.monthToExtend, this.paymentState)
+  PackPaymentState(PackTabType selectedPackType, selectedPack, this.monthToExtend, this.paymentState)
       : super(selectedPackType, null, selectedPack);
 }

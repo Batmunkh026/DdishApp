@@ -31,8 +31,9 @@ class PackTypeSelectorClicked extends PackEvent {
 /// Хэрэв __багц сунгах__ эсвэл __нэмэлт суваг__ табуудаас аль нэгийг сонгосон тохиолдолд энэ эвент дуудах
 class PackServiceSelected extends PackEvent {
   PackTabType selectedPackType;
-  PackServiceSelected(this.selectedPackType)
-      : super(selectedPackType, [selectedPackType]);
+  bool isReload = false;
+  PackServiceSelected(this.selectedPackType, {this.isReload})
+      : super(selectedPackType, [selectedPackType, isReload]);
 }
 
 //нэмэлт суваг сонгох
@@ -46,7 +47,7 @@ class ChannelSelected extends PackEvent {
 // тухайн багцын хугацаа&төлбөр сонгох
 //  сонгогдсон элемент нь null байвал <өөр сонголт хийх> оролдлого гэж ойлгох
 class PackItemSelected extends PackEvent {
-  Pack selectedPack;
+  var selectedPack;
   MonthAndPriceToExtend selectedItemForPack;
 
   PackItemSelected(
@@ -77,7 +78,7 @@ class PreviewSelectedPack extends PackEvent {
 
 //Сонгогдсон багцын сунгах
 class ExtendSelectedPack extends PackEvent {
-  Pack selectedPack;
+  dynamic selectedPack;
   int extendMonth;
   ExtendSelectedPack(PackTabType selectedPackType, this.selectedPack, this.extendMonth):super(selectedPackType, [selectedPackType]);
 }
