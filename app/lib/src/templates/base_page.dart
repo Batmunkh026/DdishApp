@@ -85,6 +85,7 @@ class MainContainer extends StatefulWidget {
   MainContainer(@required this.currentTab, @required this.bloc)
       : assert(currentTab != null),
         assert(bloc != null);
+
   @override
   State<StatefulWidget> createState() => MainContainerState();
 }
@@ -92,9 +93,12 @@ class MainContainer extends StatefulWidget {
 class MainContainerState extends State<MainContainer> {
   List<Tab> get getTabMenus => Constants.mainMenuItems
       .map((item) => Tab(
-            icon: Icon(item.icon),
+            icon: Icon(
+              item.icon,
+            ),
           ))
       .toList();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

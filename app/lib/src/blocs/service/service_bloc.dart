@@ -13,7 +13,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   @override
   Stream<ServiceState> mapEventToState(ServiceEvent event) async* {
     if (event is ServiceTabSelected) {
-      yield ServiceTabSelected(event.selectedTab) as ServiceState;
+      yield ServiceTabState(event.selectedTab);
     }
   }
 }

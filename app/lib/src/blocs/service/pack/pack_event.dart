@@ -1,50 +1,83 @@
 import 'package:ddish/src/models/channel.dart';
+import 'package:ddish/src/models/month_price.dart';
+import 'package:ddish/src/models/pack.dart';
+import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class PackEvent extends Equatable {
-  PackEvent([List props = const []]) : super(props);
+  PackTabType selectedTab;
+  PackEvent(this.selectedTab, [List props = const []]) : super(props);
 }
 
-///Сунгах багцуудыг төрлөөр нь харах
-///жишээ: Үлэмж багцыг сонгосон бол тухайн багцын сунгах үнэ болон хугацааны сонголтууд харуулах
+///Сунгах багцуудыг төрлөөр нь сонгох үед дуудагдах эвент
+///
+/// parameter:
+///
+/// __selectedPack__ - сонгогдсон багцын төрөл
 class PackTypeSelectorClicked extends PackEvent {
-  dynamic
-      packType; //TODO багцын төрлийг баазаас авах шаардлагагүй бол enum төрлөөр шийдэх, үгүй бол багцын төрлийг өөрчлөх
-  PackTypeSelectorClicked(this.packType) : assert(packType != null);
+  Pack
+      selectedPack; //TODO багцын төрлийг баазаас авах шаардлагагүй бол enum төрлөөр шийдэх, үгүй бол багцын төрлийг өөрчлөх
+  PackTypeSelectorClicked(PackTabType selectedPackType, this.selectedPack)
+      : assert(selectedPack != null),
+        super(selectedPackType, [selectedPackType, selectedPack]);
 }
 
-///Сунгах, Нэмэлт суваг, Ахиулах таб ууд сонгосон үед ажиллах
-///жишээ:
-///<Сунгах> tab сонгогдсон бол сунгах саруудын дата,
-///<Нэмэлт сувгууд> сонгогдсон бол нэмэлт сувгуудын дата
+///#Багцын дэд үйлчилгээ сонгогдсон эвент
+///
+/// **жишээ:**
+/// Хэрэв __багц сунгах__ эсвэл __нэмэлт суваг__ табуудаас аль нэгийг сонгосон тохиолдолд энэ эвент дуудах
 class PackServiceSelected extends PackEvent {
   PackTabType selectedPackType;
-  PackServiceSelected(this.selectedPackType);
+  PackServiceSelected(this.selectedPackType)
+      : super(selectedPackType, [selectedPackType]);
 }
 
 //нэмэлт суваг сонгох
 class ChannelSelected extends PackEvent {
   Channel selectedChannel;
-  ChannelSelected(this.selectedChannel) : assert(selectedChannel != null);
+  ChannelSelected(PackTabType selectedPackType, this.selectedChannel)
+      : assert(selectedChannel != null),
+        super(selectedPackType, [selectedPackType, selectedChannel]);
 }
 
 // тухайн багцын хугацаа&төлбөр сонгох
 //  сонгогдсон элемент нь null байвал <өөр сонголт хийх> оролдлого гэж ойлгох
-class PackItemSelected extends PackEvent{
-  dynamic selectedPack;
+class PackItemSelected extends PackEvent {
+  Pack selectedPack;
+  MonthAndPriceToExtend selectedItemForPack;
 
-  PackItemSelected(this.selectedPack);
+  PackItemSelected(
+      PackTabType selectedPackType, this.selectedPack, this.selectedItemForPack)
+      : super(selectedPackType,
+            [selectedPackType, selectedItemForPack, selectedPack]);
 }
+
+///Өөр дүн оруулах
+class CustomPackSelected extends PackEvent {
+  static final key = Key("custom-pack-selected-event");
+  Pack selectedPack;
+  int monthToExtend;
+
+  CustomPackSelected(selectedPackType, this.selectedPack, this.monthToExtend)
+      : super(selectedPackType, [selectedPackType, selectedPack,key, monthToExtend]);
+}
+
 //
 //Сонгогдсон багцын сунгалтын өмнөх төлвийг харах
-class PreviewSelectedPack extends PackEvent{
+class PreviewSelectedPack extends PackEvent {
   dynamic selectedPack;
+  int monthToExtend;
 
-  PreviewSelectedPack(this.selectedPack);
+  PreviewSelectedPack(PackTabType selectedPackType, this.selectedPack, this.monthToExtend)
+      : super(selectedPackType, [selectedPackType, monthToExtend]);
 }
-//Сонгогдсон багцын сунгах
-class ExtendSelectedPack extends PackEvent{
 
+//Сонгогдсон багцын сунгах
+class ExtendSelectedPack extends PackEvent {
+  Pack selectedPack;
+  int extendMonth;
+  ExtendSelectedPack(PackTabType selectedPackType, this.selectedPack, this.extendMonth):super(selectedPackType, [selectedPackType]);
 }
