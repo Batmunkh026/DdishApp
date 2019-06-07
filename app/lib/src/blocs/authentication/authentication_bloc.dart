@@ -17,6 +17,7 @@ class AuthenticationBloc
   @override
   AuthenticationState get initialState => AuthenticationUninitialized();
 
+
   @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
@@ -41,6 +42,10 @@ class AuthenticationBloc
       yield AuthenticationLoading();
       await userRepository.deleteToken();
       yield AuthenticationUnauthenticated();
+    }
+
+    if (event is AuthenticationFinished) {
+      yield AuthenticationCompleted();
     }
   }
 }

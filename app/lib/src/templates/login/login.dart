@@ -47,13 +47,19 @@ class LoginViewState extends State<LoginView> {
   }
 
   @override
+  void dispose() {
+//    _usernameController.dispose();
+//    _passwordController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginEvent, LoginState>(
       bloc: _loginBloc,
       builder: (
-        BuildContext context,
-        LoginState state,
-      ) {
+          BuildContext context,
+          LoginState state,
+          ) {
         if (state is LoginFailure) {
           //TODO нэвтрэх оролдлого амжилтгүй болсон үед юу хийх ??
         }
@@ -90,7 +96,6 @@ class LoginViewState extends State<LoginView> {
                       obscureText: true,
                     ),
                     FlatButton(
-                      // TODO нууц үгээ мартсан уу? popup
                       onPressed: () => _showDialog(context),
                       padding: EdgeInsets.all(0.0),
                       child: Text(
@@ -124,11 +129,11 @@ class LoginViewState extends State<LoginView> {
                 verticalMargin: 10.0,
                 horizontalMargin: 70.0,
                 onPressed:
-                    state is! LoginLoading ? _onLoginButtonPressed : null,
+                state is! LoginLoading ? _onLoginButtonPressed : null,
               ),
               Container(
                 child:
-                    state is LoginLoading ? CircularProgressIndicator() : null,
+                state is LoginLoading ? CircularProgressIndicator() : null,
               ),
             ],
           ),
@@ -152,7 +157,6 @@ class LoginViewState extends State<LoginView> {
               actions: actions,
             ),
           );
-          return CustomDialog(title: 'Нууц кодоо мартсан уу?');
         });
   }
 

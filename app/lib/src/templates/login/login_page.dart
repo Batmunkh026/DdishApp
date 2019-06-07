@@ -1,62 +1,122 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
-import 'login.dart';
+import 'package:ddish/src/templates/menu/menu_page.dart';
+import 'package:ddish/src/templates/service/service_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
+import 'package:ddish/src/blocs/authentication/authentication_event.dart';
+import 'package:ddish/src/blocs/authentication/authentication_state.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
+import 'login.dart';
+import 'package:flutter/scheduler.dart';
 
-class LoginPage extends StatefulWidget {
-  final UserRepository userRepository;
-
-  LoginPage({Key key, @required this.userRepository})
-      : assert(userRepository != null),
-        super(key: key);
-
+class LoginWidget extends StatefulWidget {
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginWidget> createState() => LoginWidgetState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  LoginBloc _loginBloc;
-  AuthenticationBloc _authenticationBloc;
-  String username = null;
-  bool useFingerprint = null;
-  UserRepository get _userRepository => widget.userRepository;
+class LoginWidgetState extends State<LoginWidget> {
+  AuthenticationBloc authenticationBloc;
+  LoginBloc loginBloc;
+
+  UserRepository userRepository;
+
+  ServicePage servicePage;
+  Text notificationText;
+  String username = '';
+  bool useFingerprint = false;
   bool prefsLoaded = false;
+  Widget content;
+  bool menuOpened = false;
 
   @override
   void initState() {
-    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    _loginBloc = LoginBloc(
-      userRepository: _userRepository,
-      authenticationBloc: _authenticationBloc,
-    );
+    userRepository = UserRepository();
+    authenticationBloc = AuthenticationBloc(userRepository: userRepository);
+    loginBloc = LoginBloc(
+        userRepository: userRepository, authenticationBloc: authenticationBloc);
+    servicePage = ServicePage();
+    notificationText = Text("NOTIFICATION");
     readPreferences();
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return prefsLoaded ? LoginView(
-        authenticationBloc: _authenticationBloc,
-        loginBloc: _loginBloc,
-        username: username,
-        useFingerprint: useFingerprint,
-    ) : Container();
-  }
-
-  readPreferences() async {
-    username = await _userRepository.getUsername();
-    var value = await _userRepository.useFingerprint();
-    useFingerprint = value != null ? value : false;
-    if(this.mounted)
-      setState(() => prefsLoaded = true);
+  void dispose() {
+    authenticationBloc.dispose();
+    super.dispose();
   }
 
   @override
-  void dispose() {
-    _loginBloc.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return BlocProvider<AuthenticationBloc>(
+      bloc: authenticationBloc,
+      child: Scaffold(
+        resizeToAvoidBottomPadding: false,
+        body: Stack(
+          children: <Widget>[
+            Container(
+              decoration: new BoxDecoration(
+                image: new DecorationImage(
+                  image: new AssetImage("assets/satellite_background.jpg"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: prefsLoaded
+                  ? (menuOpened
+                      ? MenuPage(
+                          onBackButtonTap: () => onMenuTap(),
+                        )
+                      : LoginView(
+                          authenticationBloc: authenticationBloc,
+                          loginBloc: loginBloc,
+                          username: username,
+                          useFingerprint: useFingerprint,
+                        ))
+                  : Container(),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: IconButton(
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: Colors.grey,
+                ),
+                disabledColor: Colors.white,
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.all(20.0),
+                onPressed: () => onMenuTap(),
+              ),
+            ),
+            BlocBuilder<AuthenticationEvent, AuthenticationState>(
+              bloc: authenticationBloc,
+              builder: (BuildContext context, AuthenticationState state) {
+                if (state is AuthenticationAuthenticated) {
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    Navigator.pushNamed(context, "/Main");
+                  });
+                  authenticationBloc.dispatch(
+                      AuthenticationFinished()); // to reset the state and avoid an infinite loop
+                }
+                return Container();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  onMenuTap() {
+    setState(() {
+      menuOpened = !menuOpened;
+    });
+  }
+
+  readPreferences() async {
+    username = await userRepository.getUsername();
+    var value = await userRepository.useFingerprint();
+    useFingerprint = value != null ? value : false;
+    if (this.mounted) setState(() => prefsLoaded = true);
   }
 }

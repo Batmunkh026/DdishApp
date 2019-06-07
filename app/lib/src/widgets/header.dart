@@ -24,12 +24,9 @@ class Header extends StatelessWidget {
                 onPressed: onBackPressed),
           ),
           Visibility(
-            maintainState: true,
-            maintainAnimation: true,
-            maintainSize: true,
             visible: title != null && title.isNotEmpty,
             child: Center(
-              child: Text(title,
+              child: Text(title != null && title.isNotEmpty ? title : '',
                   style: const TextStyle(
                       color: const Color(0xffe4f0ff),
                       fontWeight: FontWeight.w400,
@@ -38,10 +35,13 @@ class Header extends StatelessWidget {
                       fontSize: 15.0)),
             ),
           ),
-          Line(
-            color: Color(0xffe4f0ff),
-            thickness: 1.0,
-            margin: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+          Visibility(
+            visible: title != null && title.isNotEmpty,
+            child: Line(
+              color: Color(0xffe4f0ff),
+              thickness: 1.0,
+              margin: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+            ),
           ),
         ],
       ),
