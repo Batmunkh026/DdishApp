@@ -45,7 +45,7 @@ class ServicePageState extends State<ServicePage> {
 
   @override
   void initState() {
-    bloc = BlocProvider.of<ServiceBloc>(context);
+    bloc = ServiceBloc();
 
     builder = BlocBuilder(bloc: bloc, builder: createBuilder);
     servicePackTabState =
@@ -98,5 +98,10 @@ class ServicePageState extends State<ServicePage> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 }
