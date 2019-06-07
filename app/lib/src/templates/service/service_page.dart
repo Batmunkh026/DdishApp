@@ -61,6 +61,8 @@ class ServicePageState extends State<ServicePage> {
 
   Widget createBuilder(BuildContext context, ServiceState state) {
     this.servicePackTabState = state;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
       margin: EdgeInsets.fromLTRB(8, 10, 8, 4),
       child: DefaultTabController(
@@ -79,9 +81,19 @@ class ServicePageState extends State<ServicePage> {
             bottom: createTabBar,
           ),
           body: Scaffold(
-            backgroundColor: Color.fromRGBO(0, 0, 0, 0),
-            body:
-                TabBarView(children: [AccountPage(), PackPage(), MoviePage()]),
+            resizeToAvoidBottomPadding: false,
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 70.0),
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.circular(20.0),
+                ),
+                child: TabBarView(children: [AccountPage(), PackPage(), MoviePage()]),
+              ),
+            ),
           ),
         ),
       ),
