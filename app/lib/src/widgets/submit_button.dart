@@ -10,8 +10,8 @@ class SubmitButton extends StatelessWidget {
   SubmitButton({
     this.text,
     this.onPressed,
-    this.verticalMargin,
-    this.horizontalMargin,
+    this.verticalMargin = 0.0,
+    this.horizontalMargin = 0.0,
     this.padding = const EdgeInsets.all(0.0),
   });
 

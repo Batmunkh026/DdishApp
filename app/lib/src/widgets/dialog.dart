@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:ddish/src/widgets/line.dart';
 
 class CustomDialog extends StatelessWidget {
-  String title;
-  Widget content;
-  List<Widget> actions;
+  final String title;
+  final Widget content;
+  final List<Widget> actions;
+  final bool important;
 
-  CustomDialog({this.title, this.content, this.actions});
+  CustomDialog({this.title, this.content, this.actions, this.important = false });
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +15,9 @@ class CustomDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.all(0.0),
       title: Text(title,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
               color: const Color(0xfffcfdfe),
-              fontWeight: FontWeight.w400,
+              fontWeight: important ? FontWeight.w600 : FontWeight.w400,
               fontFamily: "Montserrat",
               fontStyle: FontStyle.normal,
               fontSize: 15.0)),

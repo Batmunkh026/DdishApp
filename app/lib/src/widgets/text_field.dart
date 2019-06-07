@@ -11,6 +11,7 @@ class InputField extends StatelessWidget {
   var validateFunction;
   var onSaved;
   var textController;
+  bool hasBorder;
   Key key;
 
   //passing props in the Constructor.
@@ -25,7 +26,8 @@ class InputField extends StatelessWidget {
         this.bottomMargin,
         this.validateFunction,
         this.onSaved,
-        this.textController,});
+        this.textController,
+        this.hasBorder = false});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class InputField extends StatelessWidget {
             initialValue: initialValue,
             enabled: true,
             style: TextStyle(
-              color: Colors.white,
+              color: hasBorder ? Color(0xFF071f49) : Color(0xffe8e8e8),
               fontWeight: FontWeight.w400,
               fontFamily: "Montserrat",
               fontStyle:  FontStyle.normal,
@@ -48,11 +50,15 @@ class InputField extends StatelessWidget {
             validator: validateFunction,
             onSaved: onSaved,
             controller: textController,
+            textAlign: hasBorder ? TextAlign.center : TextAlign.start,
             decoration: new InputDecoration(
+              border: hasBorder ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+              ) : null,
               contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0),
               hintText: placeholder,
               hintStyle: TextStyle(
-                color: Color(0xffe8e8e8),
+                color: hasBorder ? Color(0xFF071f49) : Color(0xffe8e8e8),
                 fontWeight: FontWeight.w400,
                 fontFamily: "Montserrat",
                 fontStyle:  FontStyle.normal,

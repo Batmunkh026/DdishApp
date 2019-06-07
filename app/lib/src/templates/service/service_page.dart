@@ -61,7 +61,6 @@ class ServicePageState extends State<ServicePage> {
 
   Widget createBuilder(BuildContext context, ServiceState state) {
     this.servicePackTabState = state;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       margin: EdgeInsets.fromLTRB(8, 10, 8, 4),
