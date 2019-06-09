@@ -6,13 +6,15 @@ import 'package:ddish/src/blocs/service/movie/library/library_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_event.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ddish/src/widgets/text_field.dart';
+import 'package:ddish/src/widgets/submit_button.dart';
 
-class MovieLibrary extends StatefulWidget {
+class Library extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => MovieLibraryState();
+  State<StatefulWidget> createState() => LibraryState();
 }
 
-class MovieLibraryState extends State<MovieLibrary> {
+class LibraryState extends State<Library> {
   TextEditingController movieIdFieldController;
   MovieLibraryBloc _bloc;
 
@@ -30,7 +32,7 @@ class MovieLibraryState extends State<MovieLibrary> {
   }
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    return BlocBuilder<MovieLibraryEvent, MovieLibraryState>(
       bloc: _bloc,
       builder: (BuildContext context, MovieLibraryState state) {
         return Container(

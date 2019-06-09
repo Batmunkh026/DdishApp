@@ -9,11 +9,11 @@ class MoviePage extends StatefulWidget {
 }
 
 class MoviePageState extends State<MoviePage> {
-  MovieLibrary library;
+  Library library;
 
   @override
   void initState() {
-    library = MovieLibrary();
+    library = Library();
     super.initState();
   }
   @override
