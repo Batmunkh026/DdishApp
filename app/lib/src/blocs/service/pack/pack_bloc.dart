@@ -57,15 +57,14 @@ class PackBloc extends Bloc<PackEvent, PackState> {
     } else if (event is PackItemSelected) {
       assert(event.selectedPack != null);
       //багц сонгогдсон
-      if (event.selectedTab == PackTabType.EXTEND)
-        yield SelectedPackPreview(event.selectedTab, event.selectedPack,
-            event.selectedItemForPack.monthToExtend);
-      else if (event.selectedTab == PackTabType.ADDITIONAL_CHANNEL) {
+      if (event.selectedTab == PackTabType.ADDITIONAL_CHANNEL) {
         yield event.selectedItemForPack == null
             ? AdditionalChannelState(event.selectedTab, event.selectedPack)
             : SelectedPackPreview(event.selectedTab, event.selectedPack,
                 event.selectedItemForPack.monthToExtend);
-      }
+      } else
+        yield SelectedPackPreview(event.selectedTab, event.selectedPack,
+            event.selectedItemForPack.monthToExtend);
     } else if (event is CustomPackSelected) {
       if (event.selectedPack != null) {
         //багц сонгогдсон
@@ -92,8 +91,11 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
       //ижил таб дотор шилжиж байвал өмнөх state ын түүхийг цуглуулах
       if (backState != null &&
-          currentState.selectedTab == backState.selectedTab) {
-        currentState.prevStates.addAll(backState.prevStates);
+          beforeState != null &&
+          currentState.selectedTab == backState.selectedTab &&
+          beforeState.selectedTab == currentState.selectedTab) {
+        if (backState.prevStates.isNotEmpty)
+          currentState.prevStates.addAll(backState.prevStates);
         currentState.prevStates.add(backState);
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
@@ -108,8 +110,8 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   /// **selectedPackType** - сонгогдсон багцын төрөл **[Үлэмж, Илүү, Энгийн, ...]**
   ///
   /// **dataForSelectedPackType** - сонгосон багцад харгалзах дата
-  PackTabState updateServicePackTabState(PackTabType selectedPackType,
-      List<dynamic> dataForSelectedPackType) {
+  PackTabState updateServicePackTabState(
+      PackTabType selectedPackType, List<dynamic> dataForSelectedPackType) {
     var items;
     if (selectedPackType == PackTabType.UPGRADE)
       items = packRepository.getPacks();

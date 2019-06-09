@@ -11,7 +11,7 @@ abstract class PackState extends Equatable {
   List<dynamic> initialItems;
   var selectedPack;
   PackTabType selectedTab;
-  List<PackState> prevStates = [];
+  Set<PackState> prevStates = Set();
 
   PackState(this.selectedTab, this.initialItems, this.selectedPack,
       [List props = const []])

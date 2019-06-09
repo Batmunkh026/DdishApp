@@ -11,62 +11,133 @@ import 'package:flutter/material.dart';
 class PackGridPicker extends StatelessWidget {
   PackBloc _bloc;
   var _state;
+  var _stateTab;
 
   dynamic _pack;
 
   PackGridPicker(this._bloc, this._pack) : assert(_bloc != null) {
     _state = _bloc.currentState;
+    _stateTab = _state.selectedTab;
   }
 
   @override
   Widget build(BuildContext context) {
     assert(_pack != null);
-    var _stateTab = _state.selectedTab;
+
 //    TODO fix logic error [ хэрэв зөвхөн сувгуудын цуглуулга байвал isChannelPicker==TRUE болно, үгүй бол багц сунгахтай адил үйлдэл хийх]
-    var isChannelPicker =
-        _stateTab == PackTabType.ADDITIONAL_CHANNEL && !(_pack is Channel);
 
-    List<dynamic> items = isChannelPicker ? _pack : _pack.packsForMonth;
-
-    List<Widget> contents = items
-        .map((item) => createComponentForPick(item, isChannelPicker))
-        .toList();
-
-    ///Өөр сонголт оруулах button <нэмэлт суваг сонгох талбар биш бол харуулна>
-    if (!isChannelPicker)
-      contents.add(createComponentForPick(null, isChannelPicker));
-
-    var size = MediaQuery.of(context).size;
-
-    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
-    final double itemWidth = size.width / 2;
-
-    //    is channel detail picker бол
-    var isChannelDetailPicker =
-        _stateTab == PackTabType.ADDITIONAL_CHANNEL && _pack is Channel;
-
-    var pickerContainer = GridView.count(
-      crossAxisCount: 2,
-      childAspectRatio: (itemWidth / (itemHeight / 4)),
-      children: contents,
-    );
-
-    if (isChannelDetailPicker) {
-      return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
-            elevation: 0,
-            title: buildChannelDetailPickerHeader(_pack),
-          ),
-          body: pickerContainer);
-    }
-
-    return pickerContainer;
+    return buildContentContainer(context);
   }
 
-  Widget createComponentForPick(dynamic item, isChannelPicker) {
-    List<Widget> children = [Text("Өөр сонголт оруулах")];
+  Widget buildContentContainer(context) {
+    //аль табаас хамаарч түүний GridView д харуулах content уудыг бэлдэх
+    var contentsForGrid = _buildContents();
+
+    if (_stateTab == PackTabType.UPGRADE) {
+      return GridView.extent(
+        maxCrossAxisExtent: 200,
+        children: contentsForGrid,
+        childAspectRatio: 0.33,
+        scrollDirection: Axis.vertical,
+      );
+    } else {
+//      var size = MediaQuery.of(context).size;
+//
+//      final double _itemHeight = (size.height - kToolbarHeight - 24) / 2;
+//      final double _itemWidth = size.width / 2;
+
+      //    is channel detail picker бол
+      var _isChannelDetailPicker =
+          _stateTab == PackTabType.ADDITIONAL_CHANNEL && _pack is Channel;
+
+      var pickerContainer = GridView.count(
+        scrollDirection: Axis.vertical,
+        crossAxisCount: 2,
+        childAspectRatio: 2.2,
+        children: contentsForGrid,
+      );
+
+      if (_isChannelDetailPicker) {
+        return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              title: _buildChannelDetailPickerHeader(_pack),
+            ),
+            body: pickerContainer);
+      }
+
+      return pickerContainer;
+    }
+  }
+
+  List<Widget> _buildContents() {
+    if (_stateTab == PackTabType.ADDITIONAL_CHANNEL)
+      return _buildChannelContents();
+    else if (_stateTab == PackTabType.UPGRADE)
+      return _buildPackUpgradeContents();
+
+    List<dynamic> items = _pack.packsForMonth;
+
+    //багц сунгах бол
+    List<Widget> _contentItems =
+        items.map((item) => _createComponentForPick(item)).toList();
+
+    _contentItems.add(_createComponentForPick(null));
+    return _contentItems;
+  }
+
+  List<Widget> _buildChannelContents() {
+    bool _isChannelDetail = _pack is Channel; //list биш бол channel detail
+
+    List<Widget> _contentItems = [];
+
+    if (_isChannelDetail) {
+      for (final item in _pack
+          .packsForMonth) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
+        _contentItems.add(_createComponentForPick(item));
+
+      ///Өөр сонголт оруулах button <нэмэлт суваг сонгох талбар биш бол харуулна>
+      _contentItems.add(_createComponentForPick(null));
+    } else
+      for (final channel
+          in _pack) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
+        _contentItems
+            .add(_createComponentForPick(channel, isChannelPicker: true));
+    return _contentItems;
+  }
+
+  List<Widget> _buildPackUpgradeContents() {
+    List<Widget> _contentItems = [];
+    for (final Pack pack in _pack) {
+      List<Widget> children = [];
+//    багцын лого бүхий component ыг эхлээд нэмэх, түүний араас тухайн багцад хамаар үнэ&хугацааны багцуудыг нэмэх
+      children
+          .add(Flexible(child: Image.network(pack.image))); //channelPackImage
+
+      List<Widget> itemsOfChannel = pack.packsForMonth
+          .map((item) => Expanded(
+//                child: Padding(
+//                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                child: _createComponentForPick(item, selectedPack: pack),
+//                ),
+              ))
+          .toList();
+
+      children.addAll(itemsOfChannel);
+
+      children.add(Expanded(child: _createComponentForPick(null, selectedPack: pack)));
+
+      Column packContainer = Column(children: children);
+      _contentItems.add(packContainer);
+    }
+
+    return _contentItems;
+  }
+
+  Widget _createComponentForPick(dynamic item, {Pack selectedPack, isChannelPicker = false}) {
+    List<Widget> children = [Text("Өөр сонголт хийх", textAlign: TextAlign.center,)];
 
     if (item != null)
       children = isChannelPicker
@@ -81,26 +152,30 @@ class PackGridPicker extends StatelessWidget {
             color: isChannelPicker
                 ? Colors.white
                 : Color.fromRGBO(49, 138, 255, 1),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
+            child: Padding(
+              padding: EdgeInsets.only(right: 40, left: 40),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: children,
+              ),
             ),
           ),
           onTap: () {
-            if (item == null)
-              _bloc.dispatch(CustomPackSelected(_state.selectedTab, _pack, 0));
+            var selected = selectedPack != null ? selectedPack : _pack;
+            if (item == null) //өөр сонголт хийх бол
+              _bloc.dispatch(CustomPackSelected(_state.selectedTab, selected, 0));
 
             if (isChannelPicker)
               _bloc.dispatch(PackItemSelected(_state.selectedTab, item, null));
             else
-              _bloc.dispatch(PackItemSelected(_state.selectedTab, _pack, item));
+              _bloc.dispatch(PackItemSelected(_state.selectedTab, selected, item));
           }),
     );
   }
 
-  Widget buildChannelDetailPickerHeader(selectedChannel) {
+  Widget _buildChannelDetailPickerHeader(selectedChannel) {
     return FlatButton(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

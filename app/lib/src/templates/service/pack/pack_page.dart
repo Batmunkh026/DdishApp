@@ -128,7 +128,8 @@ class PackPageState extends State<PackPage> {
       );
 
     } else if (_state is PackTabState || _state is PackSelectionState) {
-      var itemsForGrid = _state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ? _state.initialItems : _state.selectedPack;
+      //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
+      var itemsForGrid = _state.selectedTab == PackTabType.EXTEND ? _state.selectedPack : _state.initialItems;
       var packPicker = PackGridPicker(packBloc, itemsForGrid);
       return packPicker;
     }else if(_state is AdditionalChannelState){//нэмэлт суваг сонгосон төлөв
