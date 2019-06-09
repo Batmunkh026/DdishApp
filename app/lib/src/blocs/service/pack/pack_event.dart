@@ -62,7 +62,7 @@ class PackItemSelected extends PackEvent {
 ///Өөр дүн оруулах
 class CustomPackSelected extends PackEvent {
   static final key = Key("custom-pack-selected-event");
-  Pack selectedPack;
+  var selectedPack;
   int monthToExtend;
 
   CustomPackSelected(selectedPackType, this.selectedPack, this.monthToExtend)

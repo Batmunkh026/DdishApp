@@ -166,8 +166,7 @@ class PackGridPicker extends StatelessWidget {
             var selected = selectedPack != null ? selectedPack : _pack;
             if (item == null) //өөр сонголт хийх бол
               _bloc.dispatch(CustomPackSelected(_state.selectedTab, selected, 0));
-
-            if (isChannelPicker)
+            else if (isChannelPicker)
               _bloc.dispatch(PackItemSelected(_state.selectedTab, item, null));
             else
               _bloc.dispatch(PackItemSelected(_state.selectedTab, selected, item));
