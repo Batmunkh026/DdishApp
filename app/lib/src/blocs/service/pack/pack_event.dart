@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/month_price.dart';
 import 'package:ddish/src/models/pack.dart';
@@ -6,6 +8,8 @@ import 'package:ddish/src/models/tab_models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
+
+import 'pack_state.dart';
 
 abstract class PackEvent extends Equatable {
   PackTabType selectedTab;
@@ -31,9 +35,8 @@ class PackTypeSelectorClicked extends PackEvent {
 /// Хэрэв __багц сунгах__ эсвэл __нэмэлт суваг__ табуудаас аль нэгийг сонгосон тохиолдолд энэ эвент дуудах
 class PackServiceSelected extends PackEvent {
   PackTabType selectedPackType;
-  bool isReload = false;
-  PackServiceSelected(this.selectedPackType, {this.isReload})
-      : super(selectedPackType, [selectedPackType, isReload]);
+  PackServiceSelected(this.selectedPackType)
+      : super(selectedPackType, [selectedPackType]);
 }
 
 //нэмэлт суваг сонгох
@@ -63,7 +66,8 @@ class CustomPackSelected extends PackEvent {
   int monthToExtend;
 
   CustomPackSelected(selectedPackType, this.selectedPack, this.monthToExtend)
-      : super(selectedPackType, [selectedPackType, selectedPack,key, monthToExtend]);
+      : super(selectedPackType,
+            [selectedPackType, selectedPack, key, monthToExtend]);
 }
 
 //
@@ -72,7 +76,8 @@ class PreviewSelectedPack extends PackEvent {
   dynamic selectedPack;
   int monthToExtend;
 
-  PreviewSelectedPack(PackTabType selectedPackType, this.selectedPack, this.monthToExtend)
+  PreviewSelectedPack(
+      PackTabType selectedPackType, this.selectedPack, this.monthToExtend)
       : super(selectedPackType, [selectedPackType, monthToExtend]);
 }
 
@@ -80,5 +85,13 @@ class PreviewSelectedPack extends PackEvent {
 class ExtendSelectedPack extends PackEvent {
   dynamic selectedPack;
   int extendMonth;
-  ExtendSelectedPack(PackTabType selectedPackType, this.selectedPack, this.extendMonth):super(selectedPackType, [selectedPackType]);
+  ExtendSelectedPack(
+      PackTabType selectedPackType, this.selectedPack, this.extendMonth)
+      : super(selectedPackType, [selectedPackType]);
+}
+
+class BackToPrevState extends PackEvent {
+  ListQueue<PackState>
+      states; //TODO state үүдийн stack үүсгээд буцах дарах үед сүүлийн state үүдийг устгаад явах
+  BackToPrevState(PackTabType selectedTab) : super(selectedTab, [selectedTab]);
 }

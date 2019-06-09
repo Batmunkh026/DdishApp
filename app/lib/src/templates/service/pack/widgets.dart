@@ -111,8 +111,8 @@ class PackGridPicker extends StatelessWidget {
         ],
       ),
       //TODO back to previous page
-      onPressed: () => _bloc.mapEventToState(
-          PackServiceSelected(PackTabType.ADDITIONAL_CHANNEL, isReload: true)),
+      onPressed: () =>
+          _bloc.dispatch(BackToPrevState(_bloc.currentState.selectedTab)),
     );
   }
 }
@@ -160,12 +160,12 @@ class PackPaymentPreview extends StatelessWidget {
                 Divider(),
               ],
             ),
-            onPressed: () => {},
+            onPressed: () =>
+                _bloc.dispatch(BackToPrevState(_bloc.currentState.selectedTab)),
           ),
           Expanded(
             child: Scaffold(
               body: GridView.count(
-
                 padding: EdgeInsets.only(left: 30),
                 childAspectRatio: 3,
                 crossAxisCount: 3,
@@ -223,8 +223,8 @@ class CustomPackChooser extends StatelessWidget {
                 ],
               ),
               //TODO back to previous page
-              onPressed: () => _bloc.mapEventToState(
-                  PackServiceSelected(PackTabType.EXTEND, isReload: true)),
+              onPressed: () => _bloc
+                  .dispatch(BackToPrevState(_bloc.currentState.selectedTab)),
             ),
             Card(
               margin: EdgeInsets.all(40),

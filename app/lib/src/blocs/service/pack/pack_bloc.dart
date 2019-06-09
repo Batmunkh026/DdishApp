@@ -10,7 +10,9 @@ import 'package:ddish/src/repositiories/pack_repository.dart';
 class PackBloc extends Bloc<PackEvent, PackState> {
   var packRepository = PackRepository();
 
-  var beforeEvent = null;
+  PackEvent beforeEvent = null;
+  PackState beforeState = null;
+  PackState backState = null;
 
   List<Channel> channels;
   List<Pack> packs;
@@ -31,7 +33,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
 //    ServicePackTabState(PackTabType.EXTEND, userApiProvider.fetchActivePacks());
 //    TODO хэрэглэгчийн идэвхитэй багцыг дамжуулах
-    return PackTabState(PackTabType.EXTEND, packRepository.packs, false);
+    return PackTabState(PackTabType.EXTEND, packRepository.packs);
   }
 
   @override
@@ -44,7 +46,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
               ? channels
               : packs;
       yield updateServicePackTabState(
-          event.selectedPackType, dataForSelectedTab, event.isReload);
+          event.selectedPackType, dataForSelectedTab);
     } else if (event is PackTypeSelectorClicked) {
       PackTypeSelectorClicked e = event;
 //      Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
@@ -80,8 +82,24 @@ class PackBloc extends Bloc<PackEvent, PackState> {
       PaymentState paymentState;
       yield PackPaymentState(
           event.selectedTab, selectedPack, monthToExtend, paymentState);
+    } else if (event is BackToPrevState) {
+      yield currentState.prevStates.last;
     }
 
+    //
+    if (!(event is BackToPrevState)) {
+      backState = beforeState;
+
+      //ижил таб дотор шилжиж байвал өмнөх state ын түүхийг цуглуулах
+      if (backState != null &&
+          currentState.selectedTab == backState.selectedTab) {
+        currentState.prevStates.addAll(backState.prevStates);
+        currentState.prevStates.add(backState);
+      } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
+        currentState.prevStates.clear();
+    }
+
+    beforeState = currentState;
     beforeEvent = event;
   }
 
@@ -91,7 +109,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   ///
   /// **dataForSelectedPackType** - сонгосон багцад харгалзах дата
   PackTabState updateServicePackTabState(PackTabType selectedPackType,
-      List<dynamic> dataForSelectedPackType, bool isReload) {
+      List<dynamic> dataForSelectedPackType) {
     var items;
     if (selectedPackType == PackTabType.UPGRADE)
       items = packRepository.getPacks();
@@ -109,8 +127,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
         selectedPackType,
         selectedPackType == PackTabType.ADDITIONAL_CHANNEL
             ? channels
-            : dataForSelectedPackType,
-        isReload);
+            : dataForSelectedPackType);
   }
 
   ///Багцын хугацааа&үнийн дүнгийн төрөл сонгох
@@ -135,6 +152,6 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   /// * [Pack] Багц
   void updatePackExtendTabState(
       PackTabType currentPackTabState, Pack selectedPack) {
-    PackTabState(currentPackTabState, selectedPack.packsForMonth, false);
+    PackTabState(currentPackTabState, selectedPack.packsForMonth);
   }
 }
