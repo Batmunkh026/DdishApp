@@ -20,4 +20,14 @@ class Constants{
     TabMenuItem("Нэмэлт сувгууд", Icons.arrow_drop_down, PackTabType.ADDITIONAL_CHANNEL),
     TabMenuItem("Ахиулах", Icons.arrow_drop_down, PackTabType.UPGRADE),
   ];
+
+  static const Map<dynamic, String> permissionStrings = {
+    PackTabType.EXTEND: "багцыг",
+    PackTabType.ADDITIONAL_CHANNEL: "нэмэлт сувгийг",
+    PackTabType.UPGRADE: "багцыг",
+  };
+
+  static String createPermissionContentStr(PackTabType packTab, contentToBuy, time, payment){
+    return "Та $contentToBuy ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
+  }
 }

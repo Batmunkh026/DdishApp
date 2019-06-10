@@ -87,7 +87,9 @@ class PackPageState extends State<PackPage> {
   }
 
   DropdownButton createPackPicker(PackState state) {
-    List<Pack> items = state.initialItems != null ? state.initialItems : [];
+//    TODO нэмэлт суваг сонгоход яах ёстойг тодруулах
+//    List<dynamic> items = state.initialItems != null ? state.initialItems : [];
+    List<dynamic> items = packBloc.packs;
 
     return DropdownButton(
       items: items
@@ -97,9 +99,15 @@ class PackPageState extends State<PackPage> {
                 child: Image.network(pack.image),
               )))
           .toList(),
-      value: state.selectedPack != null ? state.selectedPack : items.first,
+      //TODO Багц сунгах таб биш бол яах?
+      value: state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
+              state.selectedPack == null ||
+              !(state.selectedPack is Pack)
+          ? items.first
+          : state.selectedPack,
       onChanged: (value) {
-        packBloc.dispatch(PackTypeSelectorClicked(state.selectedTab, value));
+        if (state.selectedTab == PackTabType.EXTEND) //TODO сонгосон таб нь [НЭМЭЛТ СУВАГ || АХИУЛАХ] бол яах ёстой ??
+          packBloc.dispatch(PackTypeSelectorClicked(state.selectedTab, value));
       },
     );
   }
@@ -112,7 +120,8 @@ class PackPageState extends State<PackPage> {
 
   Widget buildContents() {
     var _state = packBloc.currentState;
-    if (_state is PackPaymentState) {//Багц сунгах төлбөр төлөлтийн үр дүн
+    if (_state is PackPaymentState) {
+      //Багц сунгах төлбөр төлөлтийн үр дүн
       ActionButton chargeAccountBtn =
           ActionButton(title: 'Цэнэглэх', onTap: () {});
       ActionButton closeDialog = ActionButton(title: 'Болих', onTap: () {});
@@ -123,12 +132,16 @@ class PackPageState extends State<PackPage> {
 //        content: Text(Constants.paymentStates[_state.paymentState].values),
         actions: [chargeAccountBtn, closeDialog],
       );
-
     } else if (_state is PackTabState || _state is PackSelectionState) {
-      Pack pack = _state.selectedPack;
-
-      var packPicker = PackGridPicker(packBloc, pack);
+      //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
+      var itemsForGrid = _state.selectedTab == PackTabType.EXTEND
+          ? _state.selectedPack
+          : _state.initialItems;
+      var packPicker = PackGridPicker(packBloc, itemsForGrid);
       return packPicker;
+    } else if (_state is AdditionalChannelState) {
+      //нэмэлт суваг сонгосон төлөв
+      return PackGridPicker(packBloc, _state.selectedChannel);
     } else if (_state is SelectedPackPreview) {
       return PackPaymentPreview(packBloc);
     } else if (_state is CustomPackSelector) {

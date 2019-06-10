@@ -10,7 +10,9 @@ import 'package:ddish/src/repositiories/pack_repository.dart';
 class PackBloc extends Bloc<PackEvent, PackState> {
   var packRepository = PackRepository();
 
-  var beforeEvent = null;
+  PackEvent beforeEvent = null;
+  PackState beforeState = null;
+  PackState backState = null;
 
   List<Channel> channels;
   List<Pack> packs;
@@ -38,43 +40,66 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   Stream<PackState> mapEventToState(PackEvent event) async* {
     if (event is PackServiceSelected) {
       ///сонгогдсон багцын үйлчилгээ нь __нэмэлт суваг__ бол channels үгүй бол packs ыг дамжуулах
-      updateServicePackTabState(
-          event.selectedPackType,
+
+      var dataForSelectedTab =
           event.selectedPackType == PackTabType.ADDITIONAL_CHANNEL
               ? channels
-              : packs);
+              : packs;
+      yield updateServicePackTabState(
+          event.selectedPackType, dataForSelectedTab);
     } else if (event is PackTypeSelectorClicked) {
       PackTypeSelectorClicked e = event;
 //      Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
       //TODO нэмэлт сувгуудад багцын төрөл хамаатай эсэхийг тодруулах
       yield PackSelectionState(event.selectedTab, packs, event.selectedPack);
     } else if (event is ChannelSelected) {
-      //TODO  тухайн сонгосон сувгийн багцуудыг API аас авах
-      List<dynamic> packsForChannel; //TODO channel ын төрлөөр шүүж авах
-      yield AdditionalChannelState(
-          event.selectedTab, event.selectedChannel, packsForChannel);
+      yield AdditionalChannelState(event.selectedTab, event.selectedChannel);
     } else if (event is PackItemSelected) {
       assert(event.selectedPack != null);
       //багц сонгогдсон
-      yield SelectedPackPreview(event.selectedTab, event.selectedPack, event.selectedItemForPack.monthToExtend);
+      if (event.selectedTab == PackTabType.ADDITIONAL_CHANNEL && event.selectedItemForPack == null)
+        yield AdditionalChannelState(event.selectedTab, event.selectedPack);
+      else
+        yield SelectedPackPreview(event.selectedTab, event.selectedPack,
+            event.selectedItemForPack.monthToExtend);
     } else if (event is CustomPackSelected) {
       if (event.selectedPack != null) {
         //багц сонгогдсон
         yield CustomPackSelector(event.selectedTab, event.selectedPack, packs);
       }
     } else if (event is PreviewSelectedPack) {
-      yield SelectedPackPreview(event.selectedTab, event.selectedPack, event.monthToExtend);
-    }
-    else if (event is ExtendSelectedPack) {
+      yield SelectedPackPreview(
+          event.selectedTab, event.selectedPack, event.monthToExtend);
+    } else if (event is ExtendSelectedPack) {
 //      //TODO төлбөр төлөлт хийх
       int monthToExtend = event.extendMonth; //сунгах сар
       Pack selectedPack = event.selectedPack;
 //      TODO төлбөр төлөлтийн үр дүнг дамжуулах
       PaymentState paymentState;
-      yield PackPaymentState(event.selectedTab, selectedPack, monthToExtend, paymentState);
+      yield PackPaymentState(
+          event.selectedTab, selectedPack, monthToExtend, paymentState);
+    } else if (event is BackToPrevState) {
+      yield currentState.prevStates.last;
     }
 
-      beforeEvent = event;
+    //
+    if (!(event is BackToPrevState)) {
+      backState = beforeState;
+
+      //ижил таб дотор шилжиж байвал өмнөх state ын түүхийг цуглуулах
+      if (backState != null &&
+          beforeState != null &&
+          currentState.selectedTab == backState.selectedTab &&
+          beforeState.selectedTab == currentState.selectedTab) {
+        if (backState.prevStates.isNotEmpty)
+          currentState.prevStates.addAll(backState.prevStates);
+        currentState.prevStates.add(backState);
+      } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
+        currentState.prevStates.clear();
+    }
+
+    beforeState = currentState;
+    beforeEvent = event;
   }
 
   /// Багц эсвэл нэмэлт суваг сонголт
@@ -82,20 +107,22 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   /// **selectedPackType** - сонгогдсон багцын төрөл **[Үлэмж, Илүү, Энгийн, ...]**
   ///
   /// **dataForSelectedPackType** - сонгосон багцад харгалзах дата
-  dynamic updateServicePackTabState(
-      PackTabType selectedPackType, dynamic dataForSelectedPackType) async* {
+  PackTabState updateServicePackTabState(
+      PackTabType selectedPackType, List<dynamic> dataForSelectedPackType) {
     var items;
     if (selectedPackType == PackTabType.UPGRADE)
       items = packRepository.getPacks();
     else if (selectedPackType == PackTabType.ADDITIONAL_CHANNEL)
       items = packRepository.getChannels();
+    else if (selectedPackType == PackTabType.EXTEND)
+      items = packRepository.getPacks();
     else
       throw UnsupportedError("Дэмжигдэхгүй төлөв байна! $selectedPackType");
 
 //      TODO api бэлэн болохоор comment ыг болиулах, demo data - г дамжуулж буй хэсгийг устгах
 //      items.then((value) => ServicePackTabState(event.selectedPackType, value));
 
-    yield PackTabState(
+    return PackTabState(
         selectedPackType,
         selectedPackType == PackTabType.ADDITIONAL_CHANNEL
             ? channels
