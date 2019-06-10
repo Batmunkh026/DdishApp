@@ -4,19 +4,17 @@ import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
 
 class MovieLibraryBloc extends Bloc<MovieLibraryEvent, MovieLibraryState> {
   @override
-  MovieLibraryState get initialState => MovieListInitial();
+  MovieLibraryState get initialState => MovieListLoading();
 
   @override
   Stream<MovieLibraryState> mapEventToState(MovieLibraryEvent event) async* {
-    if (event is MovieListInitial) {
+    if (event is MovieListLoading) {
       yield MovieListLoading();
       // TODO fetch movies
       yield MovieListLoaded();
     }
     if (event is MovieSelected) {
-      yield MovieDetailsLoading();
-      // TODO fetch movie details
-      yield MovieDetailsLoaded();
+      yield MovieDetailsOpened(movie: event.selectedMovie);
     }
     if (event is MovieRentClicked) {
       yield MovieIdConfirmProcessing();

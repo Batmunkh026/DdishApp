@@ -21,7 +21,6 @@ class MoviePageState extends State<MoviePage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        resizeToAvoidBottomPadding: false,
         appBar: TabBar(
           indicatorPadding: const EdgeInsets.symmetric(horizontal: 30.0),
           labelStyle: style.activeTabLabelStyle,
@@ -40,7 +39,7 @@ class MoviePageState extends State<MoviePage> {
         body: TabBarView(
           children: <Widget>[
             library,
-            Center(child: Text('кино чатр'),),
+            Center(child: Text('кино театр'),),
           ],
         ),
       ),

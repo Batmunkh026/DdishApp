@@ -80,7 +80,7 @@ class ServicePageState extends State<ServicePage> {
             bottom: createTabBar,
           ),
           body: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomPadding: true,
             backgroundColor: Colors.transparent,
             body: Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 70.0),

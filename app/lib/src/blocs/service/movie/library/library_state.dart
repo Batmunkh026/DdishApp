@@ -19,15 +19,10 @@ class MovieListLoaded extends MovieLibraryState {
   String toString() => 'movie list loaded.';
 }
 
-class MovieDetailsLoading extends MovieLibraryState {
-  @override
-  String toString() => 'movie details loading.';
-}
-
-class MovieDetailsLoaded extends MovieLibraryState {
+class MovieDetailsOpened extends MovieLibraryState {
   final Movie movie;
 
-  MovieDetailsLoaded({@required this.movie});
+  MovieDetailsOpened({@required this.movie});
   @override
   String toString() => 'movie details loaded.';
 }

@@ -1,5 +1,3 @@
-import 'package:ddish/src/models/tab_models.dart';
-import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ddish/src/models/movie.dart';
@@ -9,7 +7,8 @@ abstract class MovieLibraryEvent extends Equatable{
 }
 
 class MovieSelected extends MovieLibraryEvent {
-  MovieSelected();
+  final Movie selectedMovie;
+  MovieSelected({this.selectedMovie});
   @override
   String toString() => "movie list loading";
 }
