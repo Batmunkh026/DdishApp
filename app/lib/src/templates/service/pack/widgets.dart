@@ -127,7 +127,8 @@ class PackGridPicker extends StatelessWidget {
 
       children.addAll(itemsOfChannel);
 
-      children.add(Expanded(child: _createComponentForPick(null, selectedPack: pack)));
+      children.add(
+          Expanded(child: _createComponentForPick(null, selectedPack: pack)));
 
       Column packContainer = Column(children: children);
       _contentItems.add(packContainer);
@@ -136,8 +137,14 @@ class PackGridPicker extends StatelessWidget {
     return _contentItems;
   }
 
-  Widget _createComponentForPick(dynamic item, {Pack selectedPack, isChannelPicker = false}) {
-    List<Widget> children = [Text("Өөр сонголт хийх", textAlign: TextAlign.center,)];
+  Widget _createComponentForPick(dynamic item,
+      {Pack selectedPack, isChannelPicker = false}) {
+    List<Widget> children = [
+      Text(
+        "Өөр сонголт хийх",
+        textAlign: TextAlign.center,
+      )
+    ];
 
     if (item != null)
       children = isChannelPicker
@@ -165,11 +172,13 @@ class PackGridPicker extends StatelessWidget {
           onTap: () {
             var selected = selectedPack != null ? selectedPack : _pack;
             if (item == null) //өөр сонголт хийх бол
-              _bloc.dispatch(CustomPackSelected(_state.selectedTab, selected, 0));
+              _bloc.dispatch(
+                  CustomPackSelected(_state.selectedTab, selected, 0));
             else if (isChannelPicker)
               _bloc.dispatch(PackItemSelected(_state.selectedTab, item, null));
             else
-              _bloc.dispatch(PackItemSelected(_state.selectedTab, selected, item));
+              _bloc.dispatch(
+                  PackItemSelected(_state.selectedTab, selected, item));
           }),
     );
   }
@@ -206,7 +215,11 @@ class PackPaymentPreview extends StatelessWidget {
     var style =
         TextStyle(fontWeight: FontWeight.bold, color: Color(0xff071f49));
 
-    contentsForGrid.add(state.selectedTab == PackTabType.ADDITIONAL_CHANNEL || state.selectedTab == PackTabType.UPGRADE
+    var isUpgradeOrChannel =
+        state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
+            state.selectedTab == PackTabType.UPGRADE;
+
+    contentsForGrid.add(isUpgradeOrChannel
         ? Image.network(state.selectedPack.image)
         : Text(state.selectedPack.name, style: style));
     contentsForGrid.add(Text("${state.monthToExtend} сар", style: style));
@@ -283,6 +296,17 @@ class CustomPackChooser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String input;
+    var state = _bloc.currentState;
+    var isUpgradeOrChannel =
+        state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
+            state.selectedTab == PackTabType.UPGRADE;
+
+    var label = Text("Сунгах сарын тоогоо оруулна уу");
+    Widget backComponent = isUpgradeOrChannel
+        ? Column(
+            children: <Widget>[ Container(height: 60,child: Image.network(state.selectedPack.image),), label])
+        : label;
+
     return ListView(
       padding: EdgeInsets.all(20),
       children: [
@@ -291,10 +315,7 @@ class CustomPackChooser extends StatelessWidget {
             FlatButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Icon(Icons.arrow_back_ios),
-                  Text("Сунгах сарын тоогоо оруулна уу")
-                ],
+                children: <Widget>[Icon(Icons.arrow_back_ios), backComponent],
               ),
               //TODO back to previous page
               onPressed: () => _bloc
