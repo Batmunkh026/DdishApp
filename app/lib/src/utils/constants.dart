@@ -1,6 +1,9 @@
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/tab_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:ddish/src/templates/menu/menu.dart';
+import 'package:ddish/src/templates/order/order.dart';
+import 'package:ddish/src/templates/menu/user_information.dart';
 
 class Constants{
   static const List<TabMenuItem> mainMenuItems = const <TabMenuItem>[
@@ -30,4 +33,54 @@ class Constants{
   static String createPermissionContentStr(PackTabType packTab, contentToBuy, time, payment){
     return "Та $contentToBuy ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
   }
+  static List<Menu> menuItems = <Menu>[
+    Menu(
+      title: 'Хэрэглэгчийн мэдээлэл',
+      screen: UserInformationWidget(),
+      secure: true,
+    ),
+    Menu(
+      title: 'Антен тохируулах заавар',
+      screen: Container(),
+      children: <Menu>[
+        Menu(
+          title: 'Зурган заавар',
+          screen: Container(),
+        ),
+        Menu(
+          title: 'Видео заавар',
+          screen: Container(),
+        )
+      ],
+    ),
+    Menu(
+      title: 'Захиалга өгөх',
+      children: <Menu>[
+        Menu(
+            title: 'Антен тохируулах захиалга өгөх',
+            screen: Order('Антен тохируулах')),
+        Menu(
+            title: 'Шинэ хэрэглэгчийн захиалга өгөх',
+            screen: Order('Шинэ хэрэглэгч'))
+      ],
+    ),
+    Menu(
+      title: 'Мэдээ урамшуулал',
+      screen: Container(),
+    ),
+    Menu(
+      title: 'Салбарын мэдээлэл',
+      screen: Container(),
+    ),
+    Menu(
+      title: '7777-1434',
+    ),
+    Menu(
+        title: 'Гарах',
+        secure: true,
+        trailing: Icon(
+          Icons.exit_to_app,
+          color: Colors.white,
+        )),
+  ];
 }

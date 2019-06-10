@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:ddish/src/api/user_api_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class UserRepository {
   final userApiProvider = UserApiProvider();
@@ -37,6 +36,26 @@ class UserRepository {
     sharedPref.setBool('useFingerprint', useFingerprint);
 
     return client.credentials.accessToken;
+  }
+
+  Future<User> getUserInformation() async {
+    var response;
+//    try {
+//      response = await globals.client.get(globals.ddishEndpoint + '/getUserInfo');
+//    } on oauth2.AuthorizationException catch(e){
+//      throw e;
+//    }
+    try {
+      response = await http.post(globals.ddishEndpoint + '/getUserInfo',
+          body: {'cardNo': "8097603536532789"});
+      json.decode(response);
+    } on Exception catch (e) {
+      throw e;
+    }
+
+    var decoded = json.decode(response);
+    User userInformation = User.fromJson(decoded);
+    return userInformation;
   }
 
   Future<String> getUsername() async {
