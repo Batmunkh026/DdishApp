@@ -61,7 +61,6 @@ class ServicePageState extends State<ServicePage> {
 
   Widget createBuilder(BuildContext context, ServiceState state) {
     this.servicePackTabState = state;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       margin: EdgeInsets.fromLTRB(8, 10, 8, 4),
@@ -81,7 +80,7 @@ class ServicePageState extends State<ServicePage> {
             bottom: createTabBar,
           ),
           body: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomPadding: true,
             backgroundColor: Colors.transparent,
             body: Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 70.0),
