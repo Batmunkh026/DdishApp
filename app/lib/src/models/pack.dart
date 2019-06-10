@@ -6,6 +6,12 @@ import 'month_price.dart';
 
 ///Багц
 class Pack {
+
+  String name;
+  String image;
+  DateTime
+      expireTime;
+
   Pack(@required this.name, @required this.expireTime, @required this.image,
       @required this.packsForMonth)
       : assert(name != null),
@@ -18,11 +24,6 @@ class Pack {
         expireTime = packMap['expireTime'],
         image = packMap['image'],
         packsForMonth = (json.decode(packMap["packs"]) as List).map((v)=>MonthAndPriceToExtend.fromJson(v)).toList();
-
-  String name;
-  String image;
-  DateTime
-      expireTime;
 
 //  сарын багцууд
   List<MonthAndPriceToExtend> packsForMonth;
