@@ -57,12 +57,9 @@ class PackBloc extends Bloc<PackEvent, PackState> {
     } else if (event is PackItemSelected) {
       assert(event.selectedPack != null);
       //багц сонгогдсон
-      if (event.selectedTab == PackTabType.ADDITIONAL_CHANNEL) {
-        yield event.selectedItemForPack == null
-            ? AdditionalChannelState(event.selectedTab, event.selectedPack)
-            : SelectedPackPreview(event.selectedTab, event.selectedPack,
-                event.selectedItemForPack.monthToExtend);
-      } else
+      if (event.selectedTab == PackTabType.ADDITIONAL_CHANNEL && event.selectedItemForPack == null)
+        yield AdditionalChannelState(event.selectedTab, event.selectedPack);
+      else
         yield SelectedPackPreview(event.selectedTab, event.selectedPack,
             event.selectedItemForPack.monthToExtend);
     } else if (event is CustomPackSelected) {

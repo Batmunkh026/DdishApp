@@ -5,14 +5,18 @@ import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/month_price.dart';
 import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/tab_models.dart';
+import 'package:ddish/src/utils/constants.dart';
+import 'package:ddish/src/widgets/ui_mixins.dart';
+import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 
-class PackGridPicker extends StatelessWidget {
+class PackGridPicker extends StatelessWidget  with WidgetMixin {
   PackBloc _bloc;
   var _state;
   var _stateTab;
-
+  BuildContext _context;
   dynamic _pack;
 
   PackGridPicker(this._bloc, this._pack) : assert(_bloc != null) {
@@ -22,6 +26,7 @@ class PackGridPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     assert(_pack != null);
 
 //    TODO fix logic error [ хэрэв зөвхөн сувгуудын цуглуулга байвал isChannelPicker==TRUE болно, үгүй бол багц сунгахтай адил үйлдэл хийх]
@@ -176,9 +181,10 @@ class PackGridPicker extends StatelessWidget {
                   CustomPackSelected(_state.selectedTab, selected, 0));
             else if (isChannelPicker)
               _bloc.dispatch(PackItemSelected(_state.selectedTab, item, null));
-            else
-              _bloc.dispatch(
-                  PackItemSelected(_state.selectedTab, selected, item));
+            else {
+              var event = PackItemSelected(_state.selectedTab, selected, item);
+                openPermissionDialog(_bloc, _context, event, item);
+            }
           }),
     );
   }
@@ -200,7 +206,7 @@ class PackGridPicker extends StatelessWidget {
   }
 }
 
-class PackPaymentPreview extends StatelessWidget {
+class PackPaymentPreview extends StatelessWidget{
   final PackBloc _bloc;
   PackPaymentPreview(this._bloc);
 
@@ -286,7 +292,7 @@ class PackPaymentPreview extends StatelessWidget {
   }
 }
 
-class CustomPackChooser extends StatelessWidget {
+class CustomPackChooser extends StatelessWidget with WidgetMixin {
   PackBloc _bloc;
 
   CustomPackChooser(this._bloc);
@@ -303,8 +309,13 @@ class CustomPackChooser extends StatelessWidget {
 
     var label = Text("Сунгах сарын тоогоо оруулна уу");
     Widget backComponent = isUpgradeOrChannel
-        ? Column(
-            children: <Widget>[ Container(height: 60,child: Image.network(state.selectedPack.image),), label])
+        ? Column(children: <Widget>[
+            Container(
+              height: 60,
+              child: Image.network(state.selectedPack.image),
+            ),
+            label
+          ])
         : label;
 
     return ListView(
@@ -343,10 +354,14 @@ class CustomPackChooser extends StatelessWidget {
             ),
             SubmitButton(
                 text: "Сунгах",
-                onPressed: () => _bloc.dispatch(PreviewSelectedPack(
-                    _bloc.currentState.selectedTab,
-                    _bloc.currentState.selectedPack,
-                    toInt(input))),
+                onPressed: () {
+                  var time = _toInt(input);
+                  var event = PreviewSelectedPack(
+                      state.selectedTab, state.selectedPack, time);
+
+                  //TODO сарыг өөр дүнгээр оруулсан үед үнийг тооцох
+                  openPermissionDialog(_bloc, context, event, MonthAndPriceToExtend(time, 0));
+                },
                 verticalMargin: 0,
                 horizontalMargin: 0)
           ],
@@ -355,7 +370,7 @@ class CustomPackChooser extends StatelessWidget {
     );
   }
 
-  int toInt(String text) {
+  int _toInt(String text) {
     return text.isEmpty ? 0 : int.parse(text);
   }
 }
