@@ -206,7 +206,7 @@ class PackPaymentPreview extends StatelessWidget {
     var style =
         TextStyle(fontWeight: FontWeight.bold, color: Color(0xff071f49));
 
-    contentsForGrid.add(state.selectedTab == PackTabType.ADDITIONAL_CHANNEL
+    contentsForGrid.add(state.selectedTab == PackTabType.ADDITIONAL_CHANNEL || state.selectedTab == PackTabType.UPGRADE
         ? Image.network(state.selectedPack.image)
         : Text(state.selectedPack.name, style: style));
     contentsForGrid.add(Text("${state.monthToExtend} сар", style: style));
