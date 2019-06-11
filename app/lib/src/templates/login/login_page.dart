@@ -9,6 +9,7 @@ import 'package:ddish/src/blocs/authentication/authentication_state.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'login.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:local_auth/local_auth.dart';
 
 class LoginWidget extends StatefulWidget {
   @override
@@ -28,6 +29,7 @@ class LoginWidgetState extends State<LoginWidget> {
   bool prefsLoaded = false;
   Widget content;
   bool menuOpened = false;
+  bool canCheckBiometrics = false;
 
   @override
   void initState() {
@@ -72,6 +74,7 @@ class LoginWidgetState extends State<LoginWidget> {
                           loginBloc: loginBloc,
                           username: username,
                           useFingerprint: useFingerprint,
+                          canCheckBiometrics: canCheckBiometrics,
                         ))
                   : Container(),
             ),
@@ -114,9 +117,17 @@ class LoginWidgetState extends State<LoginWidget> {
   }
 
   readPreferences() async {
+    var localAuth = LocalAuthentication();
+    canCheckBiometrics = await localAuth.canCheckBiometrics;
+    if (canCheckBiometrics) {
+      List<BiometricType> availableBiometrics =
+          await localAuth.getAvailableBiometrics();
+      canCheckBiometrics =
+          availableBiometrics.contains(BiometricType.fingerprint);
+    }
     username = await userRepository.getUsername();
-    var value = await userRepository.useFingerprint();
-    useFingerprint = value != null ? value : false;
+    var fingerprintLogin = await userRepository.useFingerprint();
+    useFingerprint = fingerprintLogin != null ? fingerprintLogin : false;
     if (this.mounted) setState(() => prefsLoaded = true);
   }
 }
