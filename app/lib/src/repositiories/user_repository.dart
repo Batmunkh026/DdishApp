@@ -5,6 +5,7 @@ import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:ddish/src/models/user.dart';
 
 class UserRepository {
   final userApiProvider = UserApiProvider();
@@ -46,7 +47,7 @@ class UserRepository {
 //      throw e;
 //    }
     try {
-      response = await http.post(globals.ddishEndpoint + '/getUserInfo',
+      response = await http.post(globals.serverEndpoint + '/getUserInfo',
           body: {'cardNo': "8097603536532789"});
       json.decode(response);
     } on Exception catch (e) {
