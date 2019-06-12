@@ -96,7 +96,7 @@ class PackPageState extends State<PackPage> {
           .map((pack) => DropdownMenuItem<Pack>(
               value: pack,
               child: Container(
-                child: Image.network(pack.image),
+                child: Image.network(pack.productId),
               )))
           .toList(),
       //TODO Багц сунгах таб биш бол яах?

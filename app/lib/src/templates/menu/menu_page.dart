@@ -1,11 +1,12 @@
 import 'package:ddish/src/blocs/menu/menu_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:ddish/src/templates/order/order.dart';
+import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/header.dart';
+import 'menu.dart';
 
 class MenuPage extends StatefulWidget {
   var onBackButtonTap;
@@ -25,7 +26,7 @@ class MenuPageState extends State<MenuPage> {
   void initState() {
     authenticated = widget.onBackButtonTap == null;
     _menuBloc = MenuBloc();
-    menuItems = initMenu();
+    this.menuItems = Constants.menuItems;
     super.initState();
   }
 
@@ -132,74 +133,4 @@ class MenuPageState extends State<MenuPage> {
       ),
     );
   }
-
-  List initMenu() {
-    List<Menu> menuItems = <Menu>[
-      Menu(
-        title: 'Хэрэглэгчийн мэдээлэл',
-        screen: Container(),
-        secure: true,
-      ),
-      Menu(
-        title: 'Антен тохируулах заавар',
-        screen: Container(),
-        children: <Menu>[
-          Menu(
-            title: 'Зурган заавар',
-            screen: Container(),
-          ),
-          Menu(
-            title: 'Видео заавар',
-            screen: Container(),
-          )
-        ],
-      ),
-      Menu(
-        title: 'Захиалга өгөх',
-        children: <Menu>[
-          Menu(
-              title: 'Антен тохируулах захиалга өгөх',
-              screen: Order('Антен тохируулах')),
-          Menu(
-              title: 'Шинэ хэрэглэгчийн захиалга өгөх',
-              screen: Order('Шинэ хэрэглэгч'))
-        ],
-      ),
-      Menu(
-        title: 'Мэдээ урамшуулал',
-        screen: Container(),
-      ),
-      Menu(
-        title: 'Салбарын мэдээлэл',
-        screen: Container(),
-      ),
-      Menu(
-        title: '7777-1434',
-      ),
-      Menu(
-          title: 'Гарах',
-          secure: true,
-          trailing: Icon(
-            Icons.exit_to_app,
-            color: Colors.white,
-          )),
-    ];
-
-    return menuItems;
-  }
-}
-
-class Menu {
-  Menu(
-      {this.title,
-      this.screen,
-      this.children,
-      this.secure = false,
-      this.trailing});
-
-  String title;
-  Widget screen;
-  bool secure;
-  Widget trailing;
-  List<Menu> children = const <Menu>[];
 }

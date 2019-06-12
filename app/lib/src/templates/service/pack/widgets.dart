@@ -119,7 +119,7 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
       List<Widget> children = [];
 //    багцын лого бүхий component ыг эхлээд нэмэх, түүний араас тухайн багцад хамаар үнэ&хугацааны багцуудыг нэмэх
       children
-          .add(Flexible(child: Image.network(pack.image))); //channelPackImage
+          .add(Flexible(child: Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3MRKwxiDqhRXW7hIGX5tmoVvR9lWFzlSmEW8RetVhsAh9Ccaj'))); //channelPackImage
 
       List<Widget> itemsOfChannel = pack.packsForMonth
           .map((item) => Expanded(
@@ -153,7 +153,7 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
 
     if (item != null)
       children = isChannelPicker
-          ? [Flexible(child: Image.network(item.image))]
+          ? [Flexible(child: Image.network(item.productId))]
           : [Text("${item.monthToExtend} сар"), Text("₮${item.price}")];
 
     return Card(
@@ -195,7 +195,7 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Icon(Icons.arrow_back_ios),
-          Image.network(selectedChannel.image),
+          Image.network(selectedChannel.productId),
           Divider()
         ],
       ),
@@ -226,8 +226,8 @@ class PackPaymentPreview extends StatelessWidget{
             state.selectedTab == PackTabType.UPGRADE;
 
     contentsForGrid.add(isUpgradeOrChannel
-        ? Image.network(state.selectedPack.image)
-        : Text(state.selectedPack.name, style: style));
+        ? Image.network(state.selectedPack.productId)
+        : Text(state.selectedPack.productName, style: style));
     contentsForGrid.add(Text("${state.monthToExtend} сар", style: style));
 
 //      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
@@ -312,7 +312,7 @@ class CustomPackChooser extends StatelessWidget with WidgetMixin {
         ? Column(children: <Widget>[
             Container(
               height: 60,
-              child: Image.network(state.selectedPack.image),
+              child: Image.network(state.selectedPack.productId),
             ),
             label
           ])

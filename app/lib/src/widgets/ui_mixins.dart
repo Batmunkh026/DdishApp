@@ -16,7 +16,7 @@ mixin WidgetMixin {
     CustomDialog paymentResultDialog = CustomDialog(
       title: 'Анхааруулга',
       content: Text(Constants.createPermissionContentStr(
-          bloc.currentState.selectedTab, bloc.currentState.selectedPack.name, item.monthToExtend, item.price)),
+          bloc.currentState.selectedTab, bloc.currentState.selectedPack.productName, item.monthToExtend, item.price)),
       actions: [chargeAccountBtn, closeDialog],
     );
 //    paymentResultDialog.
