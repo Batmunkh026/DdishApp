@@ -1,11 +1,14 @@
 import 'package:ddish/src/api/user_api_provider.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:ddish/src/models/user.dart';
+import 'package:ddish/src/models/counter.dart';
+import 'package:ddish/src/models/pack.dart';
 
 class UserRepository {
   final userApiProvider = UserApiProvider();
@@ -40,21 +43,16 @@ class UserRepository {
   }
 
   Future<User> getUserInformation() async {
-    var response;
-//    try {
-//      response = await globals.client.get(globals.ddishEndpoint + '/getUserInfo');
-//    } on oauth2.AuthorizationException catch(e){
-//      throw e;
-//    }
+    Response response;
     try {
-      response = await http.post(globals.serverEndpoint + '/getUserInfo',
-          body: {'cardNo': "8097603536532789"});
-      json.decode(response);
+      response =
+          await globals.client.get(globals.serverEndpoint + '/getUserInfo');
     } on Exception catch (e) {
       throw e;
     }
 
-    var decoded = json.decode(response);
+    debugPrint(response.body);
+    var decoded = json.decode(response.body);
     User userInformation = User.fromJson(decoded);
     return userInformation;
   }

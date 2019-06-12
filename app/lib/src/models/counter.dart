@@ -1,14 +1,14 @@
 class Counter {
   final String counterName;
-  final int countId;
-  final int countBalance;
+  final String countId;
+  final String counterBalance;
   final String counterMeasureUnit;
-  final DateTime counterExpireDate;
+  final String counterExpireDate;
 
   Counter.fromJson(Map<String, dynamic> json)
       : counterName = json['counterName'],
         countId = json['countId'],
-        countBalance = json['countBalance'],
+        counterBalance = json['counterBalance'],
         counterMeasureUnit = json['counterMeasureUnit'],
-        counterExpireDate = DateTime.parse(json['counterExpireDate']);
+        counterExpireDate = json['counterExpireDate'];
 }
