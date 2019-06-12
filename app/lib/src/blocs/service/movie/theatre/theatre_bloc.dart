@@ -1,25 +1,29 @@
 import 'package:bloc/bloc.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
+import 'package:ddish/src/models/program.dart';
+import 'package:ddish/src/models/vod_channel.dart';
+import 'package:ddish/src/repositiories/vod_repository.dart';
 
 class MovieTheatreBloc extends Bloc<MovieTheatreEvent, MovieTheatreState> {
+  final VodRepository vodRepository;
+
+  MovieTheatreBloc({this.vodRepository});
+
   @override
-  MovieTheatreState get initialState => MovieListLoading();
+  MovieTheatreState get initialState => TheatreStateInitial();
 
   @override
   Stream<MovieTheatreState> mapEventToState(MovieTheatreEvent event) async* {
-    if (event is MovieListLoading) {
-      yield MovieListLoading();
-      // TODO fetch movies
-      yield MovieListLoaded();
+    if (event is MovieTheatreStarted) {
+      yield ChannelListLoading();
+      VodChannelList vodChannels = await vodRepository.fetchVodChannels();
+      yield ChannelListLoaded(channelList: vodChannels.vodChannels);
     }
-    if (event is MovieSelected) {
-      yield MovieDetailsOpened(movie: event.selectedMovie);
-    }
-    if (event is MovieRentClicked) {
-      yield MovieIdConfirmProcessing();
-      // TODO movieID confirm request
-      yield MovieIdProcessingFinished();
+    if(event is ChannelSelected) {
+      yield ProgramListLoading();
+      ProgramList programList = await vodRepository.fetchProgramList(event.channel);
+      yield ProgramListLoaded(programList: programList.programs);
     }
   }
 }

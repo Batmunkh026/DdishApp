@@ -1,46 +1,57 @@
-import 'package:ddish/src/models/movie.dart';
+import 'package:ddish/src/models/program.dart';
+import 'package:ddish/src/models/vod_channel.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 ///Багцын төлөв
 abstract class MovieTheatreState extends Equatable {}
 
-class MovieListLoading extends MovieTheatreState {
+class TheatreStateInitial extends MovieTheatreState {
+  TheatreStateInitial();
   @override
-  String toString() => 'movie list loading.';
+  String toString() => "theatre state initial.";
 }
 
-class MovieListLoaded extends MovieTheatreState {
-  final List<Movie> movies;
-
-  MovieListLoaded({@required this.movies});
-
+class ChannelListLoading extends MovieTheatreState {
+  ChannelListLoading();
   @override
-  String toString() => 'movie list loaded.';
+  String toString() => "channel list loading.";
 }
 
-class MovieDetailsOpened extends MovieTheatreState {
-  final Movie movie;
-
-  MovieDetailsOpened({@required this.movie});
+class ChannelListLoaded extends MovieTheatreState {
+  final List<VodChannel> channelList;
+  ChannelListLoaded({this.channelList});
   @override
-  String toString() => 'movie details loaded.';
+  String toString() => "channel list loaded.";
 }
 
-class MovieListInitial extends MovieTheatreState {
-  MovieListInitial();
+
+class ProgramListLoading extends MovieTheatreState {
   @override
-  String toString() => "movie list initial";
+  String toString() => 'program list loading.';
 }
 
-class MovieIdConfirmProcessing extends MovieTheatreState {
-  MovieIdConfirmProcessing();
+class ProgramListLoaded extends MovieTheatreState {
+  final List<Program> programList;
+
+  ProgramListLoaded({@required this.programList});
+
   @override
-  String toString() => "movie list initial";
+  String toString() => 'program list loaded.';
 }
 
-class MovieIdProcessingFinished extends MovieTheatreState {
-  MovieIdProcessingFinished();
+class ProgramDetailsLoading extends MovieTheatreState {
+
+  ProgramDetailsLoading();
   @override
-  String toString() => "movie list initial";
+  String toString() => 'program details loading.';
+}
+
+
+class ProgramDetailsOpened extends MovieTheatreState {
+  final Program movie;
+
+  ProgramDetailsOpened({@required this.movie});
+  @override
+  String toString() => 'program details loaded.';
 }
