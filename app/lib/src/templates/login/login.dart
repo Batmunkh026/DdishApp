@@ -17,6 +17,7 @@ class LoginView extends StatefulWidget {
   final AuthenticationBloc authenticationBloc;
   String username;
   bool useFingerprint;
+  bool canCheckBiometrics;
 
   LoginView({
     Key key,
@@ -24,6 +25,7 @@ class LoginView extends StatefulWidget {
     @required this.authenticationBloc,
     this.username,
     this.useFingerprint,
+    this.canCheckBiometrics,
   }) : super(key: key);
 
   @override
@@ -43,6 +45,7 @@ class LoginViewState extends State<LoginView> {
     _usernameController.text = widget.username;
     rememberUsername = widget.username != null;
     useFingerprint = widget.useFingerprint;
+    debugPrint(widget.canCheckBiometrics.toString());
     super.initState();
   }
 
@@ -115,11 +118,14 @@ class LoginViewState extends State<LoginView> {
                       style: style.switchHint,
                       onChanged: (value) => rememberUsername = value,
                     ),
-                    ToggleSwitch(
-                      value: useFingerprint,
-                      hint: "Цаашид хурууны хээгээр нэвтэрнэ",
-                      style: style.switchHint,
-                      onChanged: (value) => useFingerprint = value,
+                    Visibility(
+                      visible: widget.canCheckBiometrics,
+                      child: ToggleSwitch(
+                        value: useFingerprint,
+                        hint: "Цаашид хурууны хээгээр нэвтэрнэ",
+                        style: style.switchHint,
+                        onChanged: (value) => useFingerprint = value,
+                      ),
                     ),
                   ],
                 ),
