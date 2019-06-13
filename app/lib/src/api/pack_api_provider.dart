@@ -5,37 +5,45 @@ import 'package:ddish/src/models/pack.dart';
 import 'package:http/http.dart' as http;
 
 import 'base_api_provider.dart';
+import 'package:ddish/src/repositiories/globals.dart' as globals;
 
 class PackApiProvider extends BaseApiProvider {
+  final client = globals.client;
   ///Багцын мэдээлэл авах
   Future<List<Pack>> fetchPacks() async {
-//    var packApiUrl = super.BASE_URL + '/packs';
-//    final response = await http.get(packApiUrl);
-//
-//    if (responseReady(packApiUrl, response)) {
-//      var packsJsons = json.decode(response.body) as List;
-//
-//      List<Pack> packs =
-//          packsJsons.map((packsJson) => Pack.fromJson(packsJson)).toList();
-//
-//      return packs;
-//    }else
-      return Future.value(List.of([]));
+    try {
+      final _response = await client.read('${globals.serverEndpoint}/productList');
+      var _packReponse = json.decode(_response) as Map;
+
+      
+      if(_packReponse["isSuccess"]){
+        List<Pack> packs = _packReponse["productList"].map((pack) => Pack.fromJson(pack)).toList();
+        return packs;
+      }
+      //TODO success биш бол?
+      return [];
+    } on http.ClientException catch (e) {
+      // TODO catch SocketException
+      throw (e);
+    }
   }
 
   ///Нэмэлт сувгуудын мэдээлэл авах
   Future<List<Channel>> fetchChannels() async{
-//      var channelApiUrl = super.BASE_URL + '/channels';
-//      final response = await http.get(channelApiUrl);
-//
-//      if (responseReady(channelApiUrl, response)) {
-//        var channelsJsons = json.decode(response.body) as List;
-//
-//        List<Channel> channels =
-//        channelsJsons.map((channelJson) => Channel.fromJson(channelJson)).toList();
-//
-//        return channels;
-//      }else
-        return Future.value(List.of([]));
+    try {
+      final _response = await client.read('${globals.serverEndpoint}/channelList');
+      var _packReponse = json.decode(_response) as Map;
+
+
+      if(_packReponse["isSuccess"]){
+        List<Channel> channels = _packReponse["channelList"].map((channel) => Channel.fromJson(channel)).toList();
+        return channels;
+      }
+      //TODO success биш бол?
+      return [];
+    } on http.ClientException catch (e) {
+      // TODO catch SocketException
+      throw (e);
+    }
   }
 }

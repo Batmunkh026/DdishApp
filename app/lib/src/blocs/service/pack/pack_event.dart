@@ -15,7 +15,6 @@ abstract class PackEvent extends Equatable {
   PackTabType selectedTab;
   PackEvent(this.selectedTab, [List props = const []]) : super(props);
 }
-
 ///Сунгах багцуудыг төрлөөр нь сонгох үед дуудагдах эвент
 ///
 /// parameter:

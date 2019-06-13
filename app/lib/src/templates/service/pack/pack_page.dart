@@ -120,6 +120,10 @@ class PackPageState extends State<PackPage> {
 
   Widget buildContents() {
     var _state = packBloc.currentState;
+    if(_state is Loading)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
     if (_state is PackPaymentState) {
       //Багц сунгах төлбөр төлөлтийн үр дүн
       ActionButton chargeAccountBtn =
