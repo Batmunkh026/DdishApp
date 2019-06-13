@@ -71,7 +71,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
               : Column(
                   children: <Widget>[
                     Container(
-                      height: 100.0,
+                      height: 70.0,
                       child: Stack(
                         children: <Widget>[
                           Padding(
