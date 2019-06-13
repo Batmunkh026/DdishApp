@@ -19,3 +19,12 @@ class ChannelSelected extends MovieTheatreEvent {
   @override
   String toString() => "channel selected";
 }
+
+class DateChanged extends MovieTheatreEvent {
+  final DateTime date;
+  final VodChannel channel;
+  DateChanged({this.channel, this.date});
+  @override
+  String toString() => "channel selected";
+}
+

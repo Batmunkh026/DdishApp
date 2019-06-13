@@ -4,7 +4,7 @@ class DateUtil {
   static var formatter = new DateFormat("yyyy-MM-dd");
   static var timeFormatter = new DateFormat('HH:mm');
   static var parameterFormatter = new DateFormat("yyyyMMdd");
-  static var theatreDateFormatter = new DateFormat("yyyy|MM|dd");
+  static var theatreDateFormatter = new DateFormat("yyyy | MM | dd");
 
   static DateTime toDateTime(String dateTime) {
     return DateTime.parse(dateTime);
@@ -28,5 +28,13 @@ class DateUtil {
 
   static String formatTheatreDate(DateTime dateTime) {
     return theatreDateFormatter.format(dateTime);
+  }
+
+  static bool today(DateTime time) {
+    var now = DateTime.now().toUtc();
+    var d1 = DateTime.utc(now.year, now.month, now.day);
+    var d2 = DateTime.utc(
+        time.year, time.month, time.day); //you can add today's date here
+    return d2.compareTo(d1) == 0;
   }
 }

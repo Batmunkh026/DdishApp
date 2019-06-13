@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
@@ -11,7 +12,9 @@ import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:ddish/src/widgets/line.dart';
+import 'package:ddish/src/widgets/text_field.dart';
+import 'package:ddish/src/widgets/submit_button.dart';
 import 'style.dart' as style;
 
 class TheatreWidget extends StatefulWidget {
@@ -24,6 +27,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
   VodRepository vodRepository;
   MovieTheatreBloc _bloc;
   DateTime date = DateTime.now();
+  VodChannel selectedChannel;
 
   @override
   void initState() {
@@ -46,43 +50,92 @@ class TheatreWidgetState extends State<TheatreWidget> {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
-                    onPressed: () {
-                      debugPrint(date.difference(DateTime.now()).inDays.toString());
-                      if (date.difference(DateTime.now()).inDays != 0)
-                          onDateChange(false);
-                    },
-                  ),
-                  Text(DateUtil.formatTheatreDate(date)),
-                  IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
+          child: selectedChannel == null
+              ? Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: InputField(
+                        hasBorder: true,
+                        placeholder: 'Кино нэр оруулна уу',
+                        bottomMargin: 5.0,
+                        textController: movieIdFieldController,
                       ),
-                      onPressed: date.difference(DateTime.now().add(Duration(days: 7))).inDays == 0
-                          ? null
-                          : () => onDateChange(true)),
-//                  Flexible(
-//                    child: InputField(
-//                      hasBorder: true,
-//                      placeholder: 'Кино нэр оруулна уу',
-//                      bottomMargin: 5.0,
-//                      textController: movieIdFieldController,
-//                    ),
-//                  ),
-//                  SubmitButton(
-//                    text: 'Хайх',
-//                    padding: const EdgeInsets.all(5.0),
-//                    onPressed: () => onSearchTap(),
-//                  ),
-                ],
-              ),
-            ],
-          ),
+                    ),
+                    SubmitButton(
+                      text: 'Хайх',
+                      padding: const EdgeInsets.all(5.0),
+                      onPressed: () => onSearchTap(),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: <Widget>[
+                    Container(
+                      height: 100.0,
+                      child: Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 50.0),
+                            child: Center(
+                              child: CachedNetworkImage(
+                                imageUrl: selectedChannel.channelLogo,
+                                placeholder: (context, url) =>
+                                    Text(selectedChannel.productName),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: IconButton(
+                              iconSize: 40.0,
+                              color: Color(0xff3069b2),
+                              disabledColor: Color(0xffe8e8e8),
+                              icon: Icon(Icons.arrow_back_ios),
+                              onPressed: () => onReturnTap(),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        IconButton(
+                          color: Color(0xff3069b2),
+                          disabledColor: Color(0xffe8e8e8),
+                          icon: Icon(Icons.arrow_back_ios),
+                          onPressed: DateUtil.today(date)
+                              ? null
+                              : () => onDateChange(false),
+                        ),
+                        Text(
+                          DateUtil.formatTheatreDate(date) + (DateUtil.today(date) ? '  Өнөөдөр' : ''),
+                          style: style.dateStyle,
+                        ),
+                        IconButton(
+                            color: Color(0xff3069b2),
+                            disabledColor: Color(0xffe8e8e8),
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                            ),
+                            onPressed: date
+                                        .difference(DateTime.now()
+                                            .add(Duration(days: 7)))
+                                        .inDays ==
+                                    0
+                                ? null
+                                : () => onDateChange(true)),
+                      ],
+                    ),
+                    Line(
+                      color: Color(0xff3069b2),
+                      thickness: 1.0,
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                    )
+                  ],
+                ),
         ),
         BlocBuilder<MovieTheatreEvent, MovieTheatreState>(
           bloc: _bloc,
@@ -106,36 +159,19 @@ class TheatreWidgetState extends State<TheatreWidget> {
                 crossAxisCount: 2,
                 children: List.generate(channels.length, (index) {
                   return GestureDetector(
-                    child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              channels[index].channelLogo,
-                            ),
-                            fit: BoxFit.contain,
-                          ),
-                        )),
+                    child: CachedNetworkImage(
+                      imageUrl: channels[index].channelLogo,
+                      placeholder: (context, url) =>
+                          Text(channels[index].productName),
+                      fit: BoxFit.contain,
+                    ),
                     onTap: () => onVodChannelTap(channels[index]),
                   );
                 }),
               );
             }
             if (state is ProgramListLoading) {
-              return Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 50.0,
-                    width: 100.0,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                      ),
-                      child: Text(state.channel.productName),
-                    ),
-                  ),
-                  CircularProgressIndicator(),
-                ],
-              );
+              return CircularProgressIndicator();
             }
             if (state is ProgramListLoaded) {
               List<Program> programList = state.programList;
@@ -149,6 +185,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
                     return Container(
                       height: 100.0,
                       child: ListTile(
+                        // TODO poster placeholder
                           leading: Image.network(
                             program.posterUrl,
                             fit: BoxFit.contain,
@@ -227,6 +264,8 @@ class TheatreWidgetState extends State<TheatreWidget> {
     setState(() => date = increment
         ? date.add(Duration(days: 1))
         : date.subtract(Duration(days: 1)));
+    if (selectedChannel != null)
+      _bloc.dispatch(DateChanged(date: date, channel: selectedChannel));
   }
 
   onSearchTap() {
@@ -237,7 +276,14 @@ class TheatreWidgetState extends State<TheatreWidget> {
     // кино хайх
   }
 
+  onReturnTap() {
+    setState(() => selectedChannel = null);
+    _bloc.dispatch(MovieTheatreStarted());
+  }
+
   onVodChannelTap(VodChannel channel) {
+    setState(() => selectedChannel = channel);
+
     _bloc.dispatch(ChannelSelected(channel: channel));
   }
 }
