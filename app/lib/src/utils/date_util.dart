@@ -31,7 +31,7 @@ class DateUtil {
   }
 
   static bool today(DateTime time) {
-    var now = DateTime.now().toUtc();
+    var now = DateTime.now();
     var d1 = DateTime.utc(now.year, now.month, now.day);
     var d2 = DateTime.utc(
         time.year, time.month, time.day); //you can add today's date here

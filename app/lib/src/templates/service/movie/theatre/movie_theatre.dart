@@ -277,6 +277,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
   }
 
   onReturnTap() {
+    date = DateTime.now();
     setState(() => selectedChannel = null);
     _bloc.dispatch(MovieTheatreStarted());
   }
