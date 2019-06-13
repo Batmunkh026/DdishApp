@@ -1,17 +1,17 @@
-import 'package:ddish/src/models/program.dart';
-import 'package:ddish/src/models/vod_channel.dart';
-import 'package:ddish/src/repositiories/vod_repository.dart';
-import 'package:flutter/material.dart';
-import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'dart:ui';
+
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ddish/src/widgets/text_field.dart';
-import 'package:ddish/src/widgets/submit_button.dart';
+import 'package:ddish/src/models/program.dart';
+import 'package:ddish/src/models/vod_channel.dart';
+import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/dialog_action.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'style.dart' as style;
 
 class TheatreWidget extends StatefulWidget {
@@ -105,15 +105,18 @@ class TheatreWidgetState extends State<TheatreWidget> {
                 padding: const EdgeInsets.all(20.0),
                 crossAxisCount: 2,
                 children: List.generate(channels.length, (index) {
-                  return DecoratedBox(
-                      decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        channels[index].channelLogo,
-                      ),
-                      fit: BoxFit.contain,
-                    ),
-                  ));
+                  return GestureDetector(
+                    child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              channels[index].channelLogo,
+                            ),
+                            fit: BoxFit.contain,
+                          ),
+                        )),
+                    onTap: () => onVodChannelTap(channels[index]),
+                  );
                 }),
               );
             }
