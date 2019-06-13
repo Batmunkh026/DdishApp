@@ -3,6 +3,8 @@ import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/models/vod_channel_response.dart';
 import 'dart:convert';
 import 'package:ddish/src/models/program_response.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:ddish/src/utils/date_util.dart';
 
 import 'globals.dart' as globals;
 
@@ -13,9 +15,9 @@ class VodRepository {
   Future<VodChannelList> fetchVodChannels() async {
     var response;
     try {
-      response = client.get('${globals.serverEndpoint}/vodList');
+      response = await client.read('${globals.serverEndpoint}/vodList');
     } on Exception catch (e) {
-
+      debugPrint(e.toString());
     }
     var decoded = json.decode(response);
     VodChannelResponse channelResponse = VodChannelResponse.fromJson(decoded);
@@ -24,10 +26,12 @@ class VodRepository {
 
   }
 
-  Future<ProgramList> fetchProgramList(VodChannel channel) async {
+  Future<ProgramList> fetchProgramList(VodChannel channel, {DateTime date}) async {
     var response;
+    date = date == null ? DateTime.now() : date;
+    debugPrint(DateUtil.formatParamDate(date));
     try {
-      response = client.get('${globals.serverEndpoint}/vodList?productId=${channel.productId}');
+      response = await client.read('${globals.serverEndpoint}/vodList?productId=${channel.productId}&inDate=${DateUtil.formatParamDate(date)}');
     } on Exception catch (e) {
 
     }

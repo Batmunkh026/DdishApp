@@ -2,10 +2,12 @@ class VodChannel {
   final String productId;
   final String productName;
   final String channelNo;
+  final String channelLogo;
 
   VodChannel.fromJson(Map<String, dynamic> json)
       : productId = json['productId'],
         productName = json['productName'],
+        channelLogo = json['channelLogo'],
         channelNo = json['channelNo'];
 }
 

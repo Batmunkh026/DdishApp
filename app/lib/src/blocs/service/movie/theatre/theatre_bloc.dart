@@ -21,7 +21,7 @@ class MovieTheatreBloc extends Bloc<MovieTheatreEvent, MovieTheatreState> {
       yield ChannelListLoaded(channelList: vodChannels.vodChannels);
     }
     if(event is ChannelSelected) {
-      yield ProgramListLoading();
+      yield ProgramListLoading(channel: event.channel);
       ProgramList programList = await vodRepository.fetchProgramList(event.channel);
       yield ProgramListLoaded(programList: programList.programs);
     }

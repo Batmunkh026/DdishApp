@@ -27,6 +27,10 @@ class ChannelListLoaded extends MovieTheatreState {
 
 
 class ProgramListLoading extends MovieTheatreState {
+  final VodChannel channel;
+
+  ProgramListLoading({this.channel});
+
   @override
   String toString() => 'program list loading.';
 }
@@ -54,4 +58,10 @@ class ProgramDetailsOpened extends MovieTheatreState {
   ProgramDetailsOpened({@required this.movie});
   @override
   String toString() => 'program details loaded.';
+}
+
+class SearchProgramLoading extends MovieTheatreState {
+  SearchProgramLoading();
+  @override
+  String toString() => "search program loading.";
 }

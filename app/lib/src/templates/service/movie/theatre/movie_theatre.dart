@@ -1,15 +1,18 @@
+import 'package:ddish/src/models/program.dart';
+import 'package:ddish/src/models/vod_channel.dart';
+import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
 import 'dart:ui';
-import 'package:ddish/src/blocs/service/movie/library/library_bloc.dart';
-import 'package:ddish/src/blocs/service/movie/library/library_event.dart';
-import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
+import 'package:ddish/src/blocs/service/movie/theatre/theatre_bloc.dart';
+import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
+import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
-import 'package:ddish/src/widgets/movie/thumbnail.dart';
-import 'package:ddish/src/models/movie.dart';
+import 'package:ddish/src/utils/date_util.dart';
+import 'style.dart' as style;
 
 class TheatreWidget extends StatefulWidget {
   @override
@@ -18,11 +21,14 @@ class TheatreWidget extends StatefulWidget {
 
 class TheatreWidgetState extends State<TheatreWidget> {
   TextEditingController movieIdFieldController;
-  MovieLibraryBloc _bloc;
+  VodRepository vodRepository;
+  MovieTheatreBloc _bloc;
+  DateTime date = DateTime.now();
 
   @override
   void initState() {
-    _bloc = MovieLibraryBloc();
+    vodRepository = VodRepository();
+    _bloc = MovieTheatreBloc(vodRepository: vodRepository);
     movieIdFieldController = TextEditingController();
     super.initState();
   }
@@ -44,56 +50,127 @@ class TheatreWidgetState extends State<TheatreWidget> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Flexible(
-                    child: InputField(
-                      hasBorder: true,
-                      placeholder: 'Кино нэр оруулна уу',
-                      bottomMargin: 5.0,
-                      textController: movieIdFieldController,
-                    ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      debugPrint(date.difference(DateTime.now()).inDays.toString());
+                      if (date.difference(DateTime.now()).inDays != 0)
+                          onDateChange(false);
+                    },
                   ),
-                  SubmitButton(
-                    text: 'Хайх',
-                    padding: const EdgeInsets.all(5.0),
-                    onPressed: () => onSearchTap(),
-                  ),
+                  Text(DateUtil.formatTheatreDate(date)),
+                  IconButton(
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                      ),
+                      onPressed: date.difference(DateTime.now().add(Duration(days: 7))).inDays == 0
+                          ? null
+                          : () => onDateChange(true)),
+//                  Flexible(
+//                    child: InputField(
+//                      hasBorder: true,
+//                      placeholder: 'Кино нэр оруулна уу',
+//                      bottomMargin: 5.0,
+//                      textController: movieIdFieldController,
+//                    ),
+//                  ),
+//                  SubmitButton(
+//                    text: 'Хайх',
+//                    padding: const EdgeInsets.all(5.0),
+//                    onPressed: () => onSearchTap(),
+//                  ),
                 ],
               ),
             ],
           ),
         ),
-        BlocBuilder<MovieLibraryEvent, MovieLibraryState>(
+        BlocBuilder<MovieTheatreEvent, MovieTheatreState>(
           bloc: _bloc,
-          builder: (BuildContext context, MovieLibraryState state) {
-            if (state is MovieListLoading) {
+          builder: (BuildContext context, MovieTheatreState state) {
+            if (state is TheatreStateInitial) {
+              _bloc.dispatch(MovieTheatreStarted());
+              return CircularProgressIndicator();
+            }
+            if (state is ChannelListLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
-            if (state is MovieListLoaded) {
-              List movies = state.movies;
+            if (state is ChannelListLoaded) {
+              List<VodChannel> channels = state.channelList;
               return GridView.count(
-                crossAxisCount: 3,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                crossAxisSpacing: 100.0,
+                padding: const EdgeInsets.all(20.0),
+                crossAxisCount: 2,
+                children: List.generate(channels.length, (index) {
+                  return DecoratedBox(
+                      decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        channels[index].channelLogo,
+                      ),
+                      fit: BoxFit.contain,
+                    ),
+                  ));
+                }),
+              );
+            }
+            if (state is ProgramListLoading) {
+              return Column(
                 children: <Widget>[
-                  ListView.builder(
-                    itemCount: movies.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return MovieThumbnail(movie: movies[index], onTap: _onMovieThumbnailTap(movies[index]),);
-                    },
+                  SizedBox(
+                    height: 50.0,
+                    width: 100.0,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                      ),
+                      child: Text(state.channel.productName),
+                    ),
                   ),
+                  CircularProgressIndicator(),
                 ],
               );
             }
-            if(state is MovieIdConfirmProcessing) {
-              return CircularProgressIndicator();
+            if (state is ProgramListLoaded) {
+              List<Program> programList = state.programList;
+              return Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: programList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Program program = programList[index];
+                    return Container(
+                      height: 100.0,
+                      child: ListTile(
+                          leading: Image.network(
+                            program.posterUrl,
+                            fit: BoxFit.contain,
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(program.contentNameMon,
+                                  style: style.programTitleStyle),
+                              Visibility(
+                                visible: program.contentGenres != null &&
+                                    program.contentGenres.isNotEmpty,
+                                child: Text(program.contentGenres,
+                                    style: style.programGenresStyle),
+                              ),
+                              Text(DateUtil.formatStringTime(program.beginDate),
+                                  style: style.programGenresStyle),
+                            ],
+                          )),
+                    );
+                  },
+                ),
+              );
             }
-            if(state is MovieIdProcessingFinished) {
-              onRentButtonTap();
-            }
-            if(state is MovieDetailsOpened) {
-              // TODO pop movie details dialog
-              return Container();
-            }
+            return Container();
           },
         ),
       ],
@@ -143,8 +220,10 @@ class TheatreWidgetState extends State<TheatreWidget> {
         });
   }
 
-  _onMovieThumbnailTap(Movie tappedMovie) {
-    _bloc.dispatch(MovieSelected(selectedMovie: tappedMovie));
+  onDateChange(bool increment) {
+    setState(() => date = increment
+        ? date.add(Duration(days: 1))
+        : date.subtract(Duration(days: 1)));
   }
 
   onSearchTap() {
@@ -153,5 +232,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
 
   onRentAgreeTap() {
     // кино хайх
+  }
+
+  onVodChannelTap(VodChannel channel) {
+    _bloc.dispatch(ChannelSelected(channel: channel));
   }
 }
