@@ -1,6 +1,7 @@
 import 'package:ddish/src/templates/service/movie/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ddish/src/templates/service/movie/theatre/movie_theatre.dart';
 import 'style.dart' as style;
 
 class MoviePage extends StatefulWidget {
@@ -10,10 +11,12 @@ class MoviePage extends StatefulWidget {
 
 class MoviePageState extends State<MoviePage> {
   Library library;
+  TheatreWidget threatre;
 
   @override
   void initState() {
     library = Library();
+    threatre = TheatreWidget();
     super.initState();
   }
   @override
@@ -39,7 +42,7 @@ class MoviePageState extends State<MoviePage> {
         body: TabBarView(
           children: <Widget>[
             library,
-            Center(child: Text('кино театр'),),
+            threatre,
           ],
         ),
       ),
