@@ -1,5 +1,6 @@
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/tab_menu.dart';
+import 'package:ddish/src/templates/menu/component/branch_location.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/templates/menu/menu.dart';
 import 'package:ddish/src/templates/order/order.dart';
@@ -70,7 +71,7 @@ class Constants{
     ),
     Menu(
       title: 'Салбарын мэдээлэл',
-      screen: Container(),
+      screen: BranchLocationView(),
     ),
     Menu(
       title: '7777-1434',
