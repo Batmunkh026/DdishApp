@@ -1,22 +1,30 @@
+import 'package:ddish/src/models/result.dart';
+
 class Movie {
-  String title;
-  DateTime startDateTime;
-  List genres;
-  String overview;
-  int rental;
-  String coverMiniUrl;
-  String coverUrl;
-  List imageUrls;
-  String trailerUrl;
+  final Result result;
+  final String contentId;
+  final String contentNameMon;
+  final String contentNameEng;
+  final String contentPrice;
+  final String contentDescr;
+  final String contentYear;
+  final String contentGenres;
+  final String directors;
+  final String actors;
+  final String trailerUrl;
+  final String posterUrl;
 
   Movie.fromJson(Map<String, dynamic> json)
-      : title = json['title'],
-        startDateTime = DateTime.parse(json['startDateTime']),
-        genres = json['genres'],
-        overview = json['overview'],
-        rental = json['rental'],
-        coverMiniUrl = json['coverMiniUrl'],
-        coverUrl = json['coverUrl'],
-        imageUrls = json['imageUrls'],
-        trailerUrl = json['trailerUrl'];
+      : result = Result.fromJson(json),
+        contentId = json['contentId'],
+        contentNameMon = json['contentNameMon'],
+        contentNameEng = json['contentNameEng'],
+        contentPrice = json['contentPrice'],
+        contentDescr = json['contentDescr'],
+        contentYear = json['contentYear'],
+        contentGenres = json['contentGenres'],
+        directors = json['directors'],
+        actors = json['actors'],
+        trailerUrl = json['trailerUrl'],
+        posterUrl = json['posterUrl'];
 }

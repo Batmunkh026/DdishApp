@@ -1,3 +1,4 @@
+import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:equatable/equatable.dart';
@@ -45,17 +46,16 @@ class ProgramListLoaded extends MovieTheatreState {
 }
 
 class ProgramDetailsLoading extends MovieTheatreState {
-
   ProgramDetailsLoading();
   @override
   String toString() => 'program details loading.';
 }
 
 
-class ProgramDetailsOpened extends MovieTheatreState {
-  final Program movie;
+class ProgramDetailsLoaded extends MovieTheatreState {
+  final Movie content;
 
-  ProgramDetailsOpened({@required this.movie});
+  ProgramDetailsLoaded({@required this.content});
   @override
   String toString() => 'program details loaded.';
 }

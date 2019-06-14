@@ -5,6 +5,8 @@ import 'package:ddish/src/models/program_response.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/models/vod_channel_response.dart';
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:ddish/src/models/movie.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'globals.dart' as globals;
 
@@ -40,5 +42,17 @@ class VodRepository {
     ProgramResponse channelResponse = ProgramResponse.fromJson(decoded);
     // TODO handle isSuccess = false
     return channelResponse.programList;
+  }
+
+  Future<Movie> fetchContentDetails(Program program) async {
+    var response;
+    try {
+      response = await globals.client.read('${globals.serverEndpoint}/vodList?contentId=${program.contentId}');
+    } on Exception catch(e) {
+      throw(e);
+    }
+
+    var decoded = json.decode(response);
+    return Movie.fromJson(decoded);
   }
 }

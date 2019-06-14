@@ -19,7 +19,7 @@ class MovieThumbnail extends StatelessWidget {
       child: SizedBox.expand(
         child: FittedBox(
           fit: BoxFit.contain,
-          child: Image.network(movie.coverMiniUrl),
+          child: Image.network(movie.posterUrl),
         ),
       ),
     );
