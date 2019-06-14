@@ -3,16 +3,13 @@ import 'dart:ui';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
-import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/utils/date_util.dart';
-import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
-import 'package:ddish/src/widgets/movie/detail_button.dart';
+import 'package:ddish/src/widgets/movie/description/program_description.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:flutter/material.dart';
@@ -216,72 +213,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
               return CircularProgressIndicator();
             }
             if (state is ProgramDetailsLoaded) {
-              Movie content = state.content;
-              return Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: SizedBox(
-                          height: 150.0,
-                          child: Image.network(
-                            state.content.posterUrl,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              child: Text(content.contentNameMon,
-                                  style: style.programTitleStyle),
-                            ),
-                            Visibility(
-                              visible: content.contentGenres != null &&
-                                  content.contentGenres.isNotEmpty,
-                              child: Text(content.contentGenres,
-                                  style: style.programGenresStyle),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5.0),
-                              child: Text(
-                                  DateUtil.formatStringTime(
-                                      selectedProgram.beginDate),
-                                  style: style.programStartTimeStyle),
-                            ),
-                            Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Text('${content.contentPrice} ₮',
-                                style: style.priceStyle),),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        DetailButton(text: 'Тайлбар', onTap: () => print('aa'),),
-                        DetailButton(text: 'Видео', onTap: () => print('aa'),),
-                        DetailButton(text: 'Зураг', onTap: () => print('aa'),),
-                      ],
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  ),
-                  SubmitButton(
-                    text: 'Түрээслэх',
-                    onPressed: DateUtil.toDateTime(selectedProgram.beginDate)
-                            .isBefore(DateTime.now())
-                        ? null
-                        : () => onRentAgreeTap(),
-                    horizontalMargin: 50.0,
-                  )
-                ],
+              return ProgramDescription(
+                program: state.content,
+                beginDate: selectedProgram.beginDate,
               );
             }
             return Container();
@@ -289,49 +223,6 @@ class TheatreWidgetState extends State<TheatreWidget> {
         ),
       ],
     );
-  }
-
-  onRentButtonTap() {
-    List<Widget> actions = new List();
-    ActionButton rentMovie = ActionButton(
-      title: 'Түрээслэх',
-      onTap: () => onRentAgreeTap(),
-    );
-    ActionButton closeDialog = ActionButton(
-      title: 'Болих',
-      onTap: () => Navigator.pop(context),
-    );
-    actions.add(rentMovie);
-    actions.add(closeDialog);
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(
-              important: true,
-              title: 'Санамж',
-              content: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: TextStyle(
-                      color: const Color(0xffe4f0ff),
-                      fontFamily: "Montserrat",
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14.0),
-                  children: <TextSpan>[
-                    TextSpan(text: 'Та Кино сангаас '),
-                    TextSpan(
-                        text: movieIdFieldController.text,
-                        style: TextStyle(fontWeight: FontWeight.w600)),
-                    TextSpan(text: ' киног түрээслэх гэж байна. '),
-                  ],
-                ),
-              ),
-              actions: actions,
-            ),
-          );
-        });
   }
 
   onDateChange(bool increment) {
@@ -343,10 +234,6 @@ class TheatreWidgetState extends State<TheatreWidget> {
   }
 
   onSearchTap() {
-    // кино хайх
-  }
-
-  onRentAgreeTap() {
     // кино хайх
   }
 

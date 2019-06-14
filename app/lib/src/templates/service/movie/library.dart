@@ -119,7 +119,14 @@ class LibraryState extends State<Library> {
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
             child: CustomDialog(
               important: true,
-              title: 'Санамж',
+              title: Text('Санамж',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: const Color(0xfffcfdfe),
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "Montserrat",
+                      fontStyle: FontStyle.normal,
+                      fontSize: 15.0)),
               content: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(

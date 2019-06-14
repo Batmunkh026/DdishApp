@@ -158,7 +158,14 @@ class LoginViewState extends State<LoginView> {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
             child: CustomDialog(
-              title: 'Нууц кодоо мартсан уу?',
+              title: Text('Санамж',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: const Color(0xfffcfdfe),
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "Montserrat",
+                      fontStyle: FontStyle.normal,
+                      fontSize: 15.0)),
               content: style.forgotPasswordHint,
               actions: actions,
             ),

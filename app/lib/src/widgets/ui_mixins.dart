@@ -14,7 +14,14 @@ mixin WidgetMixin {
         ActionButton(title: 'Үгүй', onTap: () => Navigator.pop(context));
 
     CustomDialog paymentResultDialog = CustomDialog(
-      title: 'Анхааруулга',
+      title: Text('Анхааруулга',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: const Color(0xfffcfdfe),
+              fontWeight: FontWeight.w600,
+              fontFamily: "Montserrat",
+              fontStyle: FontStyle.normal,
+              fontSize: 15.0)),
       content: Text(Constants.createPermissionContentStr(
           bloc.currentState.selectedTab, bloc.currentState.selectedPack.productName, item.monthToExtend, item.price)),
       actions: [chargeAccountBtn, closeDialog],

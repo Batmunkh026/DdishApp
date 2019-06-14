@@ -1,14 +1,12 @@
 import 'package:ddish/src/blocs/service/pack/pack_bloc.dart';
 import 'package:ddish/src/blocs/service/pack/pack_event.dart';
 import 'package:ddish/src/blocs/service/pack/pack_state.dart';
-import 'package:ddish/src/models/month_price.dart';
 import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/templates/service/pack/widgets.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
-import 'package:ddish/src/widgets/pack_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -127,7 +125,14 @@ class PackPageState extends State<PackPage> {
       ActionButton closeDialog = ActionButton(title: 'Болих', onTap: () {});
 
       var paymentResultDialog = CustomDialog(
-        title: 'Анхааруулга',
+        title: Text('Анхааруулга',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: const Color(0xfffcfdfe),
+                fontWeight: FontWeight.w600,
+                fontFamily: "Montserrat",
+                fontStyle: FontStyle.normal,
+                fontSize: 15.0)),
 //        TODO мэдэгдлийг хаа нэгтээ хадгалаад авч харуулах. хаана ???
 //        content: Text(Constants.paymentStates[_state.paymentState].values),
         actions: [chargeAccountBtn, closeDialog],
