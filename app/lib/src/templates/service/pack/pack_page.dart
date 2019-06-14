@@ -1,7 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/service/pack/pack_bloc.dart';
 import 'package:ddish/src/blocs/service/pack/pack_event.dart';
 import 'package:ddish/src/blocs/service/pack/pack_state.dart';
-import 'package:ddish/src/models/month_price.dart';
 import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/templates/service/pack/widgets.dart';
@@ -59,20 +59,25 @@ class PackPageState extends State<PackPage> {
 
     var packContentContainer = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Text("Идэвхтэй багц", style: fontStyle),
-                new Text("Дуусах хугацаа: ", style: fontStyle),
-              ],
-            ),
-            //TODO хэрэглэгчийн багцын дуусах хугацааг харуулах
-            new Text(" 09.30.2019", style: fontStyle),
-          ],
+        Container(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  new Text("Идэвхтэй багц", style: fontStyle),
+                  new Text("Дуусах хугацаа: ", style: fontStyle),
+                ],
+              ),
+              //TODO хэрэглэгчийн багцын дуусах хугацааг харуулах
+              new Text(" 09.30.2019", style: fontStyle),
+            ],
+          ),
         ),
       ],
     );
@@ -83,32 +88,55 @@ class PackPageState extends State<PackPage> {
         state is PackSelectionState)
       packContentContainer.children.add(createPackPicker(state));
 
-    return packContentContainer;
+    return Container(
+      padding: EdgeInsets.only(bottom: 5, left: 5, right: 5),
+      child: packContentContainer,
+    );
   }
 
-  DropdownButton createPackPicker(PackState state) {
+  Widget createPackPicker(PackState state) {
 //    TODO нэмэлт суваг сонгоход яах ёстойг тодруулах
 //    List<dynamic> items = state.initialItems != null ? state.initialItems : [];
     List<dynamic> items = packBloc.packs;
 
-    return DropdownButton(
-      items: items
-          .map((pack) => DropdownMenuItem<Pack>(
-              value: pack,
-              child: Container(
-                child: Image.network(pack.productId),
-              )))
-          .toList(),
-      //TODO Багц сунгах таб биш бол яах?
-      value: state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
-              state.selectedPack == null ||
-              !(state.selectedPack is Pack)
-          ? items.first
-          : state.selectedPack,
-      onChanged: (value) {
-        if (state.selectedTab == PackTabType.EXTEND) //TODO сонгосон таб нь [НЭМЭЛТ СУВАГ || АХИУЛАХ] бол яах ёстой ??
-          packBloc.dispatch(PackTypeSelectorClicked(state.selectedTab, value));
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        DropdownButton(
+          iconSize: 0,
+          isDense: true,
+          underline: Container(),
+          items: items
+              .map((pack) => DropdownMenuItem<Pack>(
+                  value: pack,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.23,
+                    child: CachedNetworkImage(
+                      imageUrl: pack.image,
+                      placeholder: (context, url) => Text(pack.name),
+                      fit: BoxFit.contain,
+                    ),
+                  )))
+              .toList(),
+          //TODO Багц сунгах таб биш бол яах?
+          value: state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
+                  state.selectedPack == null ||
+                  !(state.selectedPack is Pack)
+              ? items.first
+              : state.selectedPack,
+          onChanged: (value) {
+            if (state.selectedTab ==
+                PackTabType
+                    .EXTEND) //TODO сонгосон таб нь [НЭМЭЛТ СУВАГ || АХИУЛАХ] бол яах ёстой ??
+              packBloc
+                  .dispatch(PackTypeSelectorClicked(state.selectedTab, value));
+          },
+        ),
+        Icon(
+          Icons.arrow_drop_down,
+          color: Color.fromRGBO(48, 105, 178, 1),
+        )
+      ],
     );
   }
 
@@ -120,7 +148,7 @@ class PackPageState extends State<PackPage> {
 
   Widget buildContents() {
     var _state = packBloc.currentState;
-    if(_state is Loading)
+    if (_state is Loading)
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -164,9 +192,10 @@ class PackPageState extends State<PackPage> {
       );
 
     return AppBar(
+      automaticallyImplyLeading: false,
       title: buildAppBarHeader(context, _state),
-      backgroundColor: Colors.white,
       bottom: createTabBar,
+      backgroundColor: Colors.white,
     );
   }
 

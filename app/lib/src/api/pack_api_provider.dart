@@ -16,10 +16,9 @@ class PackApiProvider extends BaseApiProvider {
       var _packReponse = json.decode(_response) as Map;
 
       
-      if(_packReponse["isSuccess"]){
-        List<Pack> packs = _packReponse["productList"].map((pack) => Pack.fromJson(pack)).toList();
-        return packs;
-      }
+      if(_packReponse["isSuccess"])
+        return List<Pack>.from(_packReponse["productList"].map((pack) => Pack.fromJson(pack)));
+
       //TODO success биш бол?
       return [];
     } on http.ClientException catch (e) {

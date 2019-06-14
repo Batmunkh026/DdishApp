@@ -1,12 +1,9 @@
 import 'dart:collection';
 
 import 'package:ddish/src/models/channel.dart';
-import 'package:ddish/src/models/month_price.dart';
 import 'package:ddish/src/models/pack.dart';
-import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:flutter/foundation.dart';
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 import 'pack_state.dart';
@@ -50,12 +47,12 @@ class ChannelSelected extends PackEvent {
 //  сонгогдсон элемент нь null байвал <өөр сонголт хийх> оролдлого гэж ойлгох
 class PackItemSelected extends PackEvent {
   var selectedPack;
-  MonthAndPriceToExtend selectedItemForPack;
+  int monthToExtend;
 
   PackItemSelected(
-      PackTabType selectedPackType, this.selectedPack, this.selectedItemForPack)
+      PackTabType selectedPackType, this.selectedPack, this.monthToExtend)
       : super(selectedPackType,
-            [selectedPackType, selectedItemForPack, selectedPack]);
+            [selectedPackType, monthToExtend, selectedPack]);
 }
 
 ///Өөр дүн оруулах

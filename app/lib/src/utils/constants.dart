@@ -31,7 +31,9 @@ class Constants{
     PackTabType.UPGRADE: "багцыг",
   };
 
-  static String createPermissionContentStr(PackTabType packTab, contentToBuy, time, payment){
+  static const List<int> extendableMonths = [1,2,3,6,12];
+
+  static String createPermissionContentStr(PackTabType packTab, contentToBuy, int time, payment){
     return "Та $contentToBuy ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
   }
   static List<Menu> menuItems = <Menu>[
