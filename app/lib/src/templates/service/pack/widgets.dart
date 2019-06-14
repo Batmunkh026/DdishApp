@@ -118,16 +118,18 @@ class PackGridPicker extends StatelessWidget with WidgetMixin {
       List<Widget> children = [];
 //    багцын лого бүхий component ыг эхлээд нэмэх, түүний араас тухайн багцад хамаар үнэ&хугацааны багцуудыг нэмэх
       children.add(Flexible(
-          child: Image.network(
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3MRKwxiDqhRXW7hIGX5tmoVvR9lWFzlSmEW8RetVhsAh9Ccaj'))); //channelPackImage
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: CachedNetworkImage(
+            imageUrl: pack.image,
+            placeholder: (context, url) => Text(pack.name),
+            fit: BoxFit.contain,
+          ),
+        ),
+      )); //channelPackImage
 
       List<Widget> itemsOfChannel = Constants.extendableMonths
-          .map((month) => Expanded(
-//                child: Padding(
-//                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                child: _createComponentForPick(month, pack),
-//                ),
-              ))
+          .map((month) => Expanded(child: _createComponentForPick(month, pack)))
           .toList();
 
       children.addAll(itemsOfChannel);
@@ -225,11 +227,13 @@ class PackPaymentPreview extends StatelessWidget {
             state.selectedTab == PackTabType.UPGRADE;
 
     contentsForGrid.add(isUpgradeOrChannel
-        ? CachedNetworkImage(
-            imageUrl: state.selectedPack.image,
-            placeholder: (context, url) => Text(state.selectedPack.name),
-            fit: BoxFit.contain,
-          )
+        ? Padding(
+            padding: EdgeInsets.only(right: 40, bottom: 15),
+            child: CachedNetworkImage(
+              imageUrl: state.selectedPack.image,
+              placeholder: (context, url) => Text(state.selectedPack.name),
+              fit: BoxFit.contain,
+            ))
         : Text(state.selectedPack.name, style: style));
     contentsForGrid.add(Text("${state.monthToExtend} сар", style: style));
 
@@ -317,12 +321,19 @@ class CustomPackChooserState extends State<CustomPackChooser> with WidgetMixin {
         state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
             state.selectedTab == PackTabType.UPGRADE;
 
-    var label = Text("Сунгах сарын тоогоо оруулна уу");
+    var label = Text("Сунгах сарын тоогоо оруулна уу", style: TextStyle(fontSize: 12),);
     Widget backComponent = isUpgradeOrChannel
         ? Column(children: <Widget>[
             Container(
               height: 60,
-              child: Image.network(state.selectedPack.productId),
+              child: Padding(
+                padding: EdgeInsets.only(right: 40, left: 40, top: 20),
+                child: CachedNetworkImage(
+                  imageUrl: state.selectedPack.image,
+                  placeholder: (context, url) => Text(state.selectedPack.name),
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             label
           ])
@@ -335,7 +346,13 @@ class CustomPackChooserState extends State<CustomPackChooser> with WidgetMixin {
             FlatButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[Icon(Icons.arrow_back_ios), backComponent],
+                children: <Widget>[
+                  Icon(Icons.arrow_back_ios),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.55,
+                    child: backComponent,
+                  )
+                ],
               ),
               //TODO back to previous page
               onPressed: () => widget._bloc.dispatch(
@@ -377,8 +394,8 @@ class CustomPackChooserState extends State<CustomPackChooser> with WidgetMixin {
 
   toExtend(state) {
     var time = _toInt(customMonthValue);
-    var event = PreviewSelectedPack(
-        state.selectedTab, state.selectedPack, time);
+    var event =
+        PreviewSelectedPack(state.selectedTab, state.selectedPack, time);
 
     //TODO сарыг өөр дүнгээр оруулсан үед үнийг тооцох
     openPermissionDialog(widget._bloc, context, event, time);
