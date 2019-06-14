@@ -6,11 +6,12 @@ class Menu {
         this.screen,
         this.children,
         this.secure = false,
-        this.trailing});
+        this.trailing, this.event});
 
   String title;
   Widget screen;
   bool secure;
   Widget trailing;
   List<Menu> children = const <Menu>[];
+  Function event;
 }
