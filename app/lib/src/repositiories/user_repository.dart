@@ -57,6 +57,20 @@ class UserRepository {
     return userInformation;
   }
 
+  Future<Counter> getAccountBalance() async {
+    var response;
+    try {
+      response =
+          await globals.client.get(globals.serverEndpoint + '/getUserInfo');
+    } on Exception catch (e) {
+      throw (e);
+    }
+
+    var decoded = json.decode(response);
+    decoded['counters'];
+    return null;
+  }
+
   Future<String> getUsername() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('username');
