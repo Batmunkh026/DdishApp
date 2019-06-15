@@ -16,9 +16,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   @override
   Stream<AccountState> mapEventToState(AccountEvent event) async* {
     if(event is AccountTabSelected) {
-      yield AccountBalanceLoading();
-      Counter account = await userRepository.getAccountBalance();
-      yield AccountBalanceLoaded();
+      Counter counter = await userRepository.getMainCounter();
+      yield AccountBalanceLoaded(mainCounter: counter);
     }
   }
 }

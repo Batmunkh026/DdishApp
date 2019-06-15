@@ -57,18 +57,18 @@ class UserRepository {
     return userInformation;
   }
 
-  Future<Counter> getAccountBalance() async {
+  Future<Counter> getMainCounter() async {
     var response;
     try {
       response =
-          await globals.client.get(globals.serverEndpoint + '/getUserInfo');
+          await globals.client.read(globals.serverEndpoint + '/getUserInfo?counter=main');
     } on Exception catch (e) {
       throw (e);
     }
 
     var decoded = json.decode(response);
-    decoded['counters'];
-    return null;
+    Counter counter = Counter.fromJson(decoded['mainCounter']);
+    return counter;
   }
 
   Future<String> getUsername() async {

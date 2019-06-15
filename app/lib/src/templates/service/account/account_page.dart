@@ -33,38 +33,43 @@ class AccountPageState extends State<AccountPage> {
       bloc: _bloc,
       builder: (BuildContext context, AccountState state) {
         _bloc.dispatch(AccountTabSelected());
-        return Column(
-          children: <Widget>[
-            RichText(
-                text: TextSpan(children: [
-              TextSpan(
-                  style: const TextStyle(
-                      color: const Color(0xff144478),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: "Montserrat",
-                      fontStyle: FontStyle.normal,
-                      fontSize: 15.0),
-                  text: "Үндсэн дансны үлдэгдэл:   "),
-              TextSpan(
-                  style: const TextStyle(
-                      color: const Color(0xff144478),
-                      fontWeight: FontWeight.w700,
-                      fontFamily: "Montserrat",
-                      fontStyle: FontStyle.normal,
-                      fontSize: 15.0),
-                  text: "-")
-            ])),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
-              child: Text("Данс цэнэглэх заавар",
-                  style: const TextStyle(
-                      color: const Color(0xff071f49),
-                      fontWeight: FontWeight.w700,
-                      fontFamily: "Montserrat",
-                      fontStyle: FontStyle.normal,
-                      fontSize: 15.0)),
-            ),
-          ],
+        return Container(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: Column(
+            children: <Widget>[
+              RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                        style: const TextStyle(
+                            color: const Color(0xff144478),
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Montserrat",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 15.0),
+                        text: "Үндсэн дансны үлдэгдэл:   "),
+                    TextSpan(
+                        style: const TextStyle(
+                            color: const Color(0xff144478),
+                            fontWeight: FontWeight.w700,
+                            fontFamily: "Montserrat",
+                            fontStyle: FontStyle.normal,
+                            fontSize: 15.0),
+                        text: state is AccountBalanceLoaded
+                            ? ' ${state.mainCounter.counterBalance} ₮'
+                            : '-')
+                  ])),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: Text("Данс цэнэглэх заавар",
+                    style: const TextStyle(
+                        color: const Color(0xff071f49),
+                        fontWeight: FontWeight.w700,
+                        fontFamily: "Montserrat",
+                        fontStyle: FontStyle.normal,
+                        fontSize: 15.0)),
+              ),
+            ],
+          ),
         );
       },
     );
