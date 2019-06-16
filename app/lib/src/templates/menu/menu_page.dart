@@ -116,7 +116,11 @@ class MenuPageState extends State<MenuPage> {
   }
 
   onMenuTap(Menu menu) {
-    _menuBloc.dispatch(MenuClicked(selectedMenu: menu));
+    if(menu.title == 'Гарах') {
+      Navigator.of(context).pop();
+    }
+    else
+      _menuBloc.dispatch(MenuClicked(selectedMenu: menu));
   }
 
   _buildTitle(String title) {
