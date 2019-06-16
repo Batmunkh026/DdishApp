@@ -11,6 +11,10 @@ import 'package:ddish/src/widgets/toggle_switch.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
 import 'dart:ui';
+import 'package:flutter/scheduler.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 class LoginView extends StatefulWidget {
   final LoginBloc loginBloc;
@@ -39,13 +43,14 @@ class LoginViewState extends State<LoginView> {
   final _passwordController = TextEditingController();
   bool useFingerprint;
   bool rememberUsername;
+  bool canCheckBiometrics;
 
   @override
   void initState() {
     _usernameController.text = widget.username;
     rememberUsername = widget.username != null;
     useFingerprint = widget.useFingerprint;
-    debugPrint(widget.canCheckBiometrics.toString());
+    canCheckBiometrics = widget.canCheckBiometrics;
     super.initState();
   }
 
@@ -55,14 +60,18 @@ class LoginViewState extends State<LoginView> {
 //    _passwordController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    if (useFingerprint && canCheckBiometrics) {
+      SchedulerBinding.instance.addPostFrameCallback((_) => localAuth());
+    }
     return BlocBuilder<LoginEvent, LoginState>(
       bloc: _loginBloc,
       builder: (
-          BuildContext context,
-          LoginState state,
-          ) {
+        BuildContext context,
+        LoginState state,
+      ) {
         if (state is LoginFailure) {
           //TODO нэвтрэх оролдлого амжилтгүй болсон үед юу хийх ??
         }
@@ -135,11 +144,11 @@ class LoginViewState extends State<LoginView> {
                 verticalMargin: 10.0,
                 horizontalMargin: 70.0,
                 onPressed:
-                state is! LoginLoading ? _onLoginButtonPressed : null,
+                    state is! LoginLoading ? _onLoginButtonPressed : null,
               ),
               Container(
                 child:
-                state is LoginLoading ? CircularProgressIndicator() : null,
+                    state is LoginLoading ? CircularProgressIndicator() : null,
               ),
             ],
           ),
@@ -148,9 +157,32 @@ class LoginViewState extends State<LoginView> {
     );
   }
 
+  localAuth() async {
+    var localAuth = LocalAuthentication();
+    bool didAuthenticate;
+    try {
+      didAuthenticate = await localAuth.authenticateWithBiometrics(
+          localizedReason: 'Хурууны хээгээ уншуулна уу.');
+    } on PlatformException catch (e) {
+
+    }
+    if(didAuthenticate) {
+      _loginBloc.dispatch(LoginButtonPressed(
+        username: _usernameController.text,
+        password: _passwordController.text,
+        rememberUsername: rememberUsername,
+        useFingerprint: useFingerprint,
+        fingerPrintLogin: true
+      ));
+    }
+  }
+
   Future _showDialog(BuildContext context) async {
     List<Widget> actions = new List();
-    ActionButton closeDialog = ActionButton(title: 'Хаах', onTap: () => Navigator.pop(context),);
+    ActionButton closeDialog = ActionButton(
+      title: 'Хаах',
+      onTap: () => Navigator.pop(context),
+    );
     actions.add(closeDialog);
     return showDialog(
         context: context,
@@ -180,6 +212,7 @@ class LoginViewState extends State<LoginView> {
       password: _passwordController.text,
       rememberUsername: rememberUsername,
       useFingerprint: useFingerprint,
+      fingerPrintLogin: false,
     ));
   }
 }

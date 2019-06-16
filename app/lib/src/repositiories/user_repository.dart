@@ -20,9 +20,11 @@ class UserRepository {
     @required String password,
     @required bool rememberUsername,
     @required bool useFingerprint,
+    @required bool fingerPrintLogin,
   }) async {
     var client;
 
+    // TODO fingerPrintLogin
     try {
       client = await oauth2.resourceOwnerPasswordGrant(
           authorizationEndpoint, username, password);
@@ -60,8 +62,8 @@ class UserRepository {
   Future<Counter> getMainCounter() async {
     var response;
     try {
-      response =
-          await globals.client.read(globals.serverEndpoint + '/getUserInfo?counter=main');
+      response = await globals.client
+          .read(globals.serverEndpoint + '/getUserInfo?counter=main');
     } on Exception catch (e) {
       throw (e);
     }
