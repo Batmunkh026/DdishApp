@@ -39,6 +39,7 @@ class MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.transparent,
       body: BlocProvider(
         bloc: _menuBloc,
@@ -52,8 +53,7 @@ class MenuPageState extends State<MenuPage> {
                       title: state.menu.title,
                       onBackPressed: () =>
                           _menuBloc.dispatch(MenuNavigationClicked()),
-                    ),
-                    state.menu.screen
+                    ), state.menu.screen
                   ],
                 );
               } else if (state is MenuOpened || state is MenuInitial) {

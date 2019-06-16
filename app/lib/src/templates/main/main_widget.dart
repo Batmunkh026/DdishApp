@@ -37,9 +37,9 @@ class MainViewState extends State<MainView> {
       menuPage,
     ];
     final double height = MediaQuery.of(context).size.height;
-    return Stack(
-      children: <Widget>[
-        Container(
+    return Scaffold(
+        resizeToAvoidBottomPadding: false,
+        body: Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
               image: new AssetImage("assets/satellite_background.jpg"),
@@ -48,48 +48,35 @@ class MainViewState extends State<MainView> {
           ),
           child: content[_currentTabIndex],
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Theme(
-            data:
-            Theme.of(context).copyWith(canvasColor: Colors.transparent),
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: Container(
-                height: height * 0.07,
-                child: BottomNavigationBar(
-                  currentIndex: _currentTabIndex,
-                  backgroundColor: Color(0xFF2a68b8),
-                  selectedItemColor: Colors.white,
-                  onTap: (index) => onNavigationTap(index),
-                  items: <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.settings_input_antenna,
-                      ),
-                      title: SizedBox.shrink(),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.notifications,
-                      ),
-                      title: SizedBox.shrink(),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.more_horiz,
-                      ),
-                      title: SizedBox.shrink(),
-                    )
-                  ],
+        bottomNavigationBar: Container(
+          height: height * 0.07,
+          child: BottomNavigationBar(
+            currentIndex: _currentTabIndex,
+            backgroundColor: Color(0xFF2a68b8),
+            selectedItemColor: Colors.white,
+            onTap: (index) => onNavigationTap(index),
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.settings_input_antenna,
                 ),
+                title: SizedBox.shrink(),
               ),
-            ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.notifications,
+                ),
+                title: SizedBox.shrink(),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.more_horiz,
+                ),
+                title: SizedBox.shrink(),
+              )
+            ],
           ),
-        ),
-      ],
-    );
+        ));
   }
 
   onNavigationTap(int index) {

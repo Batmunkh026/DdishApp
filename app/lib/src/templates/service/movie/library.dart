@@ -46,7 +46,7 @@ class LibraryState extends State<Library> {
                 children: <Widget>[
                   Flexible(
                     child: InputField(
-                      hasBorder: true,
+                      align: TextAlign.center,
                       placeholder: 'Кино ID оруулна уу',
                       bottomMargin: 5.0,
                       textController: movieIdFieldController,

@@ -1,15 +1,16 @@
-import 'package:ddish/src/repositiories/user_repository.dart';
-import 'package:ddish/src/templates/menu/menu_page.dart';
-import 'package:ddish/src/templates/service/service_page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/authentication/authentication_event.dart';
 import 'package:ddish/src/blocs/authentication/authentication_state.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
-import 'login.dart';
+import 'package:ddish/src/repositiories/user_repository.dart';
+import 'package:ddish/src/templates/menu/menu_page.dart';
+import 'package:ddish/src/templates/service/service_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local_auth/local_auth.dart';
+
+import 'login.dart';
 
 class LoginWidget extends StatefulWidget {
   @override

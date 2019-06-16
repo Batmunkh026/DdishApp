@@ -57,6 +57,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
                     Flexible(
                       child: InputField(
                         hasBorder: true,
+                        align: TextAlign.center,
                         placeholder: 'Кино нэр оруулна уу',
                         bottomMargin: 5.0,
                         textController: movieIdFieldController,
