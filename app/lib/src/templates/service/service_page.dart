@@ -40,11 +40,11 @@ class ServicePageState extends State<ServicePage> {
         onTap: (tabIndex) =>
             bloc.dispatch(ServiceTabSelected(serviceTabs[tabIndex].state)),
         labelStyle: const TextStyle(
-            color:  const Color(0xfff9f9f9),
-            fontWeight: FontWeight.w400,
-            fontFamily: "Montserrat",
-            fontStyle:  FontStyle.normal,
-            fontSize: 14.0,
+          color: const Color(0xfff9f9f9),
+          fontWeight: FontWeight.w400,
+          fontFamily: "Montserrat",
+          fontStyle: FontStyle.normal,
+          fontSize: 14.0,
         ),
         indicator: BubbleTabIndicator(
             indicatorColor: Color(0xff2a68b8),
@@ -73,38 +73,47 @@ class ServicePageState extends State<ServicePage> {
 
   Widget createBuilder(BuildContext context, ServiceState state) {
     this.servicePackTabState = state;
+    final height = MediaQuery.of(context).size.height;
     return Container(
       margin: EdgeInsets.fromLTRB(8, 10, 8, 4),
       child: DefaultTabController(
         length: serviceTabs.length,
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: Text("Үйлчилгээ",
-                style: const TextStyle(
-                    color: const Color(0xfff8f8f8),
-                    fontFamily: "Montserrat",
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 16)),
-            backgroundColor: Colors.transparent,
-            bottom: createTabBar,
-          ),
           body: Scaffold(
             resizeToAvoidBottomPadding: true,
             backgroundColor: Colors.transparent,
-            body: Padding(
-              padding:
-                  const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 70.0),
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: new BorderRadius.circular(20.0),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: height * 0.07),
+                  child: Text("Үйлчилгээ",
+                      style: const TextStyle(
+                          color: const Color(0xfff8f8f8),
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Montserrat",
+                          fontStyle: FontStyle.normal,
+                          fontSize: 17.0)),
                 ),
-                child: TabBarView(
-                    children: [AccountPage(), PackPage(), MoviePage()]),
-              ),
+                createTabBar,
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 10.0, right: 10.0, bottom: 70.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: new BorderRadius.circular(20.0),
+                    ),
+                    child: SizedBox(
+                      height: height * 0.7,
+                      child: TabBarView(
+                          children: [AccountPage(), PackPage(), MoviePage()]),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
