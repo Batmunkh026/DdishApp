@@ -3,12 +3,11 @@ import 'package:ddish/src/blocs/menu/user/user_information_event.dart';
 import 'package:ddish/src/blocs/menu/user/user_information_state.dart';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
+import 'package:ddish/src/templates/menu/user_info/style.dart' as style;
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:ddish/src/templates/menu/user_info/style.dart' as style;
 
 class UserInformationWidget extends StatefulWidget {
   @override
@@ -70,7 +69,11 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
     bool hasActiveProducts =
         user.activeProducts != null && user.activeProducts.products.isNotEmpty;
     double productPosition =
-        hasActiveCounters ? counterPosition + 30.0 * (counterSize + 1) : 90.0;
+        hasActiveCounters ? counterPosition + 30.0 * (counterSize + 1) : counterPosition;
+    bool hasAdditionalProducts =
+        user.additionalProducts != null && user.additionalProducts.products.isNotEmpty;
+    double additionalProductPosition =
+    hasAdditionalProducts ? productPosition + 30.0 * (user.activeProducts.products.length + 1) : productPosition;
     List<Widget> activeProductWidgets = [
       Positioned(
         left: 10.0,
@@ -132,6 +135,14 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
           child: Text("Идэвхтэй багцууд:", style: style.userInfoIndicatorStyle),
         ),
       ),
+      Positioned(
+        top: additionalProductPosition,
+        left: 10.0,
+        child: Visibility(
+          visible: hasAdditionalProducts,
+          child: Text("Идэвхтэй нэмэлт сувгууд:", style: style.userInfoIndicatorStyle),
+        ),
+      ),
     ];
     user.activeCounters.counterList
         .map((counter) => activeProductWidgets.addAll([
@@ -179,6 +190,28 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
                 ),
               )
             ]))
+        .toList();
+    user.additionalProducts.products
+        .map((product) => activeProductWidgets.addAll([
+      Positioned(
+        top: additionalProductPosition +
+            30.0 * (user.additionalProducts.products.indexOf(product) + 1),
+        left: 10.0,
+        child: Text(
+          product.productName,
+          style: style.activeProductsStyle,
+        ),
+      ),
+      Positioned(
+        top: additionalProductPosition +
+            30.0 * (user.additionalProducts.products.indexOf(product) + 1),
+        left: 150.0,
+        child: Text(
+          'Дуусах хугацаа: ${DateUtil.formatDateTime(product.endDate)}',
+          style: style.activeProductsStyle,
+        ),
+      )
+    ]))
         .toList();
     return activeProductWidgets;
   }

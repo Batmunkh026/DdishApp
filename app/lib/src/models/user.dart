@@ -17,6 +17,7 @@ class User {
   final String adminNumber;
   final ProductList activeProducts;
   final CounterList activeCounters;
+  final ProductList additionalProducts;
 
   User(
       {this.result,
@@ -26,7 +27,8 @@ class User {
       this.userRegNo,
       this.adminNumber,
       this.activeProducts,
-      this.activeCounters});
+      this.activeCounters,
+      this.additionalProducts});
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
