@@ -20,6 +20,9 @@ class CustomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       contentPadding: const EdgeInsets.all(0.0),
       title: title,
       backgroundColor: Color.fromRGBO(103, 170, 255, 0.5),
