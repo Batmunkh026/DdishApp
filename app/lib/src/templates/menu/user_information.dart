@@ -3,6 +3,7 @@ import 'package:ddish/src/blocs/menu/user/user_information_event.dart';
 import 'package:ddish/src/blocs/menu/user/user_information_state.dart';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
+import 'package:ddish/src/utils/date_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,127 +46,140 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
           }
           if (state is UserInformationLoaded) {
             User user = state.user;
+            List<Widget> layoutWidgets = populateUserInformation(user);
             return Container(
-              height: height * 0.7,
+              height: height * 0.6,
               child: Stack(
-                children: <Widget>[
-                  Positioned(
-                    left: 10.0,
-                    child: Text('Смарт картын дугаар:',
-                        style: style.userInfoIndicatorStyle),
-                  ),
-                  Positioned(
-                    left: 200.0,
-                    child: Text(user.cardNo.toString(),
-                        style: style.userInfoValueStyle),
-                  ),
-                  Positioned(
-                    top: 30.0,
-                    left: 10.0,
-                    child: Text('Хэрэглэгчийн овог, нэр:',
-                        style: style.userInfoIndicatorStyle),
-                  ),
-                  Positioned(
-                    top: 30.0,
-                    left: 200.0,
-                    child: Text(
-                        user.userLastName.substring(0, 1) +
-                            '. ${user.userFirstName}',
-                        style: style.userInfoValueStyle),
-                  ),
-                  Positioned(
-                    top: 60.0,
-                    left: 10.0,
-                    child: Text('Админ утасны дугаар:',
-                        style: style.userInfoIndicatorStyle),
-                  ),
-                  Positioned(
-                    top: 60.0,
-                    left: 200.0,
-                    child:
-                        Text(user.adminNumber, style: style.userInfoValueStyle),
-                  ),
-                  Positioned(
-                    top: 90.0,
-                    left: 10.0,
-                    child: Visibility(
-                      visible: user.activeCounters != null &&
-                      user.activeCounters.counterList.isNotEmpty,
-                      child: Text('Админ утасны дугаар:',
-                          style: style.userInfoIndicatorStyle),
-                    ),
-                  ),
-//                  Visibility(
-//                    visible: user.activeCounters != null &&
-//                        user.activeCounters.counterList.isNotEmpty,
-//                    child: Column(
-//                      crossAxisAlignment: CrossAxisAlignment.start,
-//                      children: <Widget>[
-//                        new Text("Урамшууллын данс болон эрх:",
-//                            style: style.userInfoIndicatorStyle),
-//                        ListView.builder(
-//                          scrollDirection: Axis.vertical,
-//                          shrinkWrap: true,
-//                          itemCount: user.activeCounters.counterList.length,
-//                          itemBuilder: (BuildContext context, int index) {
-//                            Counter activeCounter = user
-//                                .activeCounters.counterList
-//                                .elementAt(index);
-//                            return Row(
-//                              children: <Widget>[
-//                                Text(
-//                                  activeCounter.counterName,
-//                                  style: style.activeProductsStyle,
-//                                ),
-//                                Text(
-//                                  activeCounter.counterBalance,
-//                                  style: style.activeProductsStyle,
-//                                ),
-//                              ],
-//                            );
-//                          },
-//                        ),
-//                      ],
-//                    ),
-//                  ),
-//                  Visibility(
-//                    visible: user.activeProducts != null &&
-//                        user.activeProducts.products.isNotEmpty,
-//                    child: Column(
-//                      crossAxisAlignment: CrossAxisAlignment.start,
-//                      children: <Widget>[
-//                        new Text("Идэвхтэй багцууд:",
-//                            style: style.userInfoIndicatorStyle),
-//                        ListView.builder(
-//                          scrollDirection: Axis.vertical,
-//                          shrinkWrap: true,
-//                          itemCount: user.activeProducts.products.length,
-//                          itemBuilder: (BuildContext context, int index) {
-//                            Product activeProduct =
-//                                user.activeProducts.products.elementAt(index);
-//                            return Row(
-//                              children: <Widget>[
-//                                Text(
-//                                  activeProduct.productName,
-//                                  style: style.activeProductsStyle,
-//                                ),
-//                                Text(
-//                                  'Дуусах хугацаа: ${DateUtil.formatDateTime(activeProduct.endDate)}',
-//                                  style: style.activeProductsStyle,
-//                                ),
-//                              ],
-//                            );
-//                          },
-//                        ),
-//                      ],
-//                    ),
-//                  )
-                ],
+                overflow: Overflow.visible,
+                children: layoutWidgets,
               ),
             );
           }
+          return Container();
         },
       ),
     );
+  }
+
+  populateUserInformation(User user) {
+    bool hasActiveCounters = user.activeCounters != null &&
+        user.activeCounters.counterList.isNotEmpty;
+    int counterSize =
+        hasActiveCounters ? user.activeCounters.counterList.length : 0;
+    double counterPosition = 90.0;
+    bool hasActiveProducts =
+        user.activeProducts != null && user.activeProducts.products.isNotEmpty;
+    double productPosition =
+        hasActiveCounters ? counterPosition + 30.0 * (counterSize + 1) : 90.0;
+    List<Widget> activeProductWidgets = [
+      Positioned(
+        left: 10.0,
+        child:
+            Text('Смарт картын дугаар:', style: style.userInfoIndicatorStyle),
+      ),
+      Positioned(
+        left: 200.0,
+        child: Text(user.cardNo.toString(), style: style.userInfoValueStyle),
+      ),
+      Positioned(
+        top: 30.0,
+        left: 10.0,
+        child: Text('Хэрэглэгчийн овог, нэр:',
+            style: style.userInfoIndicatorStyle),
+      ),
+      Positioned(
+        top: 30.0,
+        left: 200.0,
+        child: Text(
+            user.userLastName.substring(0, 1) + '. ${user.userFirstName}',
+            style: style.userInfoValueStyle),
+      ),
+      Positioned(
+        top: 60.0,
+        left: 10.0,
+        child:
+            Text('Админ утасны дугаар:', style: style.userInfoIndicatorStyle),
+      ),
+      Positioned(
+        top: 60.0,
+        left: 200.0,
+        child: Text(user.adminNumber, style: style.userInfoValueStyle),
+      ),
+      Positioned(
+        top: 60.0,
+        left: 200.0,
+        child: Text(user.adminNumber, style: style.userInfoValueStyle),
+      ),
+      Positioned(
+        top: 60.0,
+        left: 200.0,
+        child: Text(user.adminNumber, style: style.userInfoValueStyle),
+      ),
+      Positioned(
+        top: counterPosition,
+        left: 10.0,
+        child: Visibility(
+          visible: hasActiveCounters,
+          child: Text("Урамшууллын данс болон эрх:",
+              style: style.userInfoIndicatorStyle),
+        ),
+      ),
+      Positioned(
+        top: productPosition,
+        left: 10.0,
+        child: Visibility(
+          visible: hasActiveProducts,
+          child: Text("Идэвхтэй багцууд:", style: style.userInfoIndicatorStyle),
+        ),
+      ),
+    ];
+    user.activeCounters.counterList
+        .map((counter) => activeProductWidgets.addAll([
+              Positioned(
+                top: counterPosition +
+                    30.0 *
+                        (user.activeCounters.counterList.indexOf(counter) + 1),
+                left: 10.0,
+                child: Text(
+                  counter.counterName,
+                  style: style.activeProductsStyle,
+                ),
+              ),
+              Positioned(
+                top: counterPosition +
+                    30.0 *
+                        (user.activeCounters.counterList.indexOf(counter) + 1),
+//        left: 150.0,
+                right: 0.0,
+                child: Text(
+                  '${counter.counterBalance} ₮',
+                  style: style.activeProductsStyle,
+                ),
+              )
+            ]))
+        .toList();
+    user.activeProducts.products
+        .map((product) => activeProductWidgets.addAll([
+              Positioned(
+                top: productPosition +
+                    30.0 * (user.activeProducts.products.indexOf(product) + 1),
+                left: 10.0,
+                child: Text(
+                  product.productName,
+                  style: style.activeProductsStyle,
+                ),
+              ),
+              Positioned(
+                top: productPosition +
+                    30.0 * (user.activeProducts.products.indexOf(product) + 1),
+                left: 150.0,
+                child: Text(
+                  'Дуусах хугацаа: ${DateUtil.formatDateTime(product.endDate)}',
+                  style: style.activeProductsStyle,
+                ),
+              )
+            ]))
+        .toList();
+    return activeProductWidgets;
   }
 }
