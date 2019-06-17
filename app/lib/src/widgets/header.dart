@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'line.dart';
 
 class Header extends StatelessWidget {
-  String title;
-  var onBackPressed;
+  final String title;
+  final VoidCallback onBackPressed;
 
   Header({this.title, this.onBackPressed});
 
@@ -37,7 +37,7 @@ class Header extends StatelessWidget {
           Visibility(
             visible: title != null && title.isNotEmpty,
             child: Line(
-              color: Color(0xffe4f0ff),
+              color: Color(0xff3069b2),
               thickness: 1.0,
               margin: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
             ),

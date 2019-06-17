@@ -88,6 +88,7 @@ class OrderWidgetState extends State<OrderWidget> {
                       textController: _phoneController,
                     ),
                     DropdownButton(
+                      isExpanded: true,
                       iconEnabledColor: Color(0xffa4cafb),
                       value: selectedDistrict,
                       items: dropDownItems,

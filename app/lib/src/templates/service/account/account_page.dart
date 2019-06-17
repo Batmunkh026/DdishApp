@@ -44,14 +44,14 @@ class AccountPageState extends State<AccountPage> {
                             color: const Color(0xff144478),
                             fontWeight: FontWeight.w500,
                             fontStyle: FontStyle.normal,
-                            fontSize: 15.0),
+                            fontSize: 17.0),
                         text: "Үндсэн дансны үлдэгдэл:   "),
                     TextSpan(
                         style: const TextStyle(
                             color: const Color(0xff144478),
                             fontWeight: FontWeight.w700,
                             fontStyle: FontStyle.normal,
-                            fontSize: 15.0),
+                            fontSize: 17.0),
                         text: state is AccountBalanceLoaded
                             ? ' ${state.mainCounter.counterBalance} ₮'
                             : '-')

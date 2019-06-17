@@ -43,7 +43,7 @@ class ServicePageState extends State<ServicePage> {
           color: const Color(0xfff9f9f9),
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
-          fontSize: 14.0,
+          fontSize: 15.0,
         ),
         indicator: BubbleTabIndicator(
             indicatorColor: Color(0xff2a68b8),

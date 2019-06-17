@@ -9,7 +9,7 @@ import 'package:ddish/src/widgets/header.dart';
 import 'menu.dart';
 
 class MenuPage extends StatefulWidget {
-  var onBackButtonTap;
+  final VoidCallback onBackButtonTap;
 
   MenuPage({Key key, this.onBackButtonTap}) : super(key: key);
 
@@ -53,7 +53,8 @@ class MenuPageState extends State<MenuPage> {
                       title: state.menu.title,
                       onBackPressed: () =>
                           _menuBloc.dispatch(MenuNavigationClicked()),
-                    ), state.menu.screen
+                    ),
+                    state.menu.screen
                   ],
                 );
               } else if (state is MenuOpened || state is MenuInitial) {
@@ -73,13 +74,16 @@ class MenuPageState extends State<MenuPage> {
                           var menuItem = _buildMenuItem(menuItems[index], true);
                           return Column(
                             children: <Widget>[
-                              menuItem != null ? menuItem : Container(),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: menuItem != null ? menuItem : Container(),
+                              ),
                               Visibility(
                                 visible: menuItem != null,
                                 child: Line(
                                   color: Color(0xFF3069b2),
                                   margin:
-                                      EdgeInsets.symmetric(horizontal: 15.0),
+                                      EdgeInsets.symmetric(horizontal: 25.0),
                                   thickness: 1.0,
                                 ),
                               )
@@ -101,7 +105,10 @@ class MenuPageState extends State<MenuPage> {
     if (menu.children == null || menu.children.isEmpty) {
       if (menu.secure && !authenticated) return null;
       return ListTile(
-        trailing: menu.trailing,
+        trailing: Padding(
+          padding: const EdgeInsets.only(right: 25.0),
+          child: menu.trailing,
+        ),
         contentPadding: root ? null : const EdgeInsets.only(left: 30.0),
         title: _buildTitle(menu.title),
         onTap: () => onMenuTap(menu),
@@ -116,16 +123,14 @@ class MenuPageState extends State<MenuPage> {
   }
 
   onMenuTap(Menu menu) {
-    if(menu.title == 'Гарах') {
+    if (menu.title == 'Гарах') {
       Navigator.of(context).pop();
-    }
-    else
+    } else
       _menuBloc.dispatch(MenuClicked(selectedMenu: menu));
   }
 
   _buildTitle(String title) {
     return Container(
-      color: null,
       child: Text(
         title,
         style: TextStyle(

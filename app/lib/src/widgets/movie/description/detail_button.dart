@@ -9,6 +9,7 @@ class DetailButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
+      padding: const EdgeInsets.symmetric(vertical: 0.0),
       color: Color(0xFF4e86cb),
       onPressed: onTap,
       shape:
