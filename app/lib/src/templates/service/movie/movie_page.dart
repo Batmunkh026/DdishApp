@@ -19,11 +19,13 @@ class MoviePageState extends State<MoviePage> {
     threatre = TheatreWidget();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: TabBar(
           indicatorPadding: const EdgeInsets.symmetric(horizontal: 30.0),
           labelStyle: style.activeTabLabelStyle,

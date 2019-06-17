@@ -19,6 +19,11 @@ void main() {
 
   BlocSupervisor.delegate = SimpleBlocDelegate();
   runApp(MaterialApp(
+    theme: ThemeData(
+      primaryColor: Color(0xFF2a68b8),
+      accentColor: Color(0xFF2a68b8),
+      fontFamily: 'Montserrat',
+    ),
     home: LoginWidget(),
     routes: routes,
   ));

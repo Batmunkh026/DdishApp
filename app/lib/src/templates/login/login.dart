@@ -115,7 +115,6 @@ class LoginViewState extends State<LoginView> {
                         style: TextStyle(
                           color: Color(0xffe4f0ff),
                           fontWeight: FontWeight.w400,
-//                          fontFamily: "Montserrat",
                           fontStyle: FontStyle.normal,
                           fontSize: 15.0,
                         ),
@@ -195,7 +194,6 @@ class LoginViewState extends State<LoginView> {
                   style: TextStyle(
                       color: const Color(0xfffcfdfe),
                       fontWeight: FontWeight.w400,
-                      fontFamily: "Montserrat",
                       fontStyle: FontStyle.normal,
                       fontSize: 15.0)),
               content: style.forgotPasswordHint,

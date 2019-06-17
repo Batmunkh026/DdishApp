@@ -131,7 +131,6 @@ class MenuPageState extends State<MenuPage> {
         style: TextStyle(
             color: Color(0xFFe4f0ff),
             fontWeight: FontWeight.w400,
-            fontFamily: "Montserrat",
             fontStyle: FontStyle.normal,
             fontSize: 15.0),
       ),

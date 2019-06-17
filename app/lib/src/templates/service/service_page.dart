@@ -42,7 +42,6 @@ class ServicePageState extends State<ServicePage> {
         labelStyle: const TextStyle(
           color: const Color(0xfff9f9f9),
           fontWeight: FontWeight.w400,
-          fontFamily: "Montserrat",
           fontStyle: FontStyle.normal,
           fontSize: 14.0,
         ),
@@ -89,7 +88,6 @@ class ServicePageState extends State<ServicePage> {
                     style: const TextStyle(
                         color: const Color(0xfff8f8f8),
                         fontWeight: FontWeight.w400,
-                        fontFamily: "Montserrat",
                         fontStyle: FontStyle.normal,
                         fontSize: 17.0)),
               ),

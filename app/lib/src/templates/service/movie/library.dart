@@ -1,15 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'dart:ui';
+
 import 'package:ddish/src/blocs/service/movie/library/library_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_event.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ddish/src/widgets/text_field.dart';
-import 'package:ddish/src/widgets/submit_button.dart';
-import 'package:ddish/src/widgets/movie/thumbnail.dart';
 import 'package:ddish/src/models/movie.dart';
+import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/dialog_action.dart';
+import 'package:ddish/src/widgets/movie/thumbnail.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'program_search.dart';
 
 class Library extends StatefulWidget {
   @override
@@ -40,27 +41,7 @@ class LibraryState extends State<Library> {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Flexible(
-                    child: InputField(
-                      align: TextAlign.center,
-                      placeholder: 'Кино ID оруулна уу',
-                      bottomMargin: 5.0,
-                      textController: movieIdFieldController,
-                    ),
-                  ),
-                  SubmitButton(
-                    text: 'Түрээслэх',
-                    padding: const EdgeInsets.all(5.0),
-                    onPressed: () => onRentButtonTap(),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          child: ProgramSearchWidget(searchById: true, onSearchTap: onRentAgreeTap,),
         ),
         BlocBuilder<MovieLibraryEvent, MovieLibraryState>(
           bloc: _bloc,
@@ -94,6 +75,7 @@ class LibraryState extends State<Library> {
               // TODO pop movie details dialog
               return Container();
             }
+            return Container();
           },
         ),
       ],
@@ -124,7 +106,6 @@ class LibraryState extends State<Library> {
                   style: TextStyle(
                       color: const Color(0xfffcfdfe),
                       fontWeight: FontWeight.w600,
-                      fontFamily: "Montserrat",
                       fontStyle: FontStyle.normal,
                       fontSize: 15.0)),
               content: RichText(
@@ -132,7 +113,6 @@ class LibraryState extends State<Library> {
                 text: TextSpan(
                   style: TextStyle(
                       color: const Color(0xffe4f0ff),
-                      fontFamily: "Montserrat",
                       fontStyle: FontStyle.normal,
                       fontSize: 14.0),
                   children: <TextSpan>[
@@ -155,6 +135,6 @@ class LibraryState extends State<Library> {
   }
 
   onRentAgreeTap() {
-    // кино түрээслэх
+    // validart
   }
 }

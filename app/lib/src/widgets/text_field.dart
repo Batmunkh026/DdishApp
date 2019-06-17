@@ -46,7 +46,6 @@ class InputField extends StatelessWidget {
         style: TextStyle(
           color: hasBorder ? Color(0xFF071f49) : Color(0xffe8e8e8),
           fontWeight: FontWeight.w400,
-          fontFamily: "Montserrat",
           fontStyle: FontStyle.normal,
           fontSize: fontSize,
         ),
@@ -64,11 +63,10 @@ class InputField extends StatelessWidget {
                 )
               : null,
           contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0),
-          hintText: placeholder.toUpperCase(),
+          hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),
             fontWeight: FontWeight.w400,
-            fontFamily: "Montserrat",
             fontStyle: FontStyle.normal,
             fontSize: fontSize,
           ),

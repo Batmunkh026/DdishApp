@@ -19,7 +19,6 @@ mixin WidgetMixin {
           style: TextStyle(
               color: const Color(0xfffcfdfe),
               fontWeight: FontWeight.w600,
-              fontFamily: "Montserrat",
               fontStyle: FontStyle.normal,
               fontSize: 15.0)),
       content: Text(Constants.createPermissionContentStr(

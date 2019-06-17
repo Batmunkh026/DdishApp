@@ -51,7 +51,6 @@ class PackPageState extends State<PackPage> {
     var fontStyle = TextStyle(
         color: const Color(0xff071f49),
         fontWeight: FontWeight.w500,
-        fontFamily: "Montserrat",
         fontStyle: FontStyle.normal,
         fontSize: 12.0);
 
@@ -130,7 +129,6 @@ class PackPageState extends State<PackPage> {
             style: TextStyle(
                 color: const Color(0xfffcfdfe),
                 fontWeight: FontWeight.w600,
-                fontFamily: "Montserrat",
                 fontStyle: FontStyle.normal,
                 fontSize: 15.0)),
 //        TODO мэдэгдлийг хаа нэгтээ хадгалаад авч харуулах. хаана ???

@@ -68,7 +68,6 @@ class OrderWidgetState extends State<OrderWidget> {
                   style: const TextStyle(
                       color: const Color(0xffe4f0ff),
                       fontWeight: FontWeight.w500,
-                      fontFamily: "Montserrat",
                       fontStyle: FontStyle.normal,
                       fontSize: 16.0)),
               Padding(
@@ -76,14 +75,14 @@ class OrderWidgetState extends State<OrderWidget> {
                 child: Column(
                   children: <Widget>[
                     InputField(
-                      placeholder: 'Нэр',
+                      placeholder: 'НЭР',
                       align: TextAlign.center,
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       textController: _usernameController,
                     ),
                     InputField(
                       align: TextAlign.center,
-                      placeholder: 'Утасны дугаар',
+                      placeholder: 'УТАСНЫ ДУГААР',
                       textInputType: TextInputType.number,
                       padding: const EdgeInsets.only(bottom: 10.0),
                       textController: _phoneController,
@@ -93,12 +92,11 @@ class OrderWidgetState extends State<OrderWidget> {
                       value: selectedDistrict,
                       items: dropDownItems,
                       hint: Text(
-                        'Дүүрэг сонгох'.toUpperCase(),
+                        'ДҮҮРЭГ СОНГОХ',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Color(0xffa4cafb),
                           fontWeight: FontWeight.w400,
-                          fontFamily: "Montserrat",
                           fontStyle: FontStyle.normal,
                           fontSize: 15.0,
                         ),

@@ -25,7 +25,6 @@ class ChannelThumbnail extends StatelessWidget {
             child: Text('/${channel.channelNo}/', style: TextStyle(
                 color:  const Color(0xff071f49),
                 fontWeight: FontWeight.w400,
-                fontFamily: "Montserrat",
                 fontStyle:  FontStyle.normal,
             ),),
             alignment: Alignment.bottomRight,

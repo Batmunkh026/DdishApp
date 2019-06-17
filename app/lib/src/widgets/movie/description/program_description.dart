@@ -22,6 +22,7 @@ class ProgramDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
+    final height = MediaQuery.of(context).size.height;
     return Column(
       children: <Widget>[
         Row(
@@ -29,7 +30,7 @@ class ProgramDescription extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: SizedBox(
-                height: 150.0,
+                height: height / 4,
                 child: Image.network(
                   program.posterUrl,
                   fit: BoxFit.contain,
@@ -104,6 +105,7 @@ class ProgramDescription extends StatelessWidget {
   }
 
   showOverview(Movie content) {
+    final height = MediaQuery.of(context).size.height;
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -111,47 +113,52 @@ class ProgramDescription extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
             child: CustomDialog(
                 hasDivider: false,
-                title: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 150.0,
-                      child: Image.network(
+                title: Container(
+                  height: height * 0.2,
+                  child: Row(
+                    children: <Widget>[
+                      Image.network(
                         content.posterUrl,
                         fit: BoxFit.contain,
                       ),
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              child: Text(content.contentNameMon,
-                                  style: style.programTitleStyleDialog),
-                            ),
-                            Visibility(
-                              visible: content.contentGenres != null &&
-                                  content.contentGenres.isNotEmpty,
-                              child: Text(content.contentGenres,
-                                  style: style.programGenresStyleDialog),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5.0),
-                              child: Text(DateUtil.formatStringTime(beginDate),
-                                  style: style.programStartTimeStyleDialog),
-                            ),
-                          ],
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                child: Text(content.contentNameMon,
+                                    style: style.programTitleStyleDialog),
+                              ),
+                              Visibility(
+                                visible: content.contentGenres != null &&
+                                    content.contentGenres.isNotEmpty,
+                                child: Text(content.contentGenres,
+                                    style: style.programGenresStyleDialog),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: Text(
+                                    DateUtil.formatStringTime(beginDate),
+                                    style: style.programStartTimeStyleDialog),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
                 content: Column(
                   children: <Widget>[
-                    Text(
-                      content.contentDescr,
-                      style: style.contentDescriptionStyle,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text(
+                        content.contentDescr,
+                        style: style.contentDescriptionStyle,
+                      ),
                     ),
                     DialogCloseButton(onTap: () => Navigator.pop(context)),
                   ],
@@ -184,7 +191,6 @@ class ProgramDescription extends StatelessWidget {
                   style: TextStyle(
                       color: const Color(0xfffcfdfe),
                       fontWeight: FontWeight.w600,
-                      fontFamily: "Montserrat",
                       fontStyle: FontStyle.normal,
                       fontSize: 15.0)),
               content: RichText(
@@ -192,7 +198,6 @@ class ProgramDescription extends StatelessWidget {
                 text: TextSpan(
                   style: TextStyle(
                       color: const Color(0xffe4f0ff),
-                      fontFamily: "Montserrat",
                       fontStyle: FontStyle.normal,
                       fontSize: 14.0),
                   children: <TextSpan>[
@@ -266,8 +271,8 @@ class ProgramDescription extends StatelessWidget {
                   Align(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child:
-                      DialogCloseButton(onTap: () => Navigator.pop(context)),
+                      child: DialogCloseButton(
+                          onTap: () => Navigator.pop(context)),
                     ),
                     alignment: Alignment.bottomCenter,
                   )

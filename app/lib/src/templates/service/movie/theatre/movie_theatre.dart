@@ -7,14 +7,14 @@ import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/utils/date_util.dart';
-import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
 import 'package:ddish/src/widgets/movie/description/program_description.dart';
-import 'package:ddish/src/widgets/submit_button.dart';
-import 'package:ddish/src/widgets/text_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'channel_header.dart';
+import 'package:ddish/src/templates/service/movie/program_search.dart';
 import 'style.dart' as style;
 
 class TheatreWidget extends StatefulWidget {
@@ -23,10 +23,10 @@ class TheatreWidget extends StatefulWidget {
 }
 
 class TheatreWidgetState extends State<TheatreWidget> {
-  TextEditingController movieIdFieldController;
   VodRepository vodRepository;
   MovieTheatreBloc _bloc;
   DateTime date = DateTime.now();
+
   VodChannel selectedChannel;
   Program selectedProgram;
 
@@ -34,7 +34,6 @@ class TheatreWidgetState extends State<TheatreWidget> {
   void initState() {
     vodRepository = VodRepository();
     _bloc = MovieTheatreBloc(vodRepository: vodRepository);
-    movieIdFieldController = TextEditingController();
     super.initState();
   }
 
@@ -45,191 +44,132 @@ class TheatreWidgetState extends State<TheatreWidget> {
   }
 
   @override
-  // resizeToAvoidBottomPadding: false,
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Column(
       children: <Widget>[
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: selectedChannel == null
-              ? Row(
-                  children: <Widget>[
-                    Flexible(
-                      child: InputField(
-                        hasBorder: true,
-                        align: TextAlign.center,
-                        placeholder: 'Кино нэр оруулна уу',
-                        bottomMargin: 5.0,
-                        textController: movieIdFieldController,
-                      ),
-                    ),
-                    SubmitButton(
-                      text: 'Хайх',
-                      padding: const EdgeInsets.all(5.0),
-                      onPressed: () => onSearchTap(),
-                    ),
-                  ],
-                )
-              : Column(
-                  children: <Widget>[
-                    Container(
-                      height: 70.0,
-                      child: Stack(
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 50.0),
-                            child: Center(
-                              child: ChannelThumbnail(
-                                channel: selectedChannel,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: IconButton(
-                              iconSize: 40.0,
-                              color: Color(0xff3069b2),
-                              disabledColor: Color(0xffe8e8e8),
-                              icon: Icon(Icons.arrow_back_ios),
-                              onPressed: () => onReturnTap(),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        IconButton(
-                          color: Color(0xff3069b2),
-                          disabledColor: Color(0xffe8e8e8),
-                          icon: Icon(Icons.arrow_back_ios),
-                          onPressed: DateUtil.today(date)
-                              ? null
-                              : () => onDateChange(false),
-                        ),
-                        Text(
-                          DateUtil.formatTheatreDate(date) +
-                              (DateUtil.today(date) ? '  Өнөөдөр' : ''),
-                          style: style.dateStyle,
-                        ),
-                        IconButton(
-                            color: Color(0xff3069b2),
-                            disabledColor: Color(0xffe8e8e8),
-                            icon: Icon(
-                              Icons.arrow_forward_ios,
-                            ),
-                            onPressed: date
-                                        .difference(DateTime.now()
-                                            .add(Duration(days: 7)))
-                                        .inDays ==
-                                    0
-                                ? null
-                                : () => onDateChange(true)),
-                      ],
-                    ),
-                    Line(
-                      color: Color(0xff3069b2),
-                      thickness: 1.0,
-                      margin: const EdgeInsets.only(bottom: 10.0),
-                    )
-                  ],
-                ),
-        ),
-        BlocBuilder<MovieTheatreEvent, MovieTheatreState>(
-          bloc: _bloc,
-          builder: (BuildContext context, MovieTheatreState state) {
-            if (state is TheatreStateInitial) {
-              _bloc.dispatch(MovieTheatreStarted());
-              return CircularProgressIndicator();
-            }
-            if (state is ChannelListLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is ChannelListLoaded) {
-              List<VodChannel> channels = state.channelList;
-              return GridView.count(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                crossAxisSpacing: 100.0,
-                padding: const EdgeInsets.all(20.0),
-                crossAxisCount: 2,
-                children: List.generate(channels.length, (index) {
-                  return ChannelThumbnail(
-                    onPressed: () => onVodChannelTap(channels[index]),
-                    channel: channels[index],
-                  );
-                }),
-              );
-            }
-            if (state is ProgramListLoading) {
-              return CircularProgressIndicator();
-            }
-            if (state is ProgramListLoaded) {
-              List<Program> programList = state.programList;
-              return Expanded(
-                child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: selectedChannel == null
+                ? ProgramSearchWidget(
+                    searchById: false,
+                    onSearchTap: onSearchTap,
+                  )
+                : ChannelHeaderWidget(
+                    selectedChannel: selectedChannel,
+                    onReturnTap: onReturnTap,
+                    onDateValueChanged: onDateChange,
+                  )),
+        Expanded(
+          child: BlocBuilder<MovieTheatreEvent, MovieTheatreState>(
+            bloc: _bloc,
+            builder: (BuildContext context, MovieTheatreState state) {
+              if (state is TheatreStateInitial) {
+                _bloc.dispatch(MovieTheatreStarted());
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is ChannelListLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is ChannelListLoaded) {
+                List<VodChannel> channels = state.channelList;
+                return GridView.count(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  crossAxisSpacing: width * 0.1,
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                  crossAxisCount: 2,
+                  children: List.generate(channels.length, (index) {
+                    return ChannelThumbnail(
+                        onPressed: () => onVodChannelTap(channels[index]),
+                        channel: channels[index]);
+                  }),
+                );
+              }
+              if (state is ProgramListLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is ProgramListLoaded) {
+                List<Program> programList = state.programList;
+                return ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   itemCount: programList.length,
                   itemBuilder: (BuildContext context, int index) {
                     Program program = programList[index];
                     return Container(
-                      height: 90.0,
+                      height: height * 0.15,
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: GestureDetector(
                         onTap: () => onProgramTap(programList[index]),
                         child: ListTile(
-                            // TODO poster placeholder
-                            leading: Image.network(
-                              program.posterUrl,
-                              fit: BoxFit.contain,
-                            ),
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(program.contentNameMon,
-                                    style: style.programTitleStyle),
-                                Visibility(
-                                  visible: program.contentGenres != null &&
-                                      program.contentGenres.isNotEmpty,
-                                  child: Text(program.contentGenres,
-                                      style: style.programGenresStyle),
+                          title: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 15.0),
+                                child: Image.network(
+                                  program.posterUrl,
+                                  fit: BoxFit.contain,
                                 ),
-                                Text(
-                                    DateUtil.formatStringTime(
-                                        program.beginDate),
-                                    style: style.programStartTimeStyle),
-                              ],
-                            )),
+                              ),
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(program.contentNameMon,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: style.programTitleStyle),
+                                    Visibility(
+                                      visible: program.contentGenres != null &&
+                                          program.contentGenres.isNotEmpty,
+                                      child: Text(program.contentGenres,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: style.programGenresStyle),
+                                    ),
+                                    Text(
+                                        DateUtil.formatStringTime(
+                                            program.beginDate),
+                                        style: style.programStartTimeStyle),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },
-                ),
-              );
-            }
-            if (state is ProgramDetailsLoading) {
-              return CircularProgressIndicator();
-            }
-            if (state is ProgramDetailsLoaded) {
-              return ProgramDescription(
-                program: state.content,
-                beginDate: selectedProgram.beginDate,
-              );
-            }
-            return Container();
-          },
+                );
+              }
+              if (state is ProgramDetailsLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is ProgramDetailsLoaded) {
+                return ProgramDescription(
+                  program: state.content,
+                  beginDate: selectedProgram.beginDate,
+                );
+              }
+              return Container();
+            },
+          ),
         ),
       ],
     );
   }
 
-  onDateChange(bool increment) {
-    setState(() => date = increment
-        ? date.add(Duration(days: 1))
-        : date.subtract(Duration(days: 1)));
+  onDateChange(DateTime date) {
+    this.date = date;
     if (selectedChannel != null)
       _bloc.dispatch(DateChanged(date: date, channel: selectedChannel));
   }
@@ -246,9 +186,8 @@ class TheatreWidgetState extends State<TheatreWidget> {
   onReturnTap() {
     if (selectedProgram != null) {
       setState(() => selectedProgram = null);
-      _bloc.dispatch(ChannelSelected(channel: selectedChannel));
+      _bloc.dispatch(ChannelSelected(channel: selectedChannel, date: date));
     } else if (selectedChannel != null) {
-      date = DateTime.now();
       setState(() => selectedChannel = null);
       _bloc.dispatch(MovieTheatreStarted());
     }
