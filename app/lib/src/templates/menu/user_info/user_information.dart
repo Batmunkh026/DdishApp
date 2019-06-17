@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'style.dart' as style;
+import 'package:ddish/src/templates/menu/user_info/style.dart' as style;
 
 class UserInformationWidget extends StatefulWidget {
   @override

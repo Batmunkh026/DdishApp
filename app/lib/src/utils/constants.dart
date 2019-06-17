@@ -5,7 +5,7 @@ import 'package:ddish/src/templates/menu/component/branch_location.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/templates/menu/menu.dart';
 import 'package:ddish/src/templates/menu/order/order_widget.dart';
-import 'package:ddish/src/templates/menu/user_information.dart';
+import 'package:ddish/src/templates/menu/user_info/user_information.dart';
 
 class Constants {
   static const List<TabMenuItem> mainMenuItems = const <TabMenuItem>[
