@@ -7,8 +7,6 @@ import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
-import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 
@@ -107,8 +105,8 @@ class PackGridPicker extends StatelessWidget with WidgetMixin {
     } else
       for (final channel
           in _pack) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
-        _contentItems
-            .add(_createComponentForPick(0, channel, isChannelPicker: true));
+        _contentItems.add(
+            _createComponentForPick(channel, channel, isChannelPicker: true));
     return _contentItems;
   }
 
@@ -154,7 +152,14 @@ class PackGridPicker extends StatelessWidget with WidgetMixin {
 
     if (item != null)
       children = isChannelPicker
-          ? [Flexible(child: Image.network(item.image))]
+          ? [
+              Flexible(
+                  child: CachedNetworkImage(
+                //TODO default local image resource нэмэх
+                imageUrl: selectedPack.image,
+                placeholder: (context, text) => Text(selectedPack.name),
+              ))
+            ]
           : [Text("${item} сар"), Text("₮${item * selectedPack.price}")];
 
     return Card(
@@ -196,7 +201,10 @@ class PackGridPicker extends StatelessWidget with WidgetMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Icon(Icons.arrow_back_ios),
-          Image.network(selectedChannel.productId),
+          CachedNetworkImage(
+            imageUrl: selectedChannel.image,
+            placeholder: (context, text) => Text(selectedChannel.name),
+          ),
           Divider()
         ],
       ),
@@ -321,7 +329,10 @@ class CustomPackChooserState extends State<CustomPackChooser> with WidgetMixin {
         state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
             state.selectedTab == PackTabType.UPGRADE;
 
-    var label = Text("Сунгах сарын тоогоо оруулна уу", style: TextStyle(fontSize: 12),);
+    var label = Text(
+      "Сунгах сарын тоогоо оруулна уу",
+      style: TextStyle(fontSize: 12),
+    );
     Widget backComponent = isUpgradeOrChannel
         ? Column(children: <Widget>[
             Container(

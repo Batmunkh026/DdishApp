@@ -16,6 +16,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
   List<Channel> channels;
   List<Pack> packs;
+  Pack _selectedProduct;
 
   Future<List<Pack>> packStream; //TODO API аас авдаг болсон үед ашиглана
   Future<List<Channel>> channelsStream;
@@ -25,21 +26,13 @@ class PackBloc extends Bloc<PackEvent, PackState> {
     packStream = packRepository.getPacks();
 
     ///fetch хийж дууссан бол
-    loadInitialData().listen((f)=> print("initial data loaded."));
-//    channelsStream = packRepository.getChannels();
+    loadInitialData().listen((f) => print("initial data loaded."));
 
-//    channels = packRepository.channels;
-//    packs = packRepository.packs;
-
-//    default таб нь <Багц Сунгах> байна
-    //TODO api бэлэн болохоор хасаад api аас авсан датаг ашиглана,
-
-//    ServicePackTabState(PackTabType.EXTEND, userApiProvider.fetchActivePacks());
-//    TODO хэрэглэгчийн идэвхитэй багцыг дамжуулах
     return Loading(PackTabType.EXTEND);
   }
-  loadInitialData() async*{
-    yield packStream.then((packs)=>this.packs = packs);
+
+  loadInitialData() async* {
+    yield packStream.then((packs) => this.packs = packs);
     dispatch(PackServiceSelected(PackTabType.EXTEND));
   }
 
@@ -50,16 +43,21 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
       ///сонгогдсон багцын үйлчилгээ нь __нэмэлт суваг__ бол channels үгүй бол packs ыг дамжуулах
       if (event.selectedPackType == PackTabType.ADDITIONAL_CHANNEL) {
-        this.channels = await packRepository.getChannels();
+        //хэрэв бүтээгдэхүүн сонгосон бол тэр бүтээгдэхүүн үгүй бол жагсаалтын эхний бүтээгдэхүүний ID аар авах
+        this.channels = await packRepository.getChannels(
+            _selectedProduct != null
+                ? _selectedProduct.productId
+                : packs.first.productId);
+
         yield PackTabState(event.selectedPackType, channels);
-      }
-      else
+      } else
         this.packs = await packRepository.getPacks();
       yield PackTabState(event.selectedPackType, packs);
     } else if (event is PackTypeSelectorClicked) {
       PackTypeSelectorClicked e = event;
 //      Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
       //TODO нэмэлт сувгуудад багцын төрөл хамаатай эсэхийг тодруулах
+      _selectedProduct = event.selectedPack;
       yield PackSelectionState(event.selectedTab, packs, event.selectedPack);
     } else if (event is ChannelSelected) {
       yield AdditionalChannelState(event.selectedTab, event.selectedChannel);
@@ -70,8 +68,8 @@ class PackBloc extends Bloc<PackEvent, PackState> {
           event.monthToExtend == null)
         yield AdditionalChannelState(event.selectedTab, event.selectedPack);
       else
-        yield SelectedPackPreview(event.selectedTab, event.selectedPack,
-            event.monthToExtend);
+        yield SelectedPackPreview(
+            event.selectedTab, event.selectedPack, event.monthToExtend);
     } else if (event is CustomPackSelected) {
       if (event.selectedPack != null) {
         //багц сонгогдсон
@@ -107,7 +105,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
     }
-    if(!(event is Loading)){
+    if (!(event is Loading)) {
       beforeState = currentState;
       beforeEvent = event;
     }
@@ -127,5 +125,4 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   void selectPackItem(PackTabType selectedPackTabType, dynamic pack) {
     PackItemState(selectedPackTabType, pack);
   }
-
 }

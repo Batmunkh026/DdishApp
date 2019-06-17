@@ -10,7 +10,7 @@ class PackRepository{
   Future<List<Pack>> getPacks(){
     return packApiProvider.fetchPacks();
   }
-  Future<List<Channel>> getChannels(){
-    return packApiProvider.fetchChannels();
+  Future<List<Channel>> getChannels(String productId){
+    return packApiProvider.fetchChannels(productId);
   }
 }
