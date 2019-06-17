@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -10,17 +11,19 @@ class LoginButtonPressed extends LoginEvent {
   final String password;
   final bool rememberUsername;
   final bool useFingerprint;
+  final bool fingerPrintLogin;
 
   LoginButtonPressed({
     @required this.username,
     @required this.password,
     @required this.rememberUsername,
     @required this.useFingerprint,
+    @required this.fingerPrintLogin,
   }) : super([username, password]);
 
   @override
   String toString() =>
-      'LoginButtonPressed { username: $username, password: $password, rememberUsername: $rememberUsername, useFingerprint: $useFingerprint }';
+      'LoginButtonPressed { username: $username, password: $password, rememberUsername: $rememberUsername, useFingerprint: $useFingerprint , fingerPrintLogin: $fingerPrintLogin}';
 }
 class ForgotPass extends LoginEvent{
   @override

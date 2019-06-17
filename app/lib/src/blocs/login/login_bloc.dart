@@ -32,6 +32,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
           password: event.password,
           rememberUsername: event.rememberUsername,
           useFingerprint: event.useFingerprint,
+          fingerPrintLogin: event.fingerPrintLogin,
         );
 
         authenticationBloc.dispatch(LoggedIn(token: token));

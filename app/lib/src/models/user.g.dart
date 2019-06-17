@@ -9,6 +9,7 @@ User _$UserFromJson(Map<String, dynamic> userJson) {
       adminNumber: userJson['adminNumber'] as String,
       userRegNo: userJson['userRegNo'] as String,
       activeProducts: ProductList.fromJson(userJson['activeProducts']),
-      activeCounters: CounterList.fromJson(userJson['activeCounters']));
+      activeCounters: CounterList.fromJson(userJson['activeCounters']),
+      additionalProducts: ProductList.fromJson(userJson['additionalProducts']));
 }
 
