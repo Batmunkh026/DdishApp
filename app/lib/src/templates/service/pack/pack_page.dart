@@ -6,6 +6,7 @@ import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/templates/service/pack/widgets.dart';
 import 'package:ddish/src/utils/constants.dart';
+import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class PackPage extends StatefulWidget {
 }
 
 class PackPageState extends State<PackPage> {
-  var packBloc;
+  PackBloc packBloc;
 
   var packTabs = Constants.servicePackTabs;
 
@@ -73,7 +74,9 @@ class PackPageState extends State<PackPage> {
                 ],
               ),
               //TODO хэрэглэгчийн багцын дуусах хугацааг харуулах
-              new Text(" 09.30.2019", style: fontStyle),
+              //TODO хэрэглэгч олон идэвхитэй багцтай бол аль багцын дуусах хугацааг харуулах???
+              new Text("${DateUtil.formatProductDate(packBloc.user.activeProducts.products.last.endDate)}",
+                  style: fontStyle),
             ],
           ),
         ),

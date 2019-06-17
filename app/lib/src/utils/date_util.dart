@@ -5,6 +5,7 @@ class DateUtil {
   static var timeFormatter = new DateFormat('HH:mm');
   static var parameterFormatter = new DateFormat("yyyyMMdd");
   static var theatreDateFormatter = new DateFormat("dd | MM | yyyy");
+  static var productDateFormatter = new DateFormat("dd.MM.yyyy");
 
   static DateTime toDateTime(String dateTime) {
     return DateTime.parse(dateTime);
@@ -28,6 +29,10 @@ class DateUtil {
 
   static String formatTheatreDate(DateTime dateTime) {
     return theatreDateFormatter.format(dateTime);
+  }
+
+  static String formatProductDate(DateTime dateTime) {
+    return productDateFormatter.format(dateTime);
   }
 
   static bool today(DateTime time) {

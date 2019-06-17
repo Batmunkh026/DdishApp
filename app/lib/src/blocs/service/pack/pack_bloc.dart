@@ -5,10 +5,13 @@ import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
+import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/pack_repository.dart';
+import 'package:ddish/src/repositiories/user_repository.dart';
 
 class PackBloc extends Bloc<PackEvent, PackState> {
   var packRepository = PackRepository();
+  var _userRepository = UserRepository();
 
   PackEvent beforeEvent = null;
   PackState beforeState = null;
@@ -16,8 +19,8 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
   List<Channel> channels;
   List<Pack> packs;
-  Pack _selectedProduct;
-
+  Pack selectedProduct;
+  User user;
   Future<List<Pack>> packStream; //TODO API аас авдаг болсон үед ашиглана
   Future<List<Channel>> channelsStream;
 
@@ -32,7 +35,19 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   }
 
   loadInitialData() async* {
-    yield packStream.then((packs) => this.packs = packs);
+    await _userRepository
+        .getUserInformation()
+        .then((user) => this.user = user);
+
+    await packStream.then((packs) => this.packs = packs);
+
+    //      TODO хэрэглэгчийн сонгосон бүтээгдэхүүн байх эсэх?
+    // TODO pack нэрийг бүтээгдэхүүн болгож сольсоны дараа устгах
+    selectedProduct = packs.firstWhere(
+        (pack) =>
+            pack.productId == user.activeProducts.products.last.productId,
+        orElse: () => packs.first);
+
     dispatch(PackServiceSelected(PackTabType.EXTEND));
   }
 
@@ -44,20 +59,16 @@ class PackBloc extends Bloc<PackEvent, PackState> {
       ///сонгогдсон багцын үйлчилгээ нь __нэмэлт суваг__ бол channels үгүй бол packs ыг дамжуулах
       if (event.selectedPackType == PackTabType.ADDITIONAL_CHANNEL) {
         //хэрэв бүтээгдэхүүн сонгосон бол тэр бүтээгдэхүүн үгүй бол жагсаалтын эхний бүтээгдэхүүний ID аар авах
-        this.channels = await packRepository.getChannels(
-            _selectedProduct != null
-                ? _selectedProduct.productId
-                : packs.first.productId);
+        this.channels =
+            await packRepository.getChannels(selectedProduct.productId);
 
         yield PackTabState(event.selectedPackType, channels);
       } else
         this.packs = await packRepository.getPacks();
       yield PackTabState(event.selectedPackType, packs);
     } else if (event is PackTypeSelectorClicked) {
-      PackTypeSelectorClicked e = event;
 //      Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
       //TODO нэмэлт сувгуудад багцын төрөл хамаатай эсэхийг тодруулах
-      _selectedProduct = event.selectedPack;
       yield PackSelectionState(event.selectedTab, packs, event.selectedPack);
     } else if (event is ChannelSelected) {
       yield AdditionalChannelState(event.selectedTab, event.selectedChannel);
