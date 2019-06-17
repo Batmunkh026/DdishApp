@@ -10,36 +10,47 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class BranchLocationView extends StatefulWidget {
-  MenuBloc bloc;
   @override
   State<StatefulWidget> createState() => BranchLocationState();
 }
 
 class BranchLocationState extends State<BranchLocationView> {
+  final MenuBloc bloc = MenuBloc();
+
+  List<Branch> branches = [];
+  bool _loading = true;
+
   Completer<GoogleMapController> _mapController = Completer();
 
   final _branchFilterStreamController = StreamController<BranchFilter>();
   final _filteredBranchesStreamController = StreamController<List<Branch>>();
 
-  Branch selectedBranch = Branch.empty();
-
-  List<Branch> branches;
+  Branch selectedBranch = null;
 
   var textStyle =
-  TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 12);
+      TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 12);
 
   @override
   void initState() {
-    widget.bloc = BlocProvider.of<MenuBloc>(context);
-    branches = widget.bloc.getDemoBranchLocations();
+    bloc.getBranchData().then((branches) {
+      setState(() {
+        _loading = false;
+        this.branches = branches;
+        _filteredBranchesStreamController.sink.add(branches);
+      });
+    });
 
-    _filteredBranchesStreamController.sink.add(branches);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height * 0.4;
+
+    if (_loading)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
 
     return Expanded(
       child: Column(
@@ -80,7 +91,7 @@ class BranchLocationState extends State<BranchLocationView> {
   ///шүүх
   filterBranches({String city, String type, String state, String service}) {
     var newFilter =
-    BranchFilter(city: city, type: type, state: state, service: service);
+        BranchFilter(city: city, type: type, state: state, service: service);
 
     _branchFilterStreamController.stream.listen((oldFilter) {
       if (newFilter.city.isEmpty && oldFilter.city.isNotEmpty)
@@ -130,18 +141,18 @@ class BranchLocationState extends State<BranchLocationView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           createSelector("Хот, Аймаг", mapToCities(branches),
-                  (city) => filterBranches(city: city)),
+              (city) => filterBranches(city: city)),
           createSelector("Салбарын төрөл", mapToTypes(branches),
-                  (type) => filterBranches(type: type)),
+              (type) => filterBranches(type: type)),
         ],
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           createSelector("Салбарын төлөв", mapToStates(branches),
-                  (branchState) => filterBranches(state: branchState)),
+              (branchState) => filterBranches(state: branchState)),
           createSelector("Үзүүлэх үйлчилгээ", mapToServices(branches),
-                  (service) => filterBranches(service: service)),
+              (service) => filterBranches(service: service)),
         ],
       ),
     ];
@@ -149,7 +160,7 @@ class BranchLocationState extends State<BranchLocationView> {
 
   ///сонгосон салбарын цагийн хуваарь, байршлын мэдээлэл
   Widget createInfoOfSelectedbranch() {
-    List<String> weekRange = selectedBranch.weekRange;
+    if (selectedBranch == null) return Container();
 
     return Padding(
       padding: EdgeInsets.all(10),
@@ -168,21 +179,21 @@ class BranchLocationState extends State<BranchLocationView> {
                 child: RichText(
                   softWrap: true,
                   text:
-                  TextSpan(text: selectedBranch.address, style: textStyle),
+                      TextSpan(text: selectedBranch.address, style: textStyle),
                 ),
               ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    weekRange.isEmpty ? "" : weekRange[0],
-                    style: textStyle,
-                  ),
-                  Text(
-                    weekRange.isEmpty ? "" : weekRange[1],
-                    style: textStyle,
+              Column(children: createTimeTableWidgets(selectedBranch)
+//                    <Widget>[
+//                  Text(
+//                    timeTable.isEmpty ? "" : timeTable[0],
+//                    style: textStyle,
+//                  ),
+//                  Text(
+//                    timeTable.isEmpty ? "" : timeTable[1],
+//                    style: textStyle,
+//                  )
+//                ],
                   )
-                ],
-              )
             ],
           )
         ],
@@ -193,7 +204,7 @@ class BranchLocationState extends State<BranchLocationView> {
   GoogleMap createGoogleMap() {
     final CameraPosition defaultPosition = CameraPosition(
       target: LatLng(47.9179405, 106.9132983),
-      zoom: 14.4746,
+      zoom: 10.4746,
     );
     return GoogleMap(
       markers: branches
@@ -208,22 +219,23 @@ class BranchLocationState extends State<BranchLocationView> {
 
   Marker createMarker(double latitude, double longitude, Branch branch,
       {double width = 180,
-        double height = 180,
-        IconData iconData,
-        Color color}) {
+      double height = 180,
+      IconData iconData,
+      Color color}) {
     var position = LatLng(latitude, longitude);
 
     return Marker(
-        markerId: MarkerId(position.toString()),
-        position: position,
-        infoWindow: InfoWindow(
-          title: branch.name,
-          snippet: branch.address + " - " + branch.weekRange.toString(),
-        ),
-        icon: BitmapDescriptor.defaultMarker,
-        onTap: () => setState(() {
-          this.selectedBranch = branch;
-        }));
+      markerId: MarkerId(position.toString()),
+      position: position,
+      infoWindow: InfoWindow(
+        title: branch.name,
+        snippet: branch.address,
+      ),
+      icon: BitmapDescriptor.defaultMarker,//TODO хээлттэй хаалттайгаар ялгаатай icon өгөх
+      onTap: () => setState(() {
+            this.selectedBranch = branch;
+          }),
+    );
   }
 
   @override
@@ -231,5 +243,14 @@ class BranchLocationState extends State<BranchLocationView> {
     _branchFilterStreamController.close();
     _filteredBranchesStreamController.close();
     super.dispose();
+  }
+
+  List<Widget> createTimeTableWidgets(Branch selectedBranch) {
+    return selectedBranch.timeTable.split("&&&").map((dayAndTime) {
+      List dayTimes = dayAndTime.split("@");
+      List<String> days = dayTimes[0].split(",");
+      String time = dayTimes[1];
+      return Text("${days.first} - ${days.last}: $time", style: textStyle);
+    }).toList();
   }
 }
