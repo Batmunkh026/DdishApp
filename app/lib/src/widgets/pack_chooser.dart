@@ -1,5 +1,3 @@
-import 'package:ddish/src/models/month_price.dart';
-import 'package:ddish/src/models/pack.dart';
 import 'package:flutter/material.dart';
 
 class PackNavigator extends PopupRoute {

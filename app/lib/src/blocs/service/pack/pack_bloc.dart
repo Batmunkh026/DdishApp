@@ -23,30 +23,39 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   @override
   PackState get initialState {
     packStream = packRepository.getPacks();
-    channelsStream = packRepository.getChannels();
 
-    channels = packRepository.channels;
-    packs = packRepository.packs;
+    ///fetch хийж дууссан бол
+    loadInitialData().listen((f)=> print("initial data loaded."));
+//    channelsStream = packRepository.getChannels();
+
+//    channels = packRepository.channels;
+//    packs = packRepository.packs;
 
 //    default таб нь <Багц Сунгах> байна
     //TODO api бэлэн болохоор хасаад api аас авсан датаг ашиглана,
 
 //    ServicePackTabState(PackTabType.EXTEND, userApiProvider.fetchActivePacks());
 //    TODO хэрэглэгчийн идэвхитэй багцыг дамжуулах
-    return PackTabState(PackTabType.EXTEND, packRepository.packs);
+    return Loading(PackTabType.EXTEND);
+  }
+  loadInitialData() async*{
+    yield packStream.then((packs)=>this.packs = packs);
+    dispatch(PackServiceSelected(PackTabType.EXTEND));
   }
 
   @override
   Stream<PackState> mapEventToState(PackEvent event) async* {
     if (event is PackServiceSelected) {
-      ///сонгогдсон багцын үйлчилгээ нь __нэмэлт суваг__ бол channels үгүй бол packs ыг дамжуулах
+      yield Loading(event.selectedPackType);
 
-      var dataForSelectedTab =
-          event.selectedPackType == PackTabType.ADDITIONAL_CHANNEL
-              ? channels
-              : packs;
-      yield updateServicePackTabState(
-          event.selectedPackType, dataForSelectedTab);
+      ///сонгогдсон багцын үйлчилгээ нь __нэмэлт суваг__ бол channels үгүй бол packs ыг дамжуулах
+      if (event.selectedPackType == PackTabType.ADDITIONAL_CHANNEL) {
+        this.channels = await packRepository.getChannels();
+        yield PackTabState(event.selectedPackType, channels);
+      }
+      else
+        this.packs = await packRepository.getPacks();
+      yield PackTabState(event.selectedPackType, packs);
     } else if (event is PackTypeSelectorClicked) {
       PackTypeSelectorClicked e = event;
 //      Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
@@ -57,11 +66,12 @@ class PackBloc extends Bloc<PackEvent, PackState> {
     } else if (event is PackItemSelected) {
       assert(event.selectedPack != null);
       //багц сонгогдсон
-      if (event.selectedTab == PackTabType.ADDITIONAL_CHANNEL && event.selectedItemForPack == null)
+      if (event.selectedTab == PackTabType.ADDITIONAL_CHANNEL &&
+          event.monthToExtend == null)
         yield AdditionalChannelState(event.selectedTab, event.selectedPack);
       else
         yield SelectedPackPreview(event.selectedTab, event.selectedPack,
-            event.selectedItemForPack.monthToExtend);
+            event.monthToExtend);
     } else if (event is CustomPackSelected) {
       if (event.selectedPack != null) {
         //багц сонгогдсон
@@ -97,9 +107,10 @@ class PackBloc extends Bloc<PackEvent, PackState> {
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
     }
-
-    beforeState = currentState;
-    beforeEvent = event;
+    if(!(event is Loading)){
+      beforeState = currentState;
+      beforeEvent = event;
+    }
   }
 
   /// Багц эсвэл нэмэлт суваг сонголт
@@ -108,25 +119,8 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   ///
   /// **dataForSelectedPackType** - сонгосон багцад харгалзах дата
   PackTabState updateServicePackTabState(
-      PackTabType selectedPackType, List<dynamic> dataForSelectedPackType) {
-    var items;
-    if (selectedPackType == PackTabType.UPGRADE)
-      items = packRepository.getPacks();
-    else if (selectedPackType == PackTabType.ADDITIONAL_CHANNEL)
-      items = packRepository.getChannels();
-    else if (selectedPackType == PackTabType.EXTEND)
-      items = packRepository.getPacks();
-    else
-      throw UnsupportedError("Дэмжигдэхгүй төлөв байна! $selectedPackType");
-
-//      TODO api бэлэн болохоор comment ыг болиулах, demo data - г дамжуулж буй хэсгийг устгах
-//      items.then((value) => ServicePackTabState(event.selectedPackType, value));
-
-    return PackTabState(
-        selectedPackType,
-        selectedPackType == PackTabType.ADDITIONAL_CHANNEL
-            ? channels
-            : dataForSelectedPackType);
+      PackTabType selectedPackType, List<dynamic> itemsForSelectedTab) {
+    return PackTabState(selectedPackType, itemsForSelectedTab);
   }
 
   ///Багцын хугацааа&үнийн дүнгийн төрөл сонгох
@@ -134,23 +128,4 @@ class PackBloc extends Bloc<PackEvent, PackState> {
     PackItemState(selectedPackTabType, pack);
   }
 
-  /// Багц сунгах төлвийн дата дамжуулах
-  ///
-  /// Хэрэглэгч багц сунгах төлвийг сонгосон үед ашиглана
-  ///
-  /// parameters:
-  ///
-  /// **currentPackTabState** - одоогийн сонгогдсон багцын төлөв
-  ///
-  /// **selectedPack** - сонгосон багц , default value: **[PackTabType.EXTEND]**
-  ///
-  /// See also:
-  ///
-  /// * [PackTabType] багцын төлвийн төрөл
-  ///
-  /// * [Pack] Багц
-  void updatePackExtendTabState(
-      PackTabType currentPackTabState, Pack selectedPack) {
-    PackTabState(currentPackTabState, selectedPack.packsForMonth);
-  }
 }

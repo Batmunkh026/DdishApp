@@ -20,6 +20,9 @@ abstract class PackState extends Equatable {
       selectedPack = initialItems.first;
   }
 }
+class Loading extends PackState{
+  Loading(PackTabType selectedTab) : super(selectedTab, [], null);
+}
 
 ///#Багцын үйлчилгээний төрөл өөрчлөгдөх төлөв
 ///

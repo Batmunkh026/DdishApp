@@ -2,6 +2,7 @@ import 'package:ddish/src/models/district.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/tab_menu.dart';
 import 'package:ddish/src/templates/menu/component/branch_location.dart';
+import 'package:ddish/src/utils/events.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/templates/menu/menu.dart';
 import 'package:ddish/src/templates/menu/order/order_widget.dart';
@@ -14,16 +15,15 @@ class Constants {
     TabMenuItem("", Icons.menu, TabState.MENU),
   ];
 
-  static const serviceTabs = const [
+  static const serviceTabs = const[
     TabMenuItem("Данс", Icons.arrow_drop_down, ServiceTabType.ACCOUNT),
     TabMenuItem("Багц", Icons.arrow_drop_down, ServiceTabType.PACK),
     TabMenuItem("Кино", Icons.arrow_drop_down, ServiceTabType.MOVIE),
   ];
 
-  static const servicePackTabs = const [
+  static const servicePackTabs = const[
     TabMenuItem("Сунгах", Icons.arrow_drop_down, PackTabType.EXTEND),
-    TabMenuItem("Нэмэлт сувгууд", Icons.arrow_drop_down,
-        PackTabType.ADDITIONAL_CHANNEL),
+    TabMenuItem("Нэмэлт сувгууд", Icons.arrow_drop_down, PackTabType.ADDITIONAL_CHANNEL),
     TabMenuItem("Ахиулах", Icons.arrow_drop_down, PackTabType.UPGRADE),
   ];
 
@@ -33,8 +33,9 @@ class Constants {
     PackTabType.UPGRADE: "багцыг",
   };
 
-  static String createPermissionContentStr(
-      PackTabType packTab, contentToBuy, time, payment) {
+  static const List<int> extendableMonths = [1,2,3,6,12];
+
+  static String createPermissionContentStr(PackTabType packTab, contentToBuy, int time, payment){
     return "Та $contentToBuy ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
   }
 
@@ -79,6 +80,7 @@ class Constants {
     ),
     Menu(
       title: '7777-1434',
+      event: () => Events().callEvent('7777-1434')
     ),
     Menu(
         title: 'Гарах',

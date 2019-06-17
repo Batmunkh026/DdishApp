@@ -111,7 +111,7 @@ class MenuPageState extends State<MenuPage> {
         ),
         contentPadding: root ? null : const EdgeInsets.only(left: 30.0),
         title: _buildTitle(menu.title),
-        onTap: () => onMenuTap(menu),
+        onTap: () => menu.screen == null && menu.event != null ? Future(menu.event) : onMenuTap(menu),
       );
     }
     return ExpansionTile(

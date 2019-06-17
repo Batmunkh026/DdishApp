@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/service/pack/pack_bloc.dart';
 import 'package:ddish/src/blocs/service/pack/pack_event.dart';
 import 'package:ddish/src/blocs/service/pack/pack_state.dart';
 import 'package:ddish/src/models/channel.dart';
-import 'package:ddish/src/models/month_price.dart';
 import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
@@ -12,7 +12,7 @@ import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 
-class PackGridPicker extends StatelessWidget  with WidgetMixin {
+class PackGridPicker extends StatelessWidget with WidgetMixin {
   PackBloc _bloc;
   var _state;
   var _stateTab;
@@ -83,13 +83,12 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
     else if (_stateTab == PackTabType.UPGRADE)
       return _buildPackUpgradeContents();
 
-    List<dynamic> items = _pack.packsForMonth;
-
     //багц сунгах бол
-    List<Widget> _contentItems =
-        items.map((item) => _createComponentForPick(item)).toList();
+    List<Widget> _contentItems = Constants.extendableMonths
+        .map((month) => _createComponentForPick(month, _pack))
+        .toList();
 
-    _contentItems.add(_createComponentForPick(null));
+    _contentItems.add(_createComponentForPick(null, _pack));
     return _contentItems;
   }
 
@@ -99,17 +98,17 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
     List<Widget> _contentItems = [];
 
     if (_isChannelDetail) {
-      for (final item in _pack
-          .packsForMonth) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
-        _contentItems.add(_createComponentForPick(item));
+      for (final month in Constants
+          .extendableMonths) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
+        _contentItems.add(_createComponentForPick(month, _pack));
 
       ///Өөр сонголт оруулах button <нэмэлт суваг сонгох талбар биш бол харуулна>
-      _contentItems.add(_createComponentForPick(null));
+      _contentItems.add(_createComponentForPick(null, _pack));
     } else
       for (final channel
           in _pack) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
         _contentItems
-            .add(_createComponentForPick(channel, isChannelPicker: true));
+            .add(_createComponentForPick(0, channel, isChannelPicker: true));
     return _contentItems;
   }
 
@@ -118,22 +117,24 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
     for (final Pack pack in _pack) {
       List<Widget> children = [];
 //    багцын лого бүхий component ыг эхлээд нэмэх, түүний араас тухайн багцад хамаар үнэ&хугацааны багцуудыг нэмэх
-      children
-          .add(Flexible(child: Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3MRKwxiDqhRXW7hIGX5tmoVvR9lWFzlSmEW8RetVhsAh9Ccaj'))); //channelPackImage
+      children.add(Flexible(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: CachedNetworkImage(
+            imageUrl: pack.image,
+            placeholder: (context, url) => Text(pack.name),
+            fit: BoxFit.contain,
+          ),
+        ),
+      )); //channelPackImage
 
-      List<Widget> itemsOfChannel = pack.packsForMonth
-          .map((item) => Expanded(
-//                child: Padding(
-//                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                child: _createComponentForPick(item, selectedPack: pack),
-//                ),
-              ))
+      List<Widget> itemsOfChannel = Constants.extendableMonths
+          .map((month) => Expanded(child: _createComponentForPick(month, pack)))
           .toList();
 
       children.addAll(itemsOfChannel);
 
-      children.add(
-          Expanded(child: _createComponentForPick(null, selectedPack: pack)));
+      children.add(Expanded(child: _createComponentForPick(null, pack)));
 
       Column packContainer = Column(children: children);
       _contentItems.add(packContainer);
@@ -142,8 +143,8 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
     return _contentItems;
   }
 
-  Widget _createComponentForPick(dynamic item,
-      {Pack selectedPack, isChannelPicker = false}) {
+  Widget _createComponentForPick(dynamic item, dynamic selectedPack,
+      {isChannelPicker = false}) {
     List<Widget> children = [
       Text(
         "Өөр сонголт хийх",
@@ -153,8 +154,8 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
 
     if (item != null)
       children = isChannelPicker
-          ? [Flexible(child: Image.network(item.productId))]
-          : [Text("${item.monthToExtend} сар"), Text("₮${item.price}")];
+          ? [Flexible(child: Image.network(item.image))]
+          : [Text("${item} сар"), Text("₮${item * selectedPack.price}")];
 
     return Card(
       elevation: 0,
@@ -183,7 +184,7 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
               _bloc.dispatch(PackItemSelected(_state.selectedTab, item, null));
             else {
               var event = PackItemSelected(_state.selectedTab, selected, item);
-                openPermissionDialog(_bloc, _context, event, item);
+              openPermissionDialog(_bloc, _context, event, item);
             }
           }),
     );
@@ -206,7 +207,7 @@ class PackGridPicker extends StatelessWidget  with WidgetMixin {
   }
 }
 
-class PackPaymentPreview extends StatelessWidget{
+class PackPaymentPreview extends StatelessWidget {
   final PackBloc _bloc;
   PackPaymentPreview(this._bloc);
 
@@ -226,12 +227,20 @@ class PackPaymentPreview extends StatelessWidget{
             state.selectedTab == PackTabType.UPGRADE;
 
     contentsForGrid.add(isUpgradeOrChannel
-        ? Image.network(state.selectedPack.productId)
-        : Text(state.selectedPack.productName, style: style));
+        ? Padding(
+            padding: EdgeInsets.only(right: 40, bottom: 15),
+            child: CachedNetworkImage(
+              imageUrl: state.selectedPack.image,
+              placeholder: (context, url) => Text(state.selectedPack.name),
+              fit: BoxFit.contain,
+            ))
+        : Text(state.selectedPack.name, style: style));
     contentsForGrid.add(Text("${state.monthToExtend} сар", style: style));
 
 //      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
-    contentsForGrid.add(Text("₮0", style: style));
+    contentsForGrid.add(Text(
+        "₮${state.selectedPack.price * state.monthToExtend}",
+        style: style));
 
     return Scaffold(
       body: Column(
@@ -292,32 +301,43 @@ class PackPaymentPreview extends StatelessWidget{
   }
 }
 
-class CustomPackChooser extends StatelessWidget with WidgetMixin {
+class CustomPackChooser extends StatefulWidget {
   PackBloc _bloc;
 
   CustomPackChooser(this._bloc);
 
-  get _monthValueController => TextEditingController();
+  @override
+  State<StatefulWidget> createState() => CustomPackChooserState();
+}
+
+class CustomPackChooserState extends State<CustomPackChooser> with WidgetMixin {
+  String paymentPreview = "0";
+  String customMonthValue = "0";
 
   @override
   Widget build(BuildContext context) {
-    String input;
-    var state = _bloc.currentState;
+    var state = widget._bloc.currentState;
     var isUpgradeOrChannel =
         state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
             state.selectedTab == PackTabType.UPGRADE;
 
-    var label = Text("Сунгах сарын тоогоо оруулна уу");
+    var label = Text("Сунгах сарын тоогоо оруулна уу", style: TextStyle(fontSize: 12),);
     Widget backComponent = isUpgradeOrChannel
         ? Column(children: <Widget>[
             Container(
               height: 60,
-              child: Image.network(state.selectedPack.productId),
+              child: Padding(
+                padding: EdgeInsets.only(right: 40, left: 40, top: 20),
+                child: CachedNetworkImage(
+                  imageUrl: state.selectedPack.image,
+                  placeholder: (context, url) => Text(state.selectedPack.name),
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             label
           ])
         : label;
-
     return ListView(
       padding: EdgeInsets.all(20),
       children: [
@@ -326,20 +346,27 @@ class CustomPackChooser extends StatelessWidget with WidgetMixin {
             FlatButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[Icon(Icons.arrow_back_ios), backComponent],
+                children: <Widget>[
+                  Icon(Icons.arrow_back_ios),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.55,
+                    child: backComponent,
+                  )
+                ],
               ),
               //TODO back to previous page
-              onPressed: () => _bloc
-                  .dispatch(BackToPrevState(_bloc.currentState.selectedTab)),
+              onPressed: () => widget._bloc.dispatch(
+                  BackToPrevState(widget._bloc.currentState.selectedTab)),
             ),
             Card(
               margin: EdgeInsets.all(40),
               child: TextField(
                 decoration: InputDecoration(border: OutlineInputBorder()),
-                controller: _monthValueController,
-                onChanged: (value) {
-                  input = value;
-                },
+                onChanged: (value) => setState(() {
+                      customMonthValue = value;
+                      paymentPreview =
+                          "${(value.isEmpty ? 0 : int.parse(value)) * state.selectedPack.price}";
+                    }),
                 autofocus: true,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
@@ -347,21 +374,12 @@ class CustomPackChooser extends StatelessWidget with WidgetMixin {
             Text("Сунгах сарын үнийн дүн"),
             Padding(
               padding: EdgeInsets.all(30),
-
-              ///TODO яаж тооцох???
-              child: Text("₮59'600",
+              child: Text("₮${paymentPreview}",
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             SubmitButton(
                 text: "Сунгах",
-                onPressed: () {
-                  var time = _toInt(input);
-                  var event = PreviewSelectedPack(
-                      state.selectedTab, state.selectedPack, time);
-
-                  //TODO сарыг өөр дүнгээр оруулсан үед үнийг тооцох
-                  openPermissionDialog(_bloc, context, event, MonthAndPriceToExtend(time, 0));
-                },
+                onPressed: () => toExtend(state),
                 verticalMargin: 0,
                 horizontalMargin: 0)
           ],
@@ -372,5 +390,14 @@ class CustomPackChooser extends StatelessWidget with WidgetMixin {
 
   int _toInt(String text) {
     return text.isEmpty ? 0 : int.parse(text);
+  }
+
+  toExtend(state) {
+    var time = _toInt(customMonthValue);
+    var event =
+        PreviewSelectedPack(state.selectedTab, state.selectedPack, time);
+
+    //TODO сарыг өөр дүнгээр оруулсан үед үнийг тооцох
+    openPermissionDialog(widget._bloc, context, event, time);
   }
 }

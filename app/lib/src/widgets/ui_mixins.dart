@@ -6,7 +6,7 @@ import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 
 mixin WidgetMixin {
-  openPermissionDialog(bloc, context, PackEvent event, item) {
+  openPermissionDialog(bloc, context, PackEvent event, monthToExtend) {
 //Багц сунгах төлбөр төлөлтийн үр дүн
     ActionButton chargeAccountBtn = ActionButton(
         title: 'Тийм', onTap: () => _confirmed(bloc, context, event));
@@ -22,7 +22,7 @@ mixin WidgetMixin {
               fontStyle: FontStyle.normal,
               fontSize: 15.0)),
       content: Text(Constants.createPermissionContentStr(
-          bloc.currentState.selectedTab, bloc.currentState.selectedPack.productName, item.monthToExtend, item.price)),
+          bloc.currentState.selectedTab, bloc.currentState.selectedPack.name, monthToExtend, bloc.currentState.selectedPack.price * monthToExtend)),
       actions: [chargeAccountBtn, closeDialog],
     );
 //    paymentResultDialog.
