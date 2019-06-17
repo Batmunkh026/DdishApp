@@ -252,26 +252,27 @@ class ProgramDescription extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(
-              hasDivider: false,
-              content: SizedBox(
-                  height: 500.0,
-                  child: Stack(
-                    children: <Widget>[
-                      Image.network(
-                        content.posterUrl,
-                        fit: BoxFit.contain,
-                      ),
-                      Align(
-                          alignment: Alignment.bottomCenter,
-                          child: DialogCloseButton(
-                            onTap: () => Navigator.pop(context),
-                          ))
-                    ],
-                  )),
-            ),
-          );
+              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+              child: Stack(
+                children: <Widget>[
+                  CustomDialog(
+                    padding: const EdgeInsets.all(0.0),
+                    hasDivider: false,
+                    content: Image.network(
+                      content.posterUrl,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  Align(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child:
+                      DialogCloseButton(onTap: () => Navigator.pop(context)),
+                    ),
+                    alignment: Alignment.bottomCenter,
+                  )
+                ],
+              ));
         });
   }
 }
