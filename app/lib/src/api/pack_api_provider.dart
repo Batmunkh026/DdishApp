@@ -44,4 +44,20 @@ class PackApiProvider extends BaseApiProvider {
       throw (e);
     }
   }
+
+  Future<List<Pack>> fetchPacksToUpgrade(String productId) async{
+    try {
+      final _response = await client.read('${globals.serverEndpoint}/productList?productId=$productId');
+      var _productList = json.decode(_response) as Map;
+
+
+      if(_productList["isSuccess"])
+        return List<Pack>.from(_productList["upProducts"].map((pack) => Pack.fromJson(pack)));
+
+      return [];
+    } on http.ClientException catch (e) {
+      // TODO catch SocketException
+      throw (e);
+    }
+  }
 }

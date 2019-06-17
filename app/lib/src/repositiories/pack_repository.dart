@@ -13,4 +13,8 @@ class PackRepository{
   Future<List<Channel>> getChannels(String productId){
     return packApiProvider.fetchChannels(productId);
   }
+
+  Future<List<Pack>> getPacksToUpgrade(String productId) {
+    return packApiProvider.fetchPacksToUpgrade(productId);
+  }
 }

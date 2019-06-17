@@ -63,7 +63,11 @@ class PackBloc extends Bloc<PackEvent, PackState> {
             await packRepository.getChannels(selectedProduct.productId);
 
         yield PackTabState(event.selectedPackType, channels);
-      } else
+      } else if(event.selectedPackType == PackTabType.UPGRADE)//багц ахиулах бол
+
+        //TODO хэрэглэгчийн аль бүтээгдэхүүний ID авах
+        this.packs = await packRepository.getPacksToUpgrade(user.activeProducts.products.last.productId);
+      else
         this.packs = await packRepository.getPacks();
       yield PackTabState(event.selectedPackType, packs);
     } else if (event is PackTypeSelectorClicked) {
