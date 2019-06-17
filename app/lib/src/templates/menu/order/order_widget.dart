@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ddish/src/blocs/menu/order/order_bloc.dart';
 import 'package:ddish/src/blocs/menu/order/order_event.dart';
 import 'package:ddish/src/blocs/menu/order/order_state.dart';
@@ -5,13 +7,15 @@ import 'package:ddish/src/models/district.dart';
 import 'package:ddish/src/models/order.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/repositiories/menu_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:ddish/src/utils/constants.dart';
+import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:ddish/src/widgets/message.dart' as message;
-import 'package:ddish/src/utils/constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'style.dart' as style;
 
 class OrderWidget extends StatefulWidget {
   final String orderType;
@@ -121,8 +125,23 @@ class OrderWidgetState extends State<OrderWidget> {
   }
 
   showMessage(Result result) {
-    if (result.isSuccess)
-      message.show(context, result.resultMessage, message.SnackBarType.SUCCESS);
+    List<Widget> actions = new List();
+    ActionButton closeDialog = ActionButton(title: 'Хаах', onTap: () => Navigator.pop(context),);
+    actions.add(closeDialog);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: CustomDialog(
+              title: Text('Санамж',
+                  textAlign: TextAlign.center,
+                  style: style.dialogTitleStyle),
+              content: Text(result.resultMessage, style: style.messageStyle,),
+              actions: actions,
+            ),
+          );
+        });
   }
 
   onOrderTap() {
