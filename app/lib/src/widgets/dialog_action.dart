@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ActionButton extends StatelessWidget {
   String title;
-  var onTap;
+  VoidCallback onTap;
 
   ActionButton({this.title, this.onTap});
 

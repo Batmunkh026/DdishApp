@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 class DateUtil {
@@ -13,6 +14,11 @@ class DateUtil {
 
   static String formatDateTime(DateTime dateTime) {
     return formatter.format(dateTime);
+  }
+
+  static String formatParamDateString(String date) {
+    debugPrint(formatParamDate(toDateTime(date)));
+    return formatParamDate(toDateTime(date));
   }
 
   static String formatParamDate(DateTime dateTime) {

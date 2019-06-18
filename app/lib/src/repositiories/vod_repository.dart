@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/program_response.dart';
+import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/models/vod_channel_response.dart';
 import 'package:ddish/src/utils/date_util.dart';
-import 'package:ddish/src/models/movie.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'globals.dart' as globals;
 
@@ -54,5 +54,17 @@ class VodRepository {
 
     var decoded = json.decode(response);
     return Movie.fromJson(decoded);
+  }
+
+  Future<Result> chargeProduct(Program program) async {
+    var response;
+    try {
+      response = await globals.client.read('${globals.serverEndpoint}/chargeProduct?productId=${program.productId}&smsCode=${program.smsCode}&inDate=${DateUtil.formatParamDateString(program.beginDate)}');
+    } on Exception catch(e) {
+      throw(e);
+    }
+
+    var decoded = json.decode(response);
+    return Result.fromJson(decoded);
   }
 }

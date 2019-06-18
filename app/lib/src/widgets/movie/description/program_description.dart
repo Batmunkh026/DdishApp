@@ -1,107 +1,196 @@
 import 'dart:ui';
 
+import 'package:ddish/src/blocs/service/movie/description_bloc.dart';
+import 'package:ddish/src/blocs/service/movie/description_event.dart';
+import 'package:ddish/src/blocs/service/movie/description_state.dart';
 import 'package:ddish/src/models/movie.dart';
+import 'package:ddish/src/models/program.dart';
+import 'package:ddish/src/models/result.dart';
+import 'package:ddish/src/models/vod_channel.dart';
+import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'detail_button.dart';
 import 'dialog_close.dart';
 import 'style.dart' as style;
 
-class ProgramDescription extends StatelessWidget {
-  final Movie program;
-  final String beginDate;
-  BuildContext context;
+class ProgramDescription extends StatefulWidget {
+  final Movie content;
+  final VodChannel channel;
+  final Program selectedProgram;
 
-  ProgramDescription({this.program, this.beginDate});
+  ProgramDescription({this.content, this.channel, this.selectedProgram});
+
+  @override
+  State<StatefulWidget> createState() => ProgramDescriptionStatus();
+}
+
+class ProgramDescriptionStatus extends State<ProgramDescription> {
+  Movie _content;
+  String _beginDate;
+  VodRepository _repository;
+  ProgramDescriptionBloc _bloc;
+
+  @override
+  initState() {
+    _content = widget.content;
+    _beginDate = widget.selectedProgram.beginDate;
+    _repository = VodRepository();
+    _bloc = ProgramDescriptionBloc(vodRepository: _repository);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
     final height = MediaQuery.of(context).size.height;
-    return Column(
-      children: <Widget>[
-        Row(
+    return BlocBuilder<DescriptionEvent, DescriptionState>(
+      bloc: _bloc,
+      builder: (BuildContext context, DescriptionState state) {
+        bool alreadyRented =
+//            widget.selectedProgram.isRented ||
+            state is RentRequestFinished && state.result.isSuccess == true;
+        if (state is RentRequestFinished)
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => showResultMessage(state.result));
+        return Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                height: height / 4,
-                child: Image.network(
-                  program.posterUrl,
-                  fit: BoxFit.contain,
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: SizedBox(
+                    height: height / 4,
+                    child: Image.network(
+                      _content.posterUrl,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-              ),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                        child: Text(_content.contentNameMon,
+                            style: style.programTitleStyle),
+                      ),
+                      Visibility(
+                        visible: _content.contentGenres != null &&
+                            _content.contentGenres.isNotEmpty,
+                        child: Text(_content.contentGenres,
+                            style: style.programGenresStyle),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(DateUtil.formatStringTime(_beginDate),
+                            style: style.programStartTimeStyle),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: Text('${_content.contentPrice} ₮',
+                            style: style.priceStyle),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Padding(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  SizedBox(
-                    child: Text(program.contentNameMon,
-                        style: style.programTitleStyle),
+                  DetailButton(
+                    text: 'Тайлбар',
+                    onTap: _content.contentDescr != null ||
+                            _content.contentDescr.isNotEmpty
+                        ? () => showOverview(_content)
+                        : null,
                   ),
-                  Visibility(
-                    visible: program.contentGenres != null &&
-                        program.contentGenres.isNotEmpty,
-                    child: Text(program.contentGenres,
-                        style: style.programGenresStyle),
+                  DetailButton(
+                    text: 'Видео',
+                    onTap: _content.trailerUrl.length == 11
+                        ? () => showTrailer(_content)
+                        : null,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Text(DateUtil.formatStringTime(beginDate),
-                        style: style.programStartTimeStyle),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: Text('${program.contentPrice} ₮',
-                        style: style.priceStyle),
+                  DetailButton(
+                    text: 'Зураг',
+                    onTap: _content.posterUrl != null &&
+                            _content.posterUrl.isNotEmpty
+                        ? () => showPoster(_content)
+                        : null,
                   ),
                 ],
               ),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+            ),
+            Container(
+              child: state is RentRequestProcessing
+                  ? CircularProgressIndicator()
+                  : SubmitButton(
+                      text: alreadyRented ? 'Түрээслэсэн' : 'Түрээслэх',
+                      onPressed: alreadyRented ||
+                              DateUtil.toDateTime(_beginDate)
+                                  .isBefore(DateTime.now())
+                          ? null
+                          : () => onRentButtonTap(),
+                      horizontalMargin: 50.0,
+                    ),
             )
           ],
-        ),
-        Padding(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              DetailButton(
-                text: 'Тайлбар',
-                onTap: program.contentDescr != null ||
-                        program.contentDescr.isNotEmpty
-                    ? () => showOverview(program)
-                    : null,
-              ),
-              DetailButton(
-                text: 'Видео',
-                onTap: program.trailerUrl.length == 11
-                    ? () => showTrailer(program)
-                    : null,
-              ),
-              DetailButton(
-                text: 'Зураг',
-                onTap: program.posterUrl != null && program.posterUrl.isNotEmpty
-                    ? () => showPoster(program)
-                    : null,
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-        ),
-        SubmitButton(
-          text: 'Түрээслэх',
-          onPressed: DateUtil.toDateTime(beginDate).isBefore(DateTime.now())
-              ? null
-              : () => onRentButtonTap(),
-          horizontalMargin: 50.0,
-        )
-      ],
+        );
+      },
     );
+  }
+
+  Future showResultMessage(Result result) async {
+    List<Widget> actions = new List();
+    ActionButton closeDialog = ActionButton(
+      title: 'Хаах',
+      onTap: () => Navigator.pop(context),
+    );
+    actions.add(closeDialog);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialog(
+            title: Text('Санамж',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: const Color(0xfffcfdfe),
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 17.0)),
+            content: result.isSuccess
+                ? RichText(
+                    text: TextSpan(style: style.dialogTextStyle, children: [
+                      TextSpan(text: 'Та '),
+                      TextSpan(
+                        text: widget.channel.productName,
+                        style: style.dialogHighlightedTextStyle,
+                      ),
+                      TextSpan(text: ' кино сувгаас '),
+                      TextSpan(
+                        text: _content.contentNameMon,
+                        style: style.dialogHighlightedTextStyle,
+                      ),
+                      TextSpan(
+                          text:
+                              ' киног амжилттай түрээслэлээ. Давталтыг үнэгүй үзэх боломжтой.'),
+                    ]),
+                  )
+                : Text(
+                    'Таны дансны үлдэгдэгдэл хүрэлцэхгүй байна. Та дансаа цэнэглээд дахин оролдоно уу.',
+                    style: style.dialogTextStyle,
+                  ),
+            actions: actions,
+          );
+        });
   }
 
   showOverview(Movie content) {
@@ -141,7 +230,7 @@ class ProgramDescription extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 5.0),
-                              child: Text(DateUtil.formatStringTime(beginDate),
+                              child: Text(DateUtil.formatStringTime(_beginDate),
                                   style: style.programStartTimeStyleDialog),
                             ),
                           ],
@@ -170,7 +259,7 @@ class ProgramDescription extends StatelessWidget {
     List<Widget> actions = new List();
     ActionButton rentMovie = ActionButton(
       title: 'Түрээслэх',
-      onTap: () => onRentAgreeTap(),
+      onTap: () => _onRentAgreeTap(),
     );
     ActionButton closeDialog = ActionButton(
       title: 'Болих',
@@ -200,7 +289,7 @@ class ProgramDescription extends StatelessWidget {
                 children: <TextSpan>[
                   TextSpan(text: 'Та Кино сангаас '),
                   TextSpan(
-                      text: program.contentNameMon,
+                      text: _content.contentNameMon,
                       style: TextStyle(fontWeight: FontWeight.w600)),
                   TextSpan(text: ' киног түрээслэх гэж байна. '),
                 ],
@@ -211,8 +300,9 @@ class ProgramDescription extends StatelessWidget {
         });
   }
 
-  onRentAgreeTap() {
-    // кино хайх
+  _onRentAgreeTap() {
+    Navigator.pop(context);
+    _bloc.dispatch(RentTapped(rentProgram: widget.selectedProgram));
   }
 
   showTrailer(Movie content) {

@@ -156,8 +156,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
               }
               if (state is ProgramDetailsLoaded) {
                 return ProgramDescription(
-                  program: state.content,
-                  beginDate: selectedProgram.beginDate,
+                  content: state.content,
+                  selectedProgram: selectedProgram,
+                  channel: selectedChannel,
                 );
               }
               return Container();
@@ -197,5 +198,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
     setState(() => selectedChannel = channel);
 
     _bloc.dispatch(ChannelSelected(channel: channel));
+  }
+
+  onRentAgree() {
+//    _bloc.dispatch(RentTapped(channel: selectedChannel, rentProgram: selectedProgram));
   }
 }
