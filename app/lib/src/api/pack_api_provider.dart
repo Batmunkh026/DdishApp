@@ -28,17 +28,32 @@ class PackApiProvider extends BaseApiProvider {
   }
 
   ///Нэмэлт сувгуудын мэдээлэл авах
-  Future<List<Channel>> fetchChannels() async{
+  Future<List<Channel>> fetchChannels(String productId) async{
     try {
-      final _response = await client.read('${globals.serverEndpoint}/channelList');
-      var _packReponse = json.decode(_response) as Map;
+      final _response = await client.read('${globals.serverEndpoint}/productList?productId=$productId');
+      var _productList = json.decode(_response) as Map;
 
 
-      if(_packReponse["isSuccess"]){
-        List<Channel> channels = _packReponse["channelList"].map((channel) => Channel.fromJson(channel)).toList();
-        return channels;
-      }
+      if(_productList["isSuccess"])
+        return List.from(_productList["additionalProducts"].map((channel) => Channel.fromJson(channel)));
+
       //TODO success биш бол?
+      return [];
+    } on http.ClientException catch (e) {
+      // TODO catch SocketException
+      throw (e);
+    }
+  }
+
+  Future<List<Pack>> fetchPacksToUpgrade(String productId) async{
+    try {
+      final _response = await client.read('${globals.serverEndpoint}/productList?productId=$productId');
+      var _productList = json.decode(_response) as Map;
+
+
+      if(_productList["isSuccess"])
+        return List<Pack>.from(_productList["upProducts"].map((pack) => Pack.fromJson(pack)));
+
       return [];
     } on http.ClientException catch (e) {
       // TODO catch SocketException

@@ -5,7 +5,7 @@ class Pack {
     name = packMap['productName'],
     image = packMap['productImg'],
     smsCode = packMap['smsCode'],
-    price = double.parse(packMap['price']);
+    price = packMap['price'] == null ? 0 : double.parse(packMap['price']);
 
 
   String name;

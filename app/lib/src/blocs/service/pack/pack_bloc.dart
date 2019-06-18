@@ -5,10 +5,13 @@ import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/pack.dart';
 import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
+import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/pack_repository.dart';
+import 'package:ddish/src/repositiories/user_repository.dart';
 
 class PackBloc extends Bloc<PackEvent, PackState> {
   var packRepository = PackRepository();
+  var _userRepository = UserRepository();
 
   PackEvent beforeEvent = null;
   PackState beforeState = null;
@@ -16,7 +19,8 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
   List<Channel> channels;
   List<Pack> packs;
-
+  Pack selectedProduct;
+  User user;
   Future<List<Pack>> packStream; //TODO API аас авдаг болсон үед ашиглана
   Future<List<Channel>> channelsStream;
 
@@ -25,21 +29,23 @@ class PackBloc extends Bloc<PackEvent, PackState> {
     packStream = packRepository.getPacks();
 
     ///fetch хийж дууссан бол
-    loadInitialData().listen((f)=> print("initial data loaded."));
-//    channelsStream = packRepository.getChannels();
+    loadInitialData().listen((f) => print("initial data loaded."));
 
-//    channels = packRepository.channels;
-//    packs = packRepository.packs;
-
-//    default таб нь <Багц Сунгах> байна
-    //TODO api бэлэн болохоор хасаад api аас авсан датаг ашиглана,
-
-//    ServicePackTabState(PackTabType.EXTEND, userApiProvider.fetchActivePacks());
-//    TODO хэрэглэгчийн идэвхитэй багцыг дамжуулах
     return Loading(PackTabType.EXTEND);
   }
-  loadInitialData() async*{
-    yield packStream.then((packs)=>this.packs = packs);
+
+  loadInitialData() async* {
+    user = await _userRepository.getUserInformation();
+
+    packs = await packStream;
+
+    //      TODO хэрэглэгчийн сонгосон бүтээгдэхүүн байх эсэх?
+    // TODO pack нэрийг бүтээгдэхүүн болгож сольсоны дараа устгах
+    selectedProduct = packs.firstWhere(
+        (pack) =>
+            pack.productId == user.activeProducts.products.last.productId,
+        orElse: () => packs.first);
+
     dispatch(PackServiceSelected(PackTabType.EXTEND));
   }
 
@@ -50,14 +56,19 @@ class PackBloc extends Bloc<PackEvent, PackState> {
 
       ///сонгогдсон багцын үйлчилгээ нь __нэмэлт суваг__ бол channels үгүй бол packs ыг дамжуулах
       if (event.selectedPackType == PackTabType.ADDITIONAL_CHANNEL) {
-        this.channels = await packRepository.getChannels();
+        //хэрэв бүтээгдэхүүн сонгосон бол тэр бүтээгдэхүүн үгүй бол жагсаалтын эхний бүтээгдэхүүний ID аар авах
+        this.channels =
+            await packRepository.getChannels(selectedProduct.productId);
+
         yield PackTabState(event.selectedPackType, channels);
-      }
+      } else if(event.selectedPackType == PackTabType.UPGRADE)//багц ахиулах бол
+
+        //TODO хэрэглэгчийн аль бүтээгдэхүүний ID авах
+        this.packs = await packRepository.getPacksToUpgrade(user.activeProducts.products.last.productId);
       else
         this.packs = await packRepository.getPacks();
       yield PackTabState(event.selectedPackType, packs);
     } else if (event is PackTypeSelectorClicked) {
-      PackTypeSelectorClicked e = event;
 //      Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
       //TODO нэмэлт сувгуудад багцын төрөл хамаатай эсэхийг тодруулах
       yield PackSelectionState(event.selectedTab, packs, event.selectedPack);
@@ -70,8 +81,8 @@ class PackBloc extends Bloc<PackEvent, PackState> {
           event.monthToExtend == null)
         yield AdditionalChannelState(event.selectedTab, event.selectedPack);
       else
-        yield SelectedPackPreview(event.selectedTab, event.selectedPack,
-            event.monthToExtend);
+        yield SelectedPackPreview(
+            event.selectedTab, event.selectedPack, event.monthToExtend);
     } else if (event is CustomPackSelected) {
       if (event.selectedPack != null) {
         //багц сонгогдсон
@@ -107,7 +118,7 @@ class PackBloc extends Bloc<PackEvent, PackState> {
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
     }
-    if(!(event is Loading)){
+    if (!(event is Loading)) {
       beforeState = currentState;
       beforeEvent = event;
     }
@@ -127,5 +138,4 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   void selectPackItem(PackTabType selectedPackTabType, dynamic pack) {
     PackItemState(selectedPackTabType, pack);
   }
-
 }
