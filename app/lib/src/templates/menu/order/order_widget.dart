@@ -125,20 +125,22 @@ class OrderWidgetState extends State<OrderWidget> {
 
   showMessage(Result result) {
     List<Widget> actions = new List();
-    ActionButton closeDialog = ActionButton(title: 'Хаах', onTap: () => Navigator.pop(context),);
+    ActionButton closeDialog = ActionButton(
+      title: 'Хаах',
+      onTap: () => Navigator.pop(context),
+    );
     actions.add(closeDialog);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(
-              title: Text('Санамж',
-                  textAlign: TextAlign.center,
-                  style: style.dialogTitleStyle),
-              content: Text(result.resultMessage, style: style.messageStyle,),
-              actions: actions,
+          return CustomDialog(
+            title: Text('Санамж',
+                textAlign: TextAlign.center, style: style.dialogTitleStyle),
+            content: Text(
+              result.resultMessage,
+              style: style.messageStyle,
             ),
+            actions: actions,
           );
         });
   }

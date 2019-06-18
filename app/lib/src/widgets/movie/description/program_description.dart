@@ -109,61 +109,60 @@ class ProgramDescription extends StatelessWidget {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(
-                hasDivider: false,
-                title: Container(
-                  height: height * 0.2,
-                  child: Row(
-                    children: <Widget>[
-                      Image.network(
+          return CustomDialog(
+              hasDivider: false,
+              title: Container(
+                height: height * 0.2,
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25.0),
+                      child: Image.network(
                         content.posterUrl,
                         fit: BoxFit.contain,
                       ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                child: Text(content.contentNameMon,
-                                    style: style.programTitleStyleDialog),
-                              ),
-                              Visibility(
-                                visible: content.contentGenres != null &&
-                                    content.contentGenres.isNotEmpty,
-                                child: Text(content.contentGenres,
-                                    style: style.programGenresStyleDialog),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: Text(
-                                    DateUtil.formatStringTime(beginDate),
-                                    style: style.programStartTimeStyleDialog),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                content: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        content.contentDescr,
-                        style: style.contentDescriptionStyle,
-                      ),
                     ),
-                    DialogCloseButton(onTap: () => Navigator.pop(context)),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              child: Text(content.contentNameMon,
+                                  style: style.programTitleStyleDialog),
+                            ),
+                            Visibility(
+                              visible: content.contentGenres != null &&
+                                  content.contentGenres.isNotEmpty,
+                              child: Text(content.contentGenres,
+                                  style: style.programGenresStyleDialog),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: Text(DateUtil.formatStringTime(beginDate),
+                                  style: style.programStartTimeStyleDialog),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
                   ],
-                )),
-          );
+                ),
+              ),
+              content: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      content.contentDescr,
+                      style: style.contentDescriptionStyle,
+                    ),
+                  ),
+                  DialogCloseButton(onTap: () => Navigator.pop(context)),
+                ],
+              ));
         });
   }
 
@@ -182,35 +181,32 @@ class ProgramDescription extends StatelessWidget {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(
-              important: true,
-              title: Text('Санамж',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: const Color(0xfffcfdfe),
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 15.0)),
-              content: RichText(
+          return CustomDialog(
+            important: true,
+            title: Text('Санамж',
                 textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: TextStyle(
-                      color: const Color(0xffe4f0ff),
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14.0),
-                  children: <TextSpan>[
-                    TextSpan(text: 'Та Кино сангаас '),
-                    TextSpan(
-                        text: program.contentNameMon,
-                        style: TextStyle(fontWeight: FontWeight.w600)),
-                    TextSpan(text: ' киног түрээслэх гэж байна. '),
-                  ],
-                ),
+                style: TextStyle(
+                    color: const Color(0xfffcfdfe),
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 15.0)),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(
+                    color: const Color(0xffe4f0ff),
+                    fontStyle: FontStyle.normal,
+                    fontSize: 14.0),
+                children: <TextSpan>[
+                  TextSpan(text: 'Та Кино сангаас '),
+                  TextSpan(
+                      text: program.contentNameMon,
+                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  TextSpan(text: ' киног түрээслэх гэж байна. '),
+                ],
               ),
-              actions: actions,
             ),
+            actions: actions,
           );
         });
   }
@@ -224,19 +220,21 @@ class ProgramDescription extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Stack(
               children: <Widget>[
-                CustomDialog(
-                  padding: const EdgeInsets.all(0.0),
-                  hasDivider: false,
-                  content: YoutubePlayer(
-                    context: context,
-                    videoId: content.trailerUrl,
-                    autoPlay: false,
-                    showVideoProgressIndicator: true,
-                    videoProgressIndicatorColor: Colors.red,
+                Align(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: YoutubePlayer(
+                      context: context,
+                      videoId: content.trailerUrl,
+                      autoPlay: false,
+                      showVideoProgressIndicator: true,
+                      videoProgressIndicatorColor: Colors.red,
+                    ),
                   ),
+                  alignment: Alignment.center,
                 ),
                 Align(
                   child: Padding(
@@ -256,16 +254,19 @@ class ProgramDescription extends StatelessWidget {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
+          final height = MediaQuery.of(context).size.height;
           return BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Stack(
                 children: <Widget>[
-                  CustomDialog(
-                    padding: const EdgeInsets.all(0.0),
-                    hasDivider: false,
-                    content: Image.network(
-                      content.posterUrl,
-                      fit: BoxFit.fill,
+                  Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      height: height * 0.7,
+                      child: Image.network(
+                        content.posterUrl,
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                   Align(

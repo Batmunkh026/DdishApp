@@ -162,17 +162,14 @@ class LoginViewState extends State<LoginView> {
     try {
       didAuthenticate = await localAuth.authenticateWithBiometrics(
           localizedReason: 'Хурууны хээгээ уншуулна уу.');
-    } on PlatformException catch (e) {
-
-    }
-    if(didAuthenticate) {
+    } on PlatformException catch (e) {}
+    if (didAuthenticate) {
       _loginBloc.dispatch(LoginButtonPressed(
-        username: _usernameController.text,
-        password: _passwordController.text,
-        rememberUsername: rememberUsername,
-        useFingerprint: useFingerprint,
-        fingerPrintLogin: true
-      ));
+          username: _usernameController.text,
+          password: _passwordController.text,
+          rememberUsername: rememberUsername,
+          useFingerprint: useFingerprint,
+          fingerPrintLogin: true));
     }
   }
 
@@ -186,19 +183,16 @@ class LoginViewState extends State<LoginView> {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(
-              title: Text('Санамж',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: const Color(0xfffcfdfe),
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 15.0)),
-              content: style.forgotPasswordHint,
-              actions: actions,
-            ),
+          return CustomDialog(
+            title: Text('Санамж',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: const Color(0xfffcfdfe),
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 15.0)),
+            content: style.forgotPasswordHint,
+            actions: actions,
           );
         });
   }

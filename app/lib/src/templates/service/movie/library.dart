@@ -41,7 +41,10 @@ class LibraryState extends State<Library> {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: ProgramSearchWidget(searchById: true, onSearchTap: onRentAgreeTap,),
+          child: ProgramSearchWidget(
+            searchById: true,
+            onSearchTap: onRentAgreeTap,
+          ),
         ),
         BlocBuilder<MovieLibraryEvent, MovieLibraryState>(
           bloc: _bloc,
@@ -59,19 +62,22 @@ class LibraryState extends State<Library> {
                   ListView.builder(
                     itemCount: movies.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return MovieThumbnail(movie: movies[index], onTap: _onMovieThumbnailTap(movies[index]),);
+                      return MovieThumbnail(
+                        movie: movies[index],
+                        onTap: _onMovieThumbnailTap(movies[index]),
+                      );
                     },
                   ),
                 ],
               );
             }
-            if(state is MovieIdConfirmProcessing) {
+            if (state is MovieIdConfirmProcessing) {
               return CircularProgressIndicator();
             }
-            if(state is MovieIdProcessingFinished) {
+            if (state is MovieIdProcessingFinished) {
               onRentButtonTap();
             }
-            if(state is MovieDetailsOpened) {
+            if (state is MovieDetailsOpened) {
               // TODO pop movie details dialog
               return Container();
             }
@@ -97,35 +103,32 @@ class LibraryState extends State<Library> {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: CustomDialog(
-              important: true,
-              title: Text('Санамж',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: const Color(0xfffcfdfe),
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 15.0)),
-              content: RichText(
+          return CustomDialog(
+            important: true,
+            title: Text('Санамж',
                 textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: TextStyle(
-                      color: const Color(0xffe4f0ff),
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14.0),
-                  children: <TextSpan>[
-                    TextSpan(text: 'Та Кино сангаас '),
-                    TextSpan(
-                        text: movieIdFieldController.text,
-                        style: TextStyle(fontWeight: FontWeight.w600)),
-                    TextSpan(text: ' киног түрээслэх гэж байна. '),
-                  ],
-                ),
+                style: TextStyle(
+                    color: const Color(0xfffcfdfe),
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 15.0)),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(
+                    color: const Color(0xffe4f0ff),
+                    fontStyle: FontStyle.normal,
+                    fontSize: 14.0),
+                children: <TextSpan>[
+                  TextSpan(text: 'Та Кино сангаас '),
+                  TextSpan(
+                      text: movieIdFieldController.text,
+                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  TextSpan(text: ' киног түрээслэх гэж байна. '),
+                ],
               ),
-              actions: actions,
             ),
+            actions: actions,
           );
         });
   }
