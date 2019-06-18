@@ -35,11 +35,9 @@ class PackBloc extends Bloc<PackEvent, PackState> {
   }
 
   loadInitialData() async* {
-    await _userRepository
-        .getUserInformation()
-        .then((user) => this.user = user);
+    user = await _userRepository.getUserInformation();
 
-    await packStream.then((packs) => this.packs = packs);
+    packs = await packStream;
 
     //      TODO хэрэглэгчийн сонгосон бүтээгдэхүүн байх эсэх?
     // TODO pack нэрийг бүтээгдэхүүн болгож сольсоны дараа устгах

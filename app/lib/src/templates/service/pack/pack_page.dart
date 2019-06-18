@@ -50,11 +50,13 @@ class PackPageState extends State<PackPage> {
   }
 
   Widget buildAppBarHeader(BuildContext context, PackState state) {
-    var fontStyle = TextStyle(
-        color: const Color(0xff071f49),
-        fontWeight: FontWeight.w500,
-        fontStyle: FontStyle.normal,
-        fontSize: 12.0);
+    if (state is Loading) return Center(child: CircularProgressIndicator());
+
+      var fontStyle = TextStyle(
+          color: const Color(0xff071f49),
+          fontWeight: FontWeight.w500,
+          fontStyle: FontStyle.normal,
+          fontSize: 12.0);
 
     var packContentContainer = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,7 +77,8 @@ class PackPageState extends State<PackPage> {
               ),
               //TODO хэрэглэгчийн багцын дуусах хугацааг харуулах
               //TODO хэрэглэгч олон идэвхитэй багцтай бол аль багцын дуусах хугацааг харуулах???
-              new Text("${DateUtil.formatProductDate(packBloc.user.activeProducts.products.last.endDate)}",
+              new Text(
+                  "${DateUtil.formatProductDate(packBloc.user.activeProducts.products.last.endDate)}",
                   style: fontStyle),
             ],
           ),
@@ -149,10 +152,8 @@ class PackPageState extends State<PackPage> {
 
   Widget buildContents() {
     var _state = packBloc.currentState;
-    if (_state is Loading)
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+    if (_state is Loading) return Center(child: CircularProgressIndicator());
+
     if (_state is PackPaymentState) {
       //Багц сунгах төлбөр төлөлтийн үр дүн
       ActionButton chargeAccountBtn =
