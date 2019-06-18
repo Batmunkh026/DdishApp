@@ -8,7 +8,7 @@ import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
-import 'package:ddish/src/widgets/movie/description/program_description.dart';
+import 'package:ddish/src/templates/service/movie/description/program_description.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
