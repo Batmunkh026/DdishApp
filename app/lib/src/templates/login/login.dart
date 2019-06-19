@@ -1,27 +1,26 @@
+import 'dart:ui';
+
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'package:ddish/src/blocs/login/login_event.dart';
 import 'package:ddish/src/blocs/login/login_state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ddish/src/widgets/text_field.dart';
-import 'package:ddish/src/widgets/submit_button.dart';
-import 'style.dart' as style;
-import 'package:ddish/src/widgets/toggle_switch.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
-import 'dart:ui';
-import 'package:flutter/scheduler.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
+import 'package:ddish/src/widgets/submit_button.dart';
+import 'package:ddish/src/widgets/text_field.dart';
+import 'package:ddish/src/widgets/toggle_switch.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ddish/src/utils/input_validations.dart';
+
+import 'style.dart' as style;
 
 class LoginView extends StatefulWidget {
   final LoginBloc loginBloc;
   final AuthenticationBloc authenticationBloc;
-  String username;
-  bool useFingerprint;
-  bool canCheckBiometrics;
+  final String username;
+  final bool useFingerprint;
+  final bool canCheckBiometrics;
 
   LoginView({
     Key key,
@@ -41,6 +40,7 @@ class LoginViewState extends State<LoginView> {
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool useFingerprint;
   bool rememberUsername;
   bool canCheckBiometrics;
@@ -63,9 +63,6 @@ class LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    if (useFingerprint && canCheckBiometrics) {
-      SchedulerBinding.instance.addPostFrameCallback((_) => localAuth());
-    }
     return BlocBuilder<LoginEvent, LoginState>(
       bloc: _loginBloc,
       builder: (
@@ -77,6 +74,7 @@ class LoginViewState extends State<LoginView> {
         }
 
         return Form(
+          key: _formKey,
           child: Column(
             children: [
               Container(
@@ -91,52 +89,66 @@ class LoginViewState extends State<LoginView> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    InputField(
-                      placeholder: 'АДМИН ДУГААР / СМАРТ КАРТЫН ДУГААР',
-                      textController: _usernameController,
-                      obscureText: false,
-                    ),
-                    InputField(
-                      placeholder: 'НУУЦ ҮГ /****/',
-                      textController: _passwordController,
-                      obscureText: true,
-                    ),
-                    FlatButton(
-                      onPressed: () => _showDialog(context),
-                      padding: EdgeInsets.all(0.0),
-                      child: Text(
-                        'Нууц үгээ мартсан уу?',
-                        style: TextStyle(
-                          color: Color(0xffe4f0ff),
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 15.0,
+              Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        InputField(
+                          placeholder: 'АДМИН ДУГААР / СМАРТ КАРТЫН ДУГААР',
+                          textController: _usernameController,
+                          obscureText: false,
+                          textInputType: TextInputType.number,
+                          validateFunction: InputValidations.validateNumberValue,
                         ),
-                      ),
+                        InputField(
+                          placeholder: 'НУУЦ ҮГ /****/',
+                          textController: _passwordController,
+                          obscureText: true,
+                          validateFunction: InputValidations.validateNotNullValue,
+                        ),
+                        FlatButton(
+                          onPressed: () => _showDialog(context),
+                          padding: EdgeInsets.all(0.0),
+                          child: Text(
+                            'Нууц үгээ мартсан уу?',
+                            style: TextStyle(
+                              color: Color(0xffe4f0ff),
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 15.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    ToggleSwitch(
-                      value: rememberUsername,
-                      hint: "Нэвтрэх нэр хадгалах",
-                      style: style.switchHint,
-                      onChanged: (value) => rememberUsername = value,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 50.0),
+                    child: Column(
+                      children: <Widget>[
+                        ToggleSwitch(
+                          value: rememberUsername,
+                          hint: "Нэвтрэх нэр хадгалах",
+                          style: style.switchHint,
+                          onChanged: (value) => rememberUsername = value,
+                        ),
+                        Visibility(
+                          visible: widget.canCheckBiometrics,
+                          child: ToggleSwitch(
+                            value: useFingerprint,
+                            hint: "Цаашид хурууны хээгээр нэвтэрнэ",
+                            style: style.switchHint,
+                            onChanged: (value) => useFingerprint = value,
+                          ),
+                        ),
+                      ],
                     ),
-                    Visibility(
-                      visible: widget.canCheckBiometrics,
-                      child: ToggleSwitch(
-                        value: useFingerprint,
-                        hint: "Цаашид хурууны хээгээр нэвтэрнэ",
-                        style: style.switchHint,
-                        onChanged: (value) => useFingerprint = value,
-                      ),
-                    ),
-                  ],
-                ),
+                  )
+                ],
               ),
               SubmitButton(
                 text: "НЭВТРЭХ",
@@ -154,23 +166,6 @@ class LoginViewState extends State<LoginView> {
         );
       },
     );
-  }
-
-  localAuth() async {
-    var localAuth = LocalAuthentication();
-    bool didAuthenticate;
-    try {
-      didAuthenticate = await localAuth.authenticateWithBiometrics(
-          localizedReason: 'Хурууны хээгээ уншуулна уу.');
-    } on PlatformException catch (e) {}
-    if (didAuthenticate) {
-      _loginBloc.dispatch(LoginButtonPressed(
-          username: _usernameController.text,
-          password: _passwordController.text,
-          rememberUsername: rememberUsername,
-          useFingerprint: useFingerprint,
-          fingerPrintLogin: true));
-    }
   }
 
   Future _showDialog(BuildContext context) async {
@@ -199,12 +194,14 @@ class LoginViewState extends State<LoginView> {
 
   _onLoginButtonPressed() {
     FocusScope.of(context).requestFocus(new FocusNode());
-    _loginBloc.dispatch(LoginButtonPressed(
-      username: _usernameController.text,
-      password: _passwordController.text,
-      rememberUsername: rememberUsername,
-      useFingerprint: useFingerprint,
-      fingerPrintLogin: false,
-    ));
+    if(_formKey.currentState.validate()) {
+      _loginBloc.dispatch(LoginButtonPressed(
+        username: _usernameController.text,
+        password: _passwordController.text,
+        rememberUsername: rememberUsername,
+        useFingerprint: useFingerprint,
+        fingerPrintLogin: false,
+      ));
+    }
   }
 }

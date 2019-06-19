@@ -1,20 +1,19 @@
-import 'dart:ui';
-
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
 import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
+import 'package:ddish/src/templates/service/movie/description/program_description.dart';
+import 'package:ddish/src/templates/service/movie/program_search.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
-import 'package:ddish/src/widgets/movie/description/program_description.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ddish/src/widgets/movie/poster_image.dart';
 
 import 'channel_header.dart';
-import 'package:ddish/src/templates/service/movie/program_search.dart';
 import 'style.dart' as style;
 
 class TheatreWidget extends StatefulWidget {
@@ -114,10 +113,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(right: 15.0),
-                                child: Image.network(
-                                  program.posterUrl,
-                                  fit: BoxFit.contain,
-                                ),
+                                child: PosterImage(url: program.posterUrl,),
                               ),
                               Flexible(
                                 child: Column(
@@ -156,8 +152,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
               }
               if (state is ProgramDetailsLoaded) {
                 return ProgramDescription(
-                  program: state.content,
-                  beginDate: selectedProgram.beginDate,
+                  content: state.content,
+                  selectedProgram: selectedProgram,
+                  channel: selectedChannel,
                 );
               }
               return Container();
@@ -197,5 +194,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
     setState(() => selectedChannel = channel);
 
     _bloc.dispatch(ChannelSelected(channel: channel));
+  }
+
+  onRentAgree() {
+//    _bloc.dispatch(RentTapped(channel: selectedChannel, rentProgram: selectedProgram));
   }
 }

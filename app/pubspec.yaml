@@ -59,6 +59,7 @@ flutter:
   assets:
     - assets/satellite_background.jpg
     - assets/logo.png
+    - assets/program/poster_placeholder.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

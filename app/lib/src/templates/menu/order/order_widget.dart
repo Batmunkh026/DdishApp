@@ -8,6 +8,7 @@ import 'package:ddish/src/models/order.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/repositiories/menu_repository.dart';
 import 'package:ddish/src/utils/constants.dart';
+import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
@@ -33,7 +34,7 @@ class OrderWidgetState extends State<OrderWidget> {
   District selectedDistrict;
   final _usernameController = TextEditingController();
   final _phoneController = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     Constants.districtItems
@@ -70,52 +71,57 @@ class OrderWidgetState extends State<OrderWidget> {
                       fontWeight: FontWeight.w500,
                       fontStyle: FontStyle.normal,
                       fontSize: 16.0)),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 80.0),
-                child: Column(
-                  children: <Widget>[
-                    InputField(
-                      placeholder: 'НЭР',
-                      align: TextAlign.center,
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      textController: _usernameController,
-                    ),
-                    InputField(
-                      align: TextAlign.center,
-                      placeholder: 'УТАСНЫ ДУГААР',
-                      textInputType: TextInputType.number,
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      textController: _phoneController,
-                    ),
-                    DropdownButton(
-                      isExpanded: true,
-                      iconEnabledColor: Color(0xffa4cafb),
-                      value: selectedDistrict,
-                      items: dropDownItems,
-                      hint: Text(
-                        'ДҮҮРЭГ СОНГОХ',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xffa4cafb),
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 15.0,
-                        ),
+              Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 80.0),
+                  child: Column(
+                    children: <Widget>[
+                      InputField(
+                        placeholder: 'НЭР',
+                        align: TextAlign.center,
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        textController: _usernameController,
+                        validateFunction: InputValidations.validateName,
                       ),
-                      onChanged: (value) =>
-                          setState(() => selectedDistrict = value),
-                    ),
-                    SubmitButton(
-                      padding: EdgeInsets.only(top: 30.0),
-                      horizontalMargin: 35.0,
-                      text: 'Захиалах',
-                      onPressed: state is OrderRequestProcessing
-                          ? null
-                          : () => onOrderTap(),
-                    )
-                  ],
+                      InputField(
+                        align: TextAlign.center,
+                        placeholder: 'УТАСНЫ ДУГААР',
+                        textInputType: TextInputType.number,
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        textController: _phoneController,
+                        validateFunction: InputValidations.validateNumberValue,
+                      ),
+                      DropdownButton(
+                        isExpanded: true,
+                        iconEnabledColor: Color(0xffa4cafb),
+                        value: selectedDistrict,
+                        items: dropDownItems,
+                        hint: Text(
+                          'ДҮҮРЭГ СОНГОХ',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xffa4cafb),
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onChanged: (value) =>
+                            setState(() => selectedDistrict = value),
+                      ),
+                      SubmitButton(
+                        padding: EdgeInsets.only(top: 30.0),
+                        horizontalMargin: 35.0,
+                        text: 'Захиалах',
+                        onPressed: state is OrderRequestProcessing
+                            ? null
+                            : () => onOrderTap(),
+                      )
+                    ],
+                  ),
                 ),
-              ),
+              )
             ],
           ),
         );
@@ -146,12 +152,14 @@ class OrderWidgetState extends State<OrderWidget> {
   }
 
   onOrderTap() {
-    Order order = Order(
-      orderType: widget.orderType,
-      userName: _usernameController.text,
-      phoneNo: _phoneController.text,
-      districtCode: selectedDistrict.id,
-    );
-    _bloc.dispatch(OrderTapped(order: order));
+    if(_formKey.currentState.validate()) {
+      Order order = Order(
+        orderType: widget.orderType,
+        userName: _usernameController.text,
+        phoneNo: _phoneController.text,
+        districtCode: selectedDistrict.id,
+      );
+      _bloc.dispatch(OrderTapped(order: order));
+    }
   }
 }

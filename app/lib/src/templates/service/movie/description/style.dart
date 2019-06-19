@@ -61,3 +61,19 @@ TextStyle programGenresStyleDialog = const TextStyle(
   fontStyle: FontStyle.normal,
   fontSize: 12.0,
 );
+
+TextStyle dialogTextStyle = const TextStyle(
+    color: const Color(0xffffffff),
+    fontWeight: FontWeight.w400,
+    fontFamily: "Montserrat",
+    fontStyle: FontStyle.normal,
+    fontSize: 15.0
+);
+
+TextStyle dialogHighlightedTextStyle = const TextStyle(
+    color: const Color(0xffffffff),
+    fontWeight: FontWeight.w600,
+    fontFamily: "Montserrat",
+    fontStyle: FontStyle.normal,
+    fontSize: 15.0
+);

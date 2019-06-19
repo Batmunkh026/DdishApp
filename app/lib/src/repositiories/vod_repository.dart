@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/program_response.dart';
+import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/models/vod_channel_response.dart';
 import 'package:ddish/src/utils/date_util.dart';
-import 'package:ddish/src/models/movie.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'globals.dart' as globals;
 
@@ -31,13 +32,22 @@ class VodRepository {
       {DateTime date}) async {
     var response;
     date = date == null ? DateTime.now() : date;
-    try {
-      response = await client.read(
-          '${globals.serverEndpoint}/vodList?productId=${channel.productId}&inDate=${DateUtil.formatParamDate(date)}');
-    } on Exception catch (e) {
-      // TODO catch SocketException
-      throw (e);
+    String cacheKey = '${channel.productId}/${DateUtil.formatParamDate(date)}';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var cached = prefs.getString(cacheKey);
+    if(cached != null) {
+      response = cached;
+    } else {
+      try {
+        response = await client.read(
+            '${globals.serverEndpoint}/vodList/${channel.productId}/${DateUtil.formatParamDate(date)}');
+      } on Exception catch (e) {
+        // TODO catch SocketException
+        throw (e);
+      }
+      prefs.setString(cacheKey, response.toString());
     }
+
     var decoded = json.decode(response);
     ProgramResponse channelResponse = ProgramResponse.fromJson(decoded);
     // TODO handle isSuccess = false
@@ -47,12 +57,24 @@ class VodRepository {
   Future<Movie> fetchContentDetails(Program program) async {
     var response;
     try {
-      response = await globals.client.read('${globals.serverEndpoint}/vodList?contentId=${program.contentId}');
+      response = await globals.client.read('${globals.serverEndpoint}/vodList/${program.contentId}');
     } on Exception catch(e) {
       throw(e);
     }
 
     var decoded = json.decode(response);
     return Movie.fromJson(decoded);
+  }
+
+  Future<Result> chargeProduct(Program program) async {
+    var response;
+    try {
+      response = await globals.client.read('${globals.serverEndpoint}/chargeProduct/${program.productId}/${program.smsCode}/${DateUtil.formatParamDateString(program.beginDate)}');
+    } on Exception catch(e) {
+      throw(e);
+    }
+
+    var decoded = json.decode(response);
+    return Result.fromJson(decoded);
   }
 }

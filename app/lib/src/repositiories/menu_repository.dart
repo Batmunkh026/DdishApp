@@ -11,7 +11,7 @@ class MenuRepository {
     var response;
     try {
       response = await http.read(
-        '${globals.serverEndpoint}/newOrder?${order.toString()}',
+        '${globals.serverEndpoint}/newOrder/${order.toString()}',
         headers: {HttpHeaders.authorizationHeader: globals.authorizationToken},
       );
     } on Exception catch (e) {
