@@ -1,6 +1,5 @@
 import 'package:ddish/src/models/counter_list.dart';
 import 'package:ddish/src/models/product.dart';
-import 'package:ddish/src/models/product_list.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:json_annotation/json_annotation.dart';
 
