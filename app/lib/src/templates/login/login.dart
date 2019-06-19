@@ -1,27 +1,25 @@
+import 'dart:ui';
+
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'package:ddish/src/blocs/login/login_event.dart';
 import 'package:ddish/src/blocs/login/login_state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ddish/src/widgets/text_field.dart';
-import 'package:ddish/src/widgets/submit_button.dart';
-import 'style.dart' as style;
-import 'package:ddish/src/widgets/toggle_switch.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
-import 'dart:ui';
-import 'package:flutter/scheduler.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
+import 'package:ddish/src/widgets/submit_button.dart';
+import 'package:ddish/src/widgets/text_field.dart';
+import 'package:ddish/src/widgets/toggle_switch.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'style.dart' as style;
 
 class LoginView extends StatefulWidget {
   final LoginBloc loginBloc;
   final AuthenticationBloc authenticationBloc;
-  String username;
-  bool useFingerprint;
-  bool canCheckBiometrics;
+  final String username;
+  final bool useFingerprint;
+  final bool canCheckBiometrics;
 
   LoginView({
     Key key,
@@ -63,9 +61,6 @@ class LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    if (useFingerprint && canCheckBiometrics) {
-      SchedulerBinding.instance.addPostFrameCallback((_) => localAuth());
-    }
     return BlocBuilder<LoginEvent, LoginState>(
       bloc: _loginBloc,
       builder: (
@@ -165,23 +160,6 @@ class LoginViewState extends State<LoginView> {
         );
       },
     );
-  }
-
-  localAuth() async {
-    var localAuth = LocalAuthentication();
-    bool didAuthenticate;
-    try {
-      didAuthenticate = await localAuth.authenticateWithBiometrics(
-          localizedReason: 'Хурууны хээгээ уншуулна уу.');
-    } on PlatformException catch (e) {}
-    if (didAuthenticate) {
-      _loginBloc.dispatch(LoginButtonPressed(
-          username: _usernameController.text,
-          password: _passwordController.text,
-          rememberUsername: rememberUsername,
-          useFingerprint: useFingerprint,
-          fingerPrintLogin: true));
-    }
   }
 
   Future _showDialog(BuildContext context) async {
