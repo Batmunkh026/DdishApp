@@ -8,5 +8,5 @@ class Order {
 
   @override
   String toString() =>
-      'orderType=$orderType&userName=$userName&phoneNo=$phoneNo&districtCode=$districtCode';
+      '$orderType/$userName/$phoneNo/$districtCode';
 }
