@@ -67,7 +67,9 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: SizedBox(
                     height: height / 4,
-                    child: PosterImage(url: _content.posterUrl,),
+                    child: PosterImage(
+                      url: _content.posterUrl,
+                    ),
                   ),
                 ),
                 Flexible(
@@ -204,7 +206,9 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: PosterImage(url: content.posterUrl,),
+                      child: PosterImage(
+                        url: content.posterUrl,
+                      ),
                     ),
                     Flexible(
                       child: Padding(
@@ -305,33 +309,34 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         context: context,
         builder: (BuildContext context) {
           return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: YoutubePlayer(
-                      context: context,
-                      videoId: content.trailerUrl,
-                      autoPlay: false,
-                      showVideoProgressIndicator: true,
-                      videoProgressIndicatorColor: Colors.red,
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Stack(
+                children: <Widget>[
+                  SimpleDialog(
+                    contentPadding: const EdgeInsets.all(0.0),
+                    children: <Widget>[
+                      Align(
+                        child: YoutubePlayer(
+                          context: context,
+                          videoId: content.trailerUrl,
+                          autoPlay: false,
+                          showVideoProgressIndicator: true,
+                          videoProgressIndicatorColor: Colors.red,
+                        ),
+                        alignment: Alignment.center,
+                      ),
+                    ],
+                  ),
+                  Align(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 50.0),
+                      child: DialogCloseButton(
+                          onTap: () => Navigator.pop(context)),
                     ),
-                  ),
-                  alignment: Alignment.center,
-                ),
-                Align(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 50.0),
-                    child:
-                        DialogCloseButton(onTap: () => Navigator.pop(context)),
-                  ),
-                  alignment: Alignment.bottomCenter,
-                )
-              ],
-            ),
-          );
+                    alignment: Alignment.bottomCenter,
+                  )
+                ],
+              ));
         });
   }
 
@@ -348,7 +353,9 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                     alignment: Alignment.center,
                     child: SizedBox(
                       height: height * 0.7,
-                      child: PosterImage(url: content.posterUrl,),
+                      child: PosterImage(
+                        url: content.posterUrl,
+                      ),
                     ),
                   ),
                   Align(
