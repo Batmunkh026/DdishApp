@@ -74,16 +74,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         yield ProductTabState(event.selectedProductTabType, selectedProduct, products);
       }
     } else if (event is ProductTypeSelectorClicked) {
-      //багцын төрөл сонгосон үед
-      //Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
-      //TODO нэмэлт сувгуудад багцын төрөл хамаатай эсэхийг тодруулах
       selectedProduct = event.selectedProduct;
       yield ProductSelectionState(
           event.selectedTab, products, event.selectedProduct);
     } else if (event is ProductItemSelected) {
-      //багц сонгосон үед
       assert(event.selectedProduct != null);
-      //багц сонгогдсон
       if (event.selectedTab == ProductTabType.ADDITIONAL_CHANNEL &&
           event.monthToExtend == null)
         yield AdditionalChannelState(event.selectedTab, event.selectedProduct);
@@ -109,7 +104,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       yield currentState.prevStates.last;
     }
 
-    //
     if (!(event is BackToPrevState)) {
       backState = beforeState;
 
@@ -128,11 +122,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       beforeState = currentState;
       beforeEvent = event;
     }
-  }
-
-  ///Багцын хугацааа&үнийн дүнгийн төрөл сонгох
-  void selectProductItem(ProductTabType selectedProductTab, dynamic product) {
-    ProductItemState(selectedProductTab, product);
   }
 
   ///буцаах утга нь null байж болно [хэрэглэгчид сонгосон багц байхгүй бол? ]

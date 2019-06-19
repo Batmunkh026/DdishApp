@@ -73,8 +73,6 @@ class ProductPageState extends State<ProductPage> {
                   new Text("Дуусах хугацаа: ", style: fontStyle),
                 ],
               ),
-              //TODO хэрэглэгчийн багцын дуусах хугацааг харуулах
-              //TODO хэрэглэгч олон идэвхитэй багцтай бол аль багцын дуусах хугацааг харуулах???
               new Text(
                   "${DateUtil.formatProductDate(bloc.getDateOfUserSelectedProduct())}",
                   style: TextStyle(
