@@ -1,4 +1,5 @@
 import 'package:ddish/src/models/counter_list.dart';
+import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/product_list.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -15,9 +16,9 @@ class User {
   final String userLastName;
   final String userRegNo;
   final String adminNumber;
-  final ProductList activeProducts;
+  final List<Product> activeProducts;
   final CounterList activeCounters;
-  final ProductList additionalProducts;
+  final List<Product> additionalProducts;
 
   User(
       {this.result,

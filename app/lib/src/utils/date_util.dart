@@ -32,6 +32,8 @@ class DateUtil {
   }
 
   static String formatProductDate(DateTime dateTime) {
+    if(dateTime == null)
+      return "_";
     return productDateFormatter.format(dateTime);
   }
 

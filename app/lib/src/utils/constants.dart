@@ -21,21 +21,21 @@ class Constants {
     TabMenuItem("Кино", Icons.arrow_drop_down, ServiceTabType.MOVIE),
   ];
 
-  static const servicePackTabs = const[
-    TabMenuItem("Сунгах", Icons.arrow_drop_down, PackTabType.EXTEND),
-    TabMenuItem("Нэмэлт сувгууд", Icons.arrow_drop_down, PackTabType.ADDITIONAL_CHANNEL),
-    TabMenuItem("Ахиулах", Icons.arrow_drop_down, PackTabType.UPGRADE),
+  static const productTabs = const[
+    TabMenuItem("Сунгах", Icons.arrow_drop_down, ProductTabType.EXTEND),
+    TabMenuItem("Нэмэлт сувгууд", Icons.arrow_drop_down, ProductTabType.ADDITIONAL_CHANNEL),
+    TabMenuItem("Ахиулах", Icons.arrow_drop_down, ProductTabType.UPGRADE),
   ];
 
   static const Map<dynamic, String> permissionStrings = {
-    PackTabType.EXTEND: "багцыг",
-    PackTabType.ADDITIONAL_CHANNEL: "нэмэлт сувгийг",
-    PackTabType.UPGRADE: "багцыг",
+    ProductTabType.EXTEND: "багцыг",
+    ProductTabType.ADDITIONAL_CHANNEL: "нэмэлт сувгийг",
+    ProductTabType.UPGRADE: "багцыг",
   };
 
   static const List<int> extendableMonths = [1,2,3,6,12];
 
-  static String createPermissionContentStr(PackTabType packTab, contentToBuy, int time, payment){
+  static String createPermissionContentStr(ProductTabType packTab, contentToBuy, int time, payment){
     return "Та $contentToBuy ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
   }
 

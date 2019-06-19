@@ -1,12 +1,11 @@
-import 'package:ddish/src/blocs/service/pack/pack_event.dart';
-import 'package:ddish/src/blocs/service/pack/pack_state.dart';
+import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 
 mixin WidgetMixin {
-  openPermissionDialog(bloc, context, PackEvent event, monthToExtend) {
+  openPermissionDialog(bloc, context, ProductEvent event, monthToExtend) {
 //Багц сунгах төлбөр төлөлтийн үр дүн
     ActionButton chargeAccountBtn = ActionButton(
         title: 'Тийм', onTap: () => _confirmed(bloc, context, event));
@@ -22,7 +21,7 @@ mixin WidgetMixin {
               fontStyle: FontStyle.normal,
               fontSize: 15.0)),
       content: Text(Constants.createPermissionContentStr(
-          bloc.currentState.selectedTab, bloc.currentState.selectedPack.name, monthToExtend, bloc.currentState.selectedPack.price * monthToExtend)),
+          bloc.currentState.selectedProductTab, bloc.currentState.selectedProduct.name, monthToExtend, bloc.currentState.selectedProduct.price * monthToExtend)),
       actions: [chargeAccountBtn, closeDialog],
     );
 //    paymentResultDialog.
@@ -30,7 +29,7 @@ mixin WidgetMixin {
     showDialog(context: context, builder: (context) => dialog);
   }
 
-  _confirmed(bloc, context, PackEvent event) {
+  _confirmed(bloc, context, ProductEvent event) {
     Navigator.pop(context);
     bloc.dispatch(event);
   }
