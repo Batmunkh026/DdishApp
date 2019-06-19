@@ -33,7 +33,7 @@ class VodRepository {
     date = date == null ? DateTime.now() : date;
     try {
       response = await client.read(
-          '${globals.serverEndpoint}/vodList?productId=${channel.productId}&inDate=${DateUtil.formatParamDate(date)}');
+          '${globals.serverEndpoint}/vodList/${channel.productId}/${DateUtil.formatParamDate(date)}');
     } on Exception catch (e) {
       // TODO catch SocketException
       throw (e);
@@ -47,7 +47,7 @@ class VodRepository {
   Future<Movie> fetchContentDetails(Program program) async {
     var response;
     try {
-      response = await globals.client.read('${globals.serverEndpoint}/vodList?contentId=${program.contentId}');
+      response = await globals.client.read('${globals.serverEndpoint}/vodList/${program.contentId}');
     } on Exception catch(e) {
       throw(e);
     }
@@ -59,7 +59,7 @@ class VodRepository {
   Future<Result> chargeProduct(Program program) async {
     var response;
     try {
-      response = await globals.client.read('${globals.serverEndpoint}/chargeProduct?productId=${program.productId}&smsCode=${program.smsCode}&inDate=${DateUtil.formatParamDateString(program.beginDate)}');
+      response = await globals.client.read('${globals.serverEndpoint}/chargeProduct/${program.productId}/${program.smsCode}/${DateUtil.formatParamDateString(program.beginDate)}');
     } on Exception catch(e) {
       throw(e);
     }
