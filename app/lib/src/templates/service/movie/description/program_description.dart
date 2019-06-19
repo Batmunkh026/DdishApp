@@ -15,6 +15,7 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:ddish/src/widgets/movie/poster_image.dart';
 
 import 'detail_button.dart';
 import 'dialog_close.dart';
@@ -66,10 +67,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: SizedBox(
                     height: height / 4,
-                    child: Image.network(
-                      _content.posterUrl,
-                      fit: BoxFit.contain,
-                    ),
+                    child: PosterImage(url: _content.posterUrl,),
                   ),
                 ),
                 Flexible(
@@ -206,10 +204,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Image.network(
-                        content.posterUrl,
-                        fit: BoxFit.contain,
-                      ),
+                      child: PosterImage(url: content.posterUrl,),
                     ),
                     Flexible(
                       child: Padding(
@@ -353,10 +348,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                     alignment: Alignment.center,
                     child: SizedBox(
                       height: height * 0.7,
-                      child: Image.network(
-                        content.posterUrl,
-                        fit: BoxFit.fill,
-                      ),
+                      child: PosterImage(url: content.posterUrl,),
                     ),
                   ),
                   Align(

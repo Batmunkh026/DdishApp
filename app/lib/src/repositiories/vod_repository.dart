@@ -7,6 +7,7 @@ import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/models/vod_channel_response.dart';
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'globals.dart' as globals;
 
@@ -31,13 +32,22 @@ class VodRepository {
       {DateTime date}) async {
     var response;
     date = date == null ? DateTime.now() : date;
-    try {
-      response = await client.read(
-          '${globals.serverEndpoint}/vodList/${channel.productId}/${DateUtil.formatParamDate(date)}');
-    } on Exception catch (e) {
-      // TODO catch SocketException
-      throw (e);
+    String cacheKey = '${channel.productId}/${DateUtil.formatParamDate(date)}';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var cached = prefs.getString(cacheKey);
+    if(cached != null) {
+      response = cached;
+    } else {
+      try {
+        response = await client.read(
+            '${globals.serverEndpoint}/vodList/${channel.productId}/${DateUtil.formatParamDate(date)}');
+      } on Exception catch (e) {
+        // TODO catch SocketException
+        throw (e);
+      }
+      prefs.setString(cacheKey, response.toString());
     }
+
     var decoded = json.decode(response);
     ProgramResponse channelResponse = ProgramResponse.fromJson(decoded);
     // TODO handle isSuccess = false
