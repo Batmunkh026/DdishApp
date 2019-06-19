@@ -11,6 +11,7 @@ import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/toggle_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ddish/src/utils/input_validations.dart';
 
 import 'style.dart' as style;
 
@@ -39,6 +40,7 @@ class LoginViewState extends State<LoginView> {
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool useFingerprint;
   bool rememberUsername;
   bool canCheckBiometrics;
@@ -72,6 +74,7 @@ class LoginViewState extends State<LoginView> {
         }
 
         return Form(
+          key: _formKey,
           child: Column(
             children: [
               Container(
@@ -98,11 +101,14 @@ class LoginViewState extends State<LoginView> {
                           placeholder: 'АДМИН ДУГААР / СМАРТ КАРТЫН ДУГААР',
                           textController: _usernameController,
                           obscureText: false,
+                          textInputType: TextInputType.number,
+                          validateFunction: InputValidations.validateNumberValue,
                         ),
                         InputField(
                           placeholder: 'НУУЦ ҮГ /****/',
                           textController: _passwordController,
                           obscureText: true,
+                          validateFunction: InputValidations.validateNotNullValue,
                         ),
                         FlatButton(
                           onPressed: () => _showDialog(context),
@@ -188,12 +194,14 @@ class LoginViewState extends State<LoginView> {
 
   _onLoginButtonPressed() {
     FocusScope.of(context).requestFocus(new FocusNode());
-    _loginBloc.dispatch(LoginButtonPressed(
-      username: _usernameController.text,
-      password: _passwordController.text,
-      rememberUsername: rememberUsername,
-      useFingerprint: useFingerprint,
-      fingerPrintLogin: false,
-    ));
+    if(_formKey.currentState.validate()) {
+      _loginBloc.dispatch(LoginButtonPressed(
+        username: _usernameController.text,
+        password: _passwordController.text,
+        rememberUsername: rememberUsername,
+        useFingerprint: useFingerprint,
+        fingerPrintLogin: false,
+      ));
+    }
   }
 }
