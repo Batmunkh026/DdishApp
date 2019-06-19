@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
-import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
@@ -58,27 +57,29 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       yield Loading(event.selectedProductTabType);
 
       if (event.selectedProductTabType == ProductTabType.ADDITIONAL_CHANNEL) {
-        this.additionalProducts = await user.additionalProducts;
-        yield ProductTabState(event.selectedProductTabType, additionalProducts);
+        assert(selectedProduct != null);
+
+        additionalProducts = await productRepository.getAdditionalProducts(selectedProduct.id);
+
+        yield ProductTabState(event.selectedProductTabType, selectedProduct, additionalProducts);
       } else if (event.selectedProductTabType == ProductTabType.UPGRADE) {
         assert(selectedProduct != null);
-        this.upProducts =
+        upProducts =
             await productRepository.getUpgradableProducts(selectedProduct.id);
-        yield ProductTabState(event.selectedProductTabType, upProducts);
+        yield ProductTabState(event.selectedProductTabType, selectedProduct, upProducts);
       }
       //TODO
       else {
         this.products = await productRepository.getProducts();
-        yield ProductTabState(event.selectedProductTabType, products);
+        yield ProductTabState(event.selectedProductTabType, selectedProduct, products);
       }
     } else if (event is ProductTypeSelectorClicked) {
       //багцын төрөл сонгосон үед
       //Багц сунгах төлөв бол тухайн багцын төрөлд хамаарах багцуудыг шүүж харуулах
       //TODO нэмэлт сувгуудад багцын төрөл хамаатай эсэхийг тодруулах
+      selectedProduct = event.selectedProduct;
       yield ProductSelectionState(
           event.selectedTab, products, event.selectedProduct);
-    } else if (event is ChannelSelected) {
-      yield AdditionalChannelState(event.selectedTab, event.selectedProduct);
     } else if (event is ProductItemSelected) {
       //багц сонгосон үед
       assert(event.selectedProduct != null);
@@ -127,16 +128,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       beforeState = currentState;
       beforeEvent = event;
     }
-  }
-
-  /// Багц эсвэл нэмэлт суваг сонголт
-  ///
-  /// **selectedProductTab** - сонгогдсон багцын төрөл **[Үлэмж, Илүү, Энгийн, ...]**
-  ///
-  /// **selectedProductTab** - сонгосон багцад харгалзах дата
-  ProductTabState updateProductTabState(
-      ProductTabType selectedProductTab, List<dynamic> itemsForSelectedTab) {
-    return ProductTabState(selectedProductTab, itemsForSelectedTab);
   }
 
   ///Багцын хугацааа&үнийн дүнгийн төрөл сонгох

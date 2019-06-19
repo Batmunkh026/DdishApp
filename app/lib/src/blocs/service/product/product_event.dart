@@ -35,14 +35,6 @@ class ProductTabChanged extends ProductEvent {
       : super(selectedProductTabType, [selectedProductTabType]);
 }
 
-//нэмэлт суваг сонгох
-class ChannelSelected extends ProductEvent {
-  Product selectedProduct;
-  ChannelSelected(ProductTabType selectedProductTabType, this.selectedProduct)
-      : assert(selectedProduct != null),
-        super(selectedProductTabType, [selectedProductTabType, selectedProduct]);
-}
-
 // тухайн багцын хугацаа&төлбөр сонгох
 //  сонгогдсон элемент нь null байвал <өөр сонголт хийх> оролдлого гэж ойлгох
 class ProductItemSelected extends ProductEvent {

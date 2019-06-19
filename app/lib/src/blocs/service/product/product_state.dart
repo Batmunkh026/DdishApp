@@ -46,10 +46,10 @@ class ProductTabState extends ProductState {
   /// **selectedTab** - сонгосон багцын үйлчилгээний төлөв
   ///
   /// **initialItems** - тухайн сонгосон багцын үйлчилгээнд харгалзах дата
-  ProductTabState(@required this.selectedProductTab, @required this.initialItems)
+  ProductTabState(@required this.selectedProductTab, selectedProduct, @required this.initialItems)
       : assert(selectedProductTab != null),
         assert(initialItems != null),
-        super(selectedProductTab, initialItems, null, [selectedProductTab]);
+        super(selectedProductTab, initialItems, selectedProduct, [selectedProductTab]);
 
   @override
   String toString() => "PackTab state $selectedProductTab - $selectedProduct";

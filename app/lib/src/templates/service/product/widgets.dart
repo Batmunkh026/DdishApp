@@ -27,8 +27,6 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
     _context = context;
     assert(_productContent != null);
 
-//    TODO fix logic error [ хэрэв зөвхөн сувгуудын цуглуулга байвал isChannelPicker==TRUE болно, үгүй бол багц сунгахтай адил үйлдэл хийх]
-
     return buildContentContainer(context);
   }
 
@@ -91,7 +89,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
   }
 
   List<Widget> _buildChannelContents() {
-    bool _isChannelDetail = _productContent is Channel; //list биш бол channel detail
+    bool _isChannelDetail = _productContent is Product; //list биш бол channel detail
 
     List<Widget> _contentItems = [];
 
@@ -103,10 +101,10 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       ///Өөр сонголт оруулах button <нэмэлт суваг сонгох талбар биш бол харуулна>
       _contentItems.add(_createComponentForPick(null, _productContent));
     } else
-      for (final channel
+      for (final product
           in _productContent) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
         _contentItems.add(
-            _createComponentForPick(channel, channel, isChannelPicker: true));
+            _createComponentForPick(product, product, isChannelPicker: true));
     return _contentItems;
   }
 
