@@ -1,9 +1,7 @@
 import 'dart:collection';
 
-import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
-import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 
 import 'product_state.dart';

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
-import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
@@ -49,7 +48,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
 
       //    is channel detail picker бол
       var _isChannelDetailPicker =
-          _stateTab == ProductTabType.ADDITIONAL_CHANNEL && _productContent is Channel;
+          _stateTab == ProductTabType.ADDITIONAL_CHANNEL && _productContent is Product;
 
       var pickerContainer = GridView.count(
         scrollDirection: Axis.vertical,

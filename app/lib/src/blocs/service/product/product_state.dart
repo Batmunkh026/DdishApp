@@ -1,4 +1,3 @@
-import 'package:ddish/src/models/channel.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
