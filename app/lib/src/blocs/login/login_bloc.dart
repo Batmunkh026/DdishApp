@@ -39,7 +39,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
         yield LoginInitial();
       } on oauth.AuthorizationException {
         yield LoginFailure(error: "Bad credentials.");
-      } on SocketException {
+      } on SocketException catch(e){
         yield LoginFailure(error: "Network error.");
       }
     }else if(event is ForgotPass){

@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ddish/src/blocs/service/pack/pack_bloc.dart';
-import 'package:ddish/src/blocs/service/pack/pack_event.dart';
-import 'package:ddish/src/blocs/service/pack/pack_state.dart';
-import 'package:ddish/src/models/pack.dart';
+import 'package:ddish/src/blocs/service/product/product_bloc.dart';
+import 'package:ddish/src/blocs/service/product/product_event.dart';
+import 'package:ddish/src/blocs/service/product/product_state.dart';
+import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
-import 'package:ddish/src/templates/service/pack/widgets.dart';
+import 'package:ddish/src/templates/service/product/widgets.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/dialog.dart';
@@ -12,53 +12,51 @@ import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PackPage extends StatefulWidget {
+class ProductPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => PackPageState();
+  State<StatefulWidget> createState() => ProductPageState();
 }
 
-class PackPageState extends State<PackPage> {
-  PackBloc packBloc;
+class ProductPageState extends State<ProductPage> {
+  ProductBloc bloc;
 
-  var packTabs = Constants.servicePackTabs;
+  var productTabs = Constants.productTabs;
 
   get createTabBar => TabBar(
         isScrollable: true,
-        tabs: packTabs
+        tabs: productTabs
             .map((tabItem) => Tab(
                 child: Text(tabItem.title,
                     style: TextStyle(color: Color(0xff071f49)))))
             .toList(),
         onTap: (tabIndex) =>
-            packBloc.dispatch(PackServiceSelected(packTabs[tabIndex].state)),
+            bloc.dispatch(ProductTabChanged(productTabs[tabIndex].state)),
         indicatorColor: Color.fromRGBO(48, 105, 178, 1),
       );
   @override
   void initState() {
-    packBloc = PackBloc();
+    bloc = ProductBloc();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-        bloc: packBloc,
-        builder: (BuildContext context, PackState state) {
+        bloc: bloc,
+        builder: (BuildContext context, ProductState state) {
           return DefaultTabController(
-              length: packTabs.length, child: buildBody());
+              length: productTabs.length, child: buildBody());
         });
   }
 
-  Widget buildAppBarHeader(BuildContext context, PackState state) {
-    if (state is Loading) return Center(child: CircularProgressIndicator());
+  Widget buildAppBarHeader(BuildContext context, ProductState state) {
+    var fontStyle = TextStyle(
+        color: const Color(0xff071f49),
+        fontWeight: FontWeight.w500,
+        fontStyle: FontStyle.normal,
+        fontSize: 12.0);
 
-      var fontStyle = TextStyle(
-          color: const Color(0xff071f49),
-          fontWeight: FontWeight.w500,
-          fontStyle: FontStyle.normal,
-          fontSize: 12.0);
-
-    var packContentContainer = Row(
+    var productContentContainer = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -75,33 +73,33 @@ class PackPageState extends State<PackPage> {
                   new Text("Дуусах хугацаа: ", style: fontStyle),
                 ],
               ),
-              //TODO хэрэглэгчийн багцын дуусах хугацааг харуулах
-              //TODO хэрэглэгч олон идэвхитэй багцтай бол аль багцын дуусах хугацааг харуулах???
               new Text(
-                  "${DateUtil.formatProductDate(packBloc.user.activeProducts.products.last.endDate)}",
-                  style: fontStyle),
+                  "${DateUtil.formatProductDate(bloc.getDateOfUserSelectedProduct())}",
+                  style: TextStyle(
+                      color: const Color(0xff071f49),
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 12.0)),
             ],
           ),
         ),
       ],
     );
-    if (state is SelectedPackPreview)
+    if (state is SelectedProductPreview)
       return Text("Сунгах");
-    else if (state is PackTabState ||
-        state is CustomPackSelector ||
-        state is PackSelectionState)
-      packContentContainer.children.add(createPackPicker(state));
+    else if (state is ProductTabState ||
+        state is CustomProductSelector ||
+        state is ProductSelectionState)
+      productContentContainer.children.add(createProductPicker(state));
 
     return Container(
       padding: EdgeInsets.only(bottom: 5, left: 5, right: 5),
-      child: packContentContainer,
+      child: productContentContainer,
     );
   }
 
-  Widget createPackPicker(PackState state) {
-//    TODO нэмэлт суваг сонгоход яах ёстойг тодруулах
-//    List<dynamic> items = state.initialItems != null ? state.initialItems : [];
-    List<dynamic> items = packBloc.packs;
+  Widget createProductPicker(ProductState state) {
+    List<Product> items = bloc.products;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,29 +109,27 @@ class PackPageState extends State<PackPage> {
           isDense: true,
           underline: Container(),
           items: items
-              .map((pack) => DropdownMenuItem<Pack>(
-                  value: pack,
+              .map((product) => DropdownMenuItem<Product>(
+                  value: product,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.23,
                     child: CachedNetworkImage(
-                      imageUrl: pack.image,
-                      placeholder: (context, url) => Text(pack.name),
+                      imageUrl: product.image,
+                      placeholder: (context, url) => Text(product.name),
                       fit: BoxFit.contain,
                     ),
                   )))
               .toList(),
           //TODO Багц сунгах таб биш бол яах?
-          value: state.selectedTab == PackTabType.ADDITIONAL_CHANNEL ||
-                  state.selectedPack == null ||
-                  !(state.selectedPack is Pack)
+          value: bloc.selectedProduct == null
               ? items.first
-              : state.selectedPack,
+              : bloc.selectedProduct,
           onChanged: (value) {
-            if (state.selectedTab ==
-                PackTabType
+            if (state.selectedProductTab ==
+                ProductTabType
                     .EXTEND) //TODO сонгосон таб нь [НЭМЭЛТ СУВАГ || АХИУЛАХ] бол яах ёстой ??
-              packBloc
-                  .dispatch(PackTypeSelectorClicked(state.selectedTab, value));
+              bloc.dispatch(
+                  ProductTypeSelectorClicked(state.selectedProductTab, value));
           },
         ),
         Icon(
@@ -146,15 +142,14 @@ class PackPageState extends State<PackPage> {
 
   @override
   void dispose() {
-    packBloc.dispose();
+    bloc.dispose();
     super.dispose();
   }
 
   Widget buildContents() {
-    var _state = packBloc.currentState;
-    if (_state is Loading) return Center(child: CircularProgressIndicator());
+    var _state = bloc.currentState;
 
-    if (_state is PackPaymentState) {
+    if (_state is ProductPaymentState) {
       //Багц сунгах төлбөр төлөлтийн үр дүн
       ActionButton chargeAccountBtn =
           ActionButton(title: 'Цэнэглэх', onTap: () {});
@@ -172,27 +167,27 @@ class PackPageState extends State<PackPage> {
 //        content: Text(Constants.paymentStates[_state.paymentState].values),
         actions: [chargeAccountBtn, closeDialog],
       );
-    } else if (_state is PackTabState || _state is PackSelectionState) {
+    } else if (_state is ProductTabState || _state is ProductSelectionState) {
       //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
-      var itemsForGrid = _state.selectedTab == PackTabType.EXTEND
-          ? _state.selectedPack
+      var itemsForGrid = _state.selectedProductTab == ProductTabType.EXTEND
+          ? _state.selectedProduct
           : _state.initialItems;
-      var packPicker = PackGridPicker(packBloc, itemsForGrid);
-      return packPicker;
+      var productPicker = ProductGridPicker(bloc, itemsForGrid);
+      return productPicker;
     } else if (_state is AdditionalChannelState) {
       //нэмэлт суваг сонгосон төлөв
-      return PackGridPicker(packBloc, _state.selectedChannel);
-    } else if (_state is SelectedPackPreview) {
-      return PackPaymentPreview(packBloc);
-    } else if (_state is CustomPackSelector) {
-      return CustomPackChooser(packBloc);
+      return ProductGridPicker(bloc, _state.selectedProduct);
+    } else if (_state is SelectedProductPreview) {
+      return ProductPaymentPreview(bloc);
+    } else if (_state is CustomProductSelector) {
+      return CustomProductChooser(bloc);
     } else
       throw UnsupportedError("Тодорхойгүй state: $_state");
   }
 
   AppBar buildAppBar() {
-    var _state = packBloc.currentState;
-    if (_state is SelectedPackPreview)
+    var _state = bloc.currentState;
+    if (_state is SelectedProductPreview)
       return AppBar(
         backgroundColor: Colors.white,
         title: buildAppBarHeader(context, _state),
@@ -208,7 +203,10 @@ class PackPageState extends State<PackPage> {
   }
 
   Widget buildBody() {
-    if (packBloc.currentState is SelectedPackPreview) return buildContents();
+    if (bloc.currentState is Loading)
+      return Center(child: CircularProgressIndicator());
+
+    if (bloc.currentState is SelectedProductPreview) return buildContents();
 
     return Scaffold(
       appBar: buildAppBar(),

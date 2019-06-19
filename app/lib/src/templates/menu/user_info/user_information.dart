@@ -67,13 +67,15 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
         hasActiveCounters ? user.activeCounters.counterList.length : 0;
     double counterPosition = 90.0;
     bool hasActiveProducts =
-        user.activeProducts != null && user.activeProducts.products.isNotEmpty;
-    double productPosition =
-        hasActiveCounters ? counterPosition + 30.0 * (counterSize + 1) : counterPosition;
+        user.activeProducts != null && user.activeProducts.isNotEmpty;
+    double productPosition = hasActiveCounters
+        ? counterPosition + 30.0 * (counterSize + 1)
+        : counterPosition;
     bool hasAdditionalProducts =
-        user.additionalProducts != null && user.additionalProducts.products.isNotEmpty;
-    double additionalProductPosition =
-    hasAdditionalProducts ? productPosition + 30.0 * (user.activeProducts.products.length + 1) : productPosition;
+        user.additionalProducts != null && user.additionalProducts.isNotEmpty;
+    double additionalProductPosition = hasAdditionalProducts
+        ? productPosition + 30.0 * (user.activeProducts.length + 1)
+        : productPosition;
     List<Widget> activeProductWidgets = [
       Positioned(
         left: 10.0,
@@ -140,7 +142,8 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
         left: 10.0,
         child: Visibility(
           visible: hasAdditionalProducts,
-          child: Text("Идэвхтэй нэмэлт сувгууд:", style: style.userInfoIndicatorStyle),
+          child: Text("Идэвхтэй нэмэлт сувгууд:",
+              style: style.userInfoIndicatorStyle),
         ),
       ),
     ];
@@ -169,49 +172,49 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
               )
             ]))
         .toList();
-    user.activeProducts.products
+    user.activeProducts
         .map((product) => activeProductWidgets.addAll([
               Positioned(
                 top: productPosition +
-                    30.0 * (user.activeProducts.products.indexOf(product) + 1),
+                    30.0 * (user.activeProducts.indexOf(product) + 1),
                 left: 10.0,
                 child: Text(
-                  product.productName,
+                  product.name,
                   style: style.activeProductsStyle,
                 ),
               ),
               Positioned(
                 top: productPosition +
-                    30.0 * (user.activeProducts.products.indexOf(product) + 1),
+                    30.0 * (user.activeProducts.indexOf(product) + 1),
                 left: 150.0,
                 child: Text(
-                  'Дуусах хугацаа: ${DateUtil.formatDateTime(product.endDate)}',
+                  'Дуусах хугацаа: ${DateUtil.formatDateTime(product.expireDate)}',
                   style: style.activeProductsStyle,
                 ),
               )
             ]))
         .toList();
-    user.additionalProducts.products
+    user.additionalProducts
         .map((product) => activeProductWidgets.addAll([
-      Positioned(
-        top: additionalProductPosition +
-            30.0 * (user.additionalProducts.products.indexOf(product) + 1),
-        left: 10.0,
-        child: Text(
-          product.productName,
-          style: style.activeProductsStyle,
-        ),
-      ),
-      Positioned(
-        top: additionalProductPosition +
-            30.0 * (user.additionalProducts.products.indexOf(product) + 1),
-        left: 150.0,
-        child: Text(
-          'Дуусах хугацаа: ${DateUtil.formatDateTime(product.endDate)}',
-          style: style.activeProductsStyle,
-        ),
-      )
-    ]))
+              Positioned(
+                top: additionalProductPosition +
+                    30.0 * (user.additionalProducts.indexOf(product) + 1),
+                left: 10.0,
+                child: Text(
+                  product.name,
+                  style: style.activeProductsStyle,
+                ),
+              ),
+              Positioned(
+                top: additionalProductPosition +
+                    30.0 * (user.additionalProducts.indexOf(product) + 1),
+                left: 150.0,
+                child: Text(
+                  'Дуусах хугацаа: ${DateUtil.formatDateTime(product.expireDate)}',
+                  style: style.activeProductsStyle,
+                ),
+              )
+            ]))
         .toList();
     return activeProductWidgets;
   }

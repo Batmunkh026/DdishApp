@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'account/account_page.dart';
 import 'movie/movie_page.dart';
-import 'pack/pack_page.dart';
+import 'product/product_page.dart';
 
 ///Үйлчилгээ ерөнхий цонх
 ///Үйлчилгээний цонхнуудын ерөнхий шинжүүдийг агуулсан байх ёстой
@@ -104,7 +104,7 @@ class ServicePageState extends State<ServicePage> {
                   child: SizedBox(
                     height: height * 0.7,
                     child: TabBarView(
-                        children: [AccountPage(), PackPage(), MoviePage()]),
+                        children: [AccountPage(), ProductPage(), MoviePage()]),
                   ),
                 ),
               ),

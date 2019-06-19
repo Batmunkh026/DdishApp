@@ -1,4 +1,3 @@
-import 'package:ddish/src/api/user_api_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
@@ -8,10 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/models/counter.dart';
-import 'package:ddish/src/models/pack.dart';
 
 class UserRepository {
-  final userApiProvider = UserApiProvider();
   final authorizationEndpoint = Uri.parse(globals.serverEndpoint + "/login");
   oauth2.Client client;
 

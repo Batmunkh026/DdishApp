@@ -8,7 +8,7 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
   @override
   ServiceState get initialState => ServiceTabState(ServiceTabType.PACK);
 
-  get servicePackTabState => PackTabType.EXTEND;
+  get servicePackTabState => ProductTabType.EXTEND;
 
   @override
   Stream<ServiceState> mapEventToState(ServiceEvent event) async* {
