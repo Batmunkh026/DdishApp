@@ -57,6 +57,9 @@ class InputField extends StatelessWidget {
         controller: textController,
         textAlign: align,
         decoration: new InputDecoration(
+          enabledBorder: hasBorder ? null : UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
           border: hasBorder
               ? OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),
