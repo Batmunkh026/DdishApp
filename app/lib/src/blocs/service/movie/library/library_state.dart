@@ -2,7 +2,6 @@ import 'package:ddish/src/models/movie.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-///Багцын төлөв
 abstract class MovieLibraryState extends Equatable {}
 
 class MovieListLoading extends MovieLibraryState {
@@ -11,20 +10,12 @@ class MovieListLoading extends MovieLibraryState {
 }
 
 class MovieListLoaded extends MovieLibraryState {
-  final List<Movie> movies;
+  final List<String> posterUrls;
 
-  MovieListLoaded({@required this.movies});
+  MovieListLoaded({@required this.posterUrls});
 
   @override
   String toString() => 'movie list loaded.';
-}
-
-class MovieDetailsOpened extends MovieLibraryState {
-  final Movie movie;
-
-  MovieDetailsOpened({@required this.movie});
-  @override
-  String toString() => 'movie details loaded.';
 }
 
 class MovieListInitial extends MovieLibraryState {

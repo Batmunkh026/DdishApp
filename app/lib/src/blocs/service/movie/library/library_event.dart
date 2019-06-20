@@ -1,16 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ddish/src/models/movie.dart';
 
 abstract class MovieLibraryEvent extends Equatable{
   MovieLibraryEvent([List props = const []]) : super(props);
 }
 
-class MovieSelected extends MovieLibraryEvent {
-  final Movie selectedMovie;
-  MovieSelected({this.selectedMovie});
+class MovieLibraryStarted extends MovieLibraryEvent {
+  MovieLibraryStarted();
   @override
-  String toString() => "movie list loading";
+  String toString() => "movie library started.";
 }
 
 class MovieRentClicked extends MovieLibraryEvent {

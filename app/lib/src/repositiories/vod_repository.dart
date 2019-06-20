@@ -78,4 +78,17 @@ class VodRepository {
     var decoded = json.decode(response);
     return Result.fromJson(decoded);
   }
+  
+  Future<List> fetchPushVod() async {
+    var response;
+    try {
+      response = await globals.client.read('${globals.serverEndpoint}/pushVod');
+    } on Exception catch(e) {
+      throw(e);
+    }
+
+    var decoded = json.decode(response);
+    var posterUrls = List<String>.from(decoded['contents'].map((map) => map['contentImgUrl']));
+    return posterUrls;
+  }
 }

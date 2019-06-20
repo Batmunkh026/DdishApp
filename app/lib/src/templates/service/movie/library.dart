@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:ddish/src/blocs/service/movie/library/library_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_event.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
-import 'package:ddish/src/models/movie.dart';
+import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
-import 'package:ddish/src/widgets/movie/thumbnail.dart';
+import 'package:ddish/src/widgets/movie/poster_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,10 +20,12 @@ class Library extends StatefulWidget {
 class LibraryState extends State<Library> {
   TextEditingController movieIdFieldController;
   MovieLibraryBloc _bloc;
+  VodRepository _repository;
 
   @override
   void initState() {
-    _bloc = MovieLibraryBloc();
+    _repository = VodRepository();
+    _bloc = MovieLibraryBloc(repository: _repository);
     movieIdFieldController = TextEditingController();
     super.initState();
   }
@@ -38,48 +40,62 @@ class LibraryState extends State<Library> {
   // resizeToAvoidBottomPadding: false,
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: ProgramSearchWidget(
-            searchById: true,
-            onSearchTap: onRentAgreeTap,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                child: ProgramSearchWidget(
+                  searchById: true,
+                  onSearchTap: onRentAgreeTap,
+                ),
+              ),
+              Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Шинээр нэмэгдэх',
+                  style: const TextStyle(
+                      color: const Color(0xff071f49),
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 15.0),
+                ),
+              ),
+            ],
           ),
         ),
         BlocBuilder<MovieLibraryEvent, MovieLibraryState>(
           bloc: _bloc,
           builder: (BuildContext context, MovieLibraryState state) {
             if (state is MovieListLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
+              _bloc.dispatch(MovieLibraryStarted());
+              return Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             }
             if (state is MovieListLoaded) {
-              List movies = state.movies;
-              return GridView.count(
-                crossAxisCount: 3,
-                children: <Widget>[
-                  ListView.builder(
-                    itemCount: movies.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return MovieThumbnail(
-                        movie: movies[index],
-                        onTap: _onMovieThumbnailTap(movies[index]),
-                      );
-                    },
+              List posters = state.posterUrls;
+              return Flexible(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                  child: GridView.count(
+                    mainAxisSpacing: 30.0,
+                    crossAxisCount: 3,
+                    children: List.generate(
+                      posters.length,
+                      (index) {
+                        return PosterImage(
+                          url: posters[index],
+                        );
+                      },
+                    ),
                   ),
-                ],
+                ),
               );
-            }
-            if (state is MovieIdConfirmProcessing) {
-              return CircularProgressIndicator();
-            }
-            if (state is MovieIdProcessingFinished) {
-              onRentButtonTap();
-            }
-            if (state is MovieDetailsOpened) {
-              // TODO pop movie details dialog
-              return Container();
             }
             return Container();
           },
@@ -131,10 +147,6 @@ class LibraryState extends State<Library> {
             actions: actions,
           );
         });
-  }
-
-  _onMovieThumbnailTap(Movie tappedMovie) {
-    _bloc.dispatch(MovieSelected(selectedMovie: tappedMovie));
   }
 
   onRentAgreeTap() {
