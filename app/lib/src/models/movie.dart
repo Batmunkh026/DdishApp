@@ -2,12 +2,12 @@ import 'package:ddish/src/models/result.dart';
 
 class Movie {
   final Result result;
-  final String contentId;
+  final int contentId;
   final String contentNameMon;
   final String contentNameEng;
-  final String contentPrice;
+  final int contentPrice;
   final String contentDescr;
-  final String contentYear;
+  final int contentYear;
   final String contentGenres;
   final String directors;
   final String actors;
@@ -16,12 +16,12 @@ class Movie {
 
   Movie.fromJson(Map<String, dynamic> json)
       : result = Result.fromJson(json),
-        contentId = json['contentId'],
+        contentId = int.parse(json['contentId']),
         contentNameMon = json['contentNameMon'],
         contentNameEng = json['contentNameEng'],
-        contentPrice = json['contentPrice'],
+        contentPrice = int.parse(json['contentPrice']),
         contentDescr = json['contentDescr'],
-        contentYear = json['contentYear'],
+        contentYear = int.parse(json['contentYear']),
         contentGenres = json['contentGenres'],
         directors = json['directors'],
         actors = json['actors'],

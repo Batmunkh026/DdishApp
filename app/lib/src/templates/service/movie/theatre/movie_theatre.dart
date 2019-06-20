@@ -113,7 +113,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(right: 15.0),
-                                child: PosterImage(url: program.posterUrl,),
+                                child: PosterImage(
+                                  url: program.posterUrl,
+                                ),
                               ),
                               Flexible(
                                 child: Column(
@@ -130,9 +132,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
                                           overflow: TextOverflow.ellipsis,
                                           style: style.programGenresStyle),
                                     ),
-                                    Text(
-                                        DateUtil.formatStringTime(
-                                            program.beginDate),
+                                    Text(DateUtil.formatTime(program.beginDate),
                                         style: style.programStartTimeStyle),
                                   ],
                                 ),

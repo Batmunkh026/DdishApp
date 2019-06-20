@@ -16,11 +16,6 @@ class DateUtil {
     return formatter.format(dateTime);
   }
 
-  static String formatParamDateString(String date) {
-    debugPrint(formatParamDate(toDateTime(date)));
-    return formatParamDate(toDateTime(date));
-  }
-
   static String formatParamDate(DateTime dateTime) {
     return parameterFormatter.format(dateTime);
   }
@@ -29,25 +24,19 @@ class DateUtil {
     return timeFormatter.format(dateTime);
   }
 
-  static String formatStringTime(String dateTime) {
-    return formatTime(toDateTime(dateTime));
-  }
-
   static String formatTheatreDate(DateTime dateTime) {
     return theatreDateFormatter.format(dateTime);
   }
 
   static String formatProductDate(DateTime dateTime) {
-    if(dateTime == null)
-      return "_";
+    if (dateTime == null) return "_";
     return productDateFormatter.format(dateTime);
   }
 
   static bool today(DateTime time) {
     var now = DateTime.now();
     var d1 = DateTime.utc(now.year, now.month, now.day);
-    var d2 = DateTime.utc(
-        time.year, time.month, time.day); //you can add today's date here
+    var d2 = DateTime.utc(time.year, time.month, time.day);
     return d2.compareTo(d1) == 0;
   }
 }

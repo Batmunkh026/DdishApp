@@ -34,7 +34,7 @@ class ProgramDescription extends StatefulWidget {
 
 class ProgramDescriptionStatus extends State<ProgramDescription> {
   Movie _content;
-  String _beginDate;
+  DateTime _beginDate;
   VodRepository _repository;
   ProgramDescriptionBloc _bloc;
 
@@ -88,7 +88,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
-                        child: Text(DateUtil.formatStringTime(_beginDate),
+                        child: Text(DateUtil.formatTime(_beginDate),
                             style: style.programStartTimeStyle),
                       ),
                       Padding(
@@ -134,11 +134,10 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   ? CircularProgressIndicator()
                   : SubmitButton(
                       text: alreadyRented ? 'Түрээслэсэн' : 'Түрээслэх',
-                      onPressed: alreadyRented ||
-                              DateUtil.toDateTime(_beginDate)
-                                  .isBefore(DateTime.now())
-                          ? null
-                          : () => onRentButtonTap(),
+                      onPressed:
+                          alreadyRented || _beginDate.isBefore(DateTime.now())
+                              ? null
+                              : () => onRentButtonTap(),
                       horizontalMargin: 50.0,
                     ),
             )
@@ -229,7 +228,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 5.0),
-                              child: Text(DateUtil.formatStringTime(_beginDate),
+                              child: Text(DateUtil.formatTime(_beginDate),
                                   style: style.programStartTimeStyleDialog),
                             ),
                           ],

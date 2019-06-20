@@ -60,7 +60,7 @@ class UserRepository {
     var response;
     try {
       response = await globals.client
-          .read(globals.serverEndpoint + '/getUserInfo?counter=main');
+          .read(globals.serverEndpoint + '/getUserInfo/main');
     } on Exception catch (e) {
       throw (e);
     }

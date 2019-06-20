@@ -25,8 +25,7 @@ dependencies:
   date_format: ^1.0.5
   oauth2: ^1.2.3
   equatable: ^0.2.5
-  shared_preferences: ^0.5.2+1
-  json_serializable: ^3.0.0
+  shared_preferences: ^0.5.3+1
   intl: ^0.15.8
   local_auth: ^0.5.2+2
   cached_network_image: ^0.8.0

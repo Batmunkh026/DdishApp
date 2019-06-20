@@ -61,10 +61,9 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
   }
 
   populateUserInformation(User user) {
-    bool hasActiveCounters = user.activeCounters != null &&
-        user.activeCounters.counterList.isNotEmpty;
-    int counterSize =
-        hasActiveCounters ? user.activeCounters.counterList.length : 0;
+    bool hasActiveCounters =
+        user.activeCounters != null && user.activeCounters.isNotEmpty;
+    int counterSize = hasActiveCounters ? user.activeCounters.length : 0;
     double counterPosition = 90.0;
     bool hasActiveProducts =
         user.activeProducts != null && user.activeProducts.isNotEmpty;
@@ -108,17 +107,7 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
       Positioned(
         top: 60.0,
         left: 200.0,
-        child: Text(user.adminNumber, style: style.userInfoValueStyle),
-      ),
-      Positioned(
-        top: 60.0,
-        left: 200.0,
-        child: Text(user.adminNumber, style: style.userInfoValueStyle),
-      ),
-      Positioned(
-        top: 60.0,
-        left: 200.0,
-        child: Text(user.adminNumber, style: style.userInfoValueStyle),
+        child: Text('${user.adminNumber}', style: style.userInfoValueStyle),
       ),
       Positioned(
         top: counterPosition,
@@ -147,12 +136,11 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
         ),
       ),
     ];
-    user.activeCounters.counterList
+    user.activeCounters
         .map((counter) => activeProductWidgets.addAll([
               Positioned(
                 top: counterPosition +
-                    30.0 *
-                        (user.activeCounters.counterList.indexOf(counter) + 1),
+                    30.0 * (user.activeCounters.indexOf(counter) + 1),
                 left: 10.0,
                 child: Text(
                   counter.counterName,
@@ -161,8 +149,7 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
               ),
               Positioned(
                 top: counterPosition +
-                    30.0 *
-                        (user.activeCounters.counterList.indexOf(counter) + 1),
+                    30.0 * (user.activeCounters.indexOf(counter) + 1),
 //        left: 150.0,
                 right: 0.0,
                 child: Text(

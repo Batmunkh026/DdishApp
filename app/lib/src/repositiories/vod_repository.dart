@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/program.dart';
-import 'package:ddish/src/models/program_response.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
-import 'package:ddish/src/models/vod_channel_response.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,7 +12,7 @@ import 'globals.dart' as globals;
 class VodRepository {
   final client = globals.client;
 
-  Future<VodChannelList> fetchVodChannels() async {
+  Future<List> fetchVodChannels() async {
     var response;
     try {
       response = await client.read('${globals.serverEndpoint}/vodList');
@@ -23,19 +21,19 @@ class VodRepository {
       throw (e);
     }
     var decoded = json.decode(response);
-    VodChannelResponse channelResponse = VodChannelResponse.fromJson(decoded);
+    List<VodChannel> vodChannels = List<VodChannel>.from(
+        decoded['vodChannels'].map((channel) => VodChannel.fromJson(channel)));
     // TODO handle isSuccess = false
-    return channelResponse.vodChannels;
+    return vodChannels;
   }
 
-  Future<ProgramList> fetchProgramList(VodChannel channel,
-      {DateTime date}) async {
+  Future<List> fetchProgramList(VodChannel channel, {DateTime date}) async {
     var response;
     date = date == null ? DateTime.now() : date;
     String cacheKey = '${channel.productId}/${DateUtil.formatParamDate(date)}';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var cached = prefs.getString(cacheKey);
-    if(cached != null) {
+    if (cached != null) {
       response = cached;
     } else {
       try {
@@ -45,21 +43,23 @@ class VodRepository {
         // TODO catch SocketException
         throw (e);
       }
-      prefs.setString(cacheKey, response.toString());
+      await prefs.setString(cacheKey, response.toString());
     }
 
     var decoded = json.decode(response);
-    ProgramResponse channelResponse = ProgramResponse.fromJson(decoded);
+    List<Program> programList = List<Program>.from(
+        decoded['programList'].map((program) => Program.fromJson(program)));
     // TODO handle isSuccess = false
-    return channelResponse.programList;
+    return programList;
   }
 
   Future<Movie> fetchContentDetails(Program program) async {
     var response;
     try {
-      response = await globals.client.read('${globals.serverEndpoint}/vodList/${program.contentId}');
-    } on Exception catch(e) {
-      throw(e);
+      response = await globals.client
+          .read('${globals.serverEndpoint}/vodList/${program.contentId}');
+    } on Exception catch (e) {
+      throw (e);
     }
 
     var decoded = json.decode(response);
@@ -69,9 +69,10 @@ class VodRepository {
   Future<Result> chargeProduct(Program program) async {
     var response;
     try {
-      response = await globals.client.read('${globals.serverEndpoint}/chargeProduct/${program.productId}/${program.smsCode}/${DateUtil.formatParamDateString(program.beginDate)}');
-    } on Exception catch(e) {
-      throw(e);
+      response = await globals.client.read(
+          '${globals.serverEndpoint}/chargeProduct/${program.productId}/${program.smsCode}/${DateUtil.formatParamDate(program.beginDate)}');
+    } on Exception catch (e) {
+      throw (e);
     }
 
     var decoded = json.decode(response);
