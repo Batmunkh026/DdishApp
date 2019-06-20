@@ -4,7 +4,7 @@ abstract class NotificationEvent extends Equatable{
   NotificationEvent([List props = const []]) : super(props);
 }
 
-class NotificationReceived extends NotificationEvent{
+class LoadedEvent extends NotificationEvent{
   @override
-  String toString() => "notification received";
+  String toString() => "loaded";
 }
