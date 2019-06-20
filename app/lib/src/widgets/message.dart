@@ -14,6 +14,7 @@ void show(BuildContext context, String message, SnackBarType type) {
   Scaffold.of(context).showSnackBar(SnackBar(
     content: Text(message),
     backgroundColor: backgroundColor,
+    duration: Duration(seconds: 3),
   ));
 }
 

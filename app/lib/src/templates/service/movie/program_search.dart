@@ -5,10 +5,9 @@ import 'package:flutter/cupertino.dart';
 class ProgramSearchWidget extends StatelessWidget {
   final VoidCallback onSearchTap;
   final bool searchById;
+  final TextEditingController controller;
 
-  ProgramSearchWidget({this.searchById, this.onSearchTap});
-
-  final searchFieldController = TextEditingController();
+  ProgramSearchWidget({this.searchById, this.onSearchTap, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +17,10 @@ class ProgramSearchWidget extends StatelessWidget {
           child: InputField(
             hasBorder: true,
             align: TextAlign.center,
+            textInputType: searchById ? TextInputType.number : TextInputType.text ,
             placeholder:
                 searchById ? 'Кино ID оруулна уу' : 'Кино нэр оруулна уу',
-            textController: searchFieldController,
+            textController: controller,
           ),
         ),
         SubmitButton(

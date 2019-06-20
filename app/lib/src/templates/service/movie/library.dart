@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:ddish/src/blocs/service/movie/library/library_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_event.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
+import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
+import 'package:ddish/src/widgets/message.dart' as message;
 import 'package:ddish/src/widgets/movie/poster_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,15 +20,15 @@ class Library extends StatefulWidget {
 }
 
 class LibraryState extends State<Library> {
-  TextEditingController movieIdFieldController;
+  final movieIdFieldController = TextEditingController();
   MovieLibraryBloc _bloc;
   VodRepository _repository;
+  List<String> posters = List();
 
   @override
   void initState() {
     _repository = VodRepository();
     _bloc = MovieLibraryBloc(repository: _repository);
-    movieIdFieldController = TextEditingController();
     super.initState();
   }
 
@@ -37,7 +39,6 @@ class LibraryState extends State<Library> {
   }
 
   @override
-  // resizeToAvoidBottomPadding: false,
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +50,8 @@ class LibraryState extends State<Library> {
               Container(
                 child: ProgramSearchWidget(
                   searchById: true,
-                  onSearchTap: onRentAgreeTap,
+                  onSearchTap: onRentButtonTap,
+                  controller: movieIdFieldController,
                 ),
               ),
               Container(
@@ -69,35 +71,38 @@ class LibraryState extends State<Library> {
         BlocBuilder<MovieLibraryEvent, MovieLibraryState>(
           bloc: _bloc,
           builder: (BuildContext context, MovieLibraryState state) {
-            if (state is MovieListLoading) {
-              _bloc.dispatch(MovieLibraryStarted());
+            if (state is ContentOrderRequestFinished)
+              WidgetsBinding.instance.addPostFrameCallback(
+                  (_) => _showResultMessage(state.result));
+            if (state is ContentListLoading) {
+              _bloc.dispatch(ContentLibraryStarted());
               return Expanded(
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
               );
             }
-            if (state is MovieListLoaded) {
-              List posters = state.posterUrls;
-              return Flexible(
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                  child: GridView.count(
-                    mainAxisSpacing: 30.0,
-                    crossAxisCount: 3,
-                    children: List.generate(
-                      posters.length,
-                      (index) {
-                        return PosterImage(
-                          url: posters[index],
-                        );
-                      },
+            if (state is ContentListLoaded) posters = state.posterUrls;
+
+            return posters != null
+                ? Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                      child: GridView.count(
+                        mainAxisSpacing: 30.0,
+                        crossAxisCount: 3,
+                        children: List.generate(
+                          posters.length,
+                          (index) {
+                            return PosterImage(
+                              url: posters[index],
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            }
-            return Container();
+                  )
+                : Container();
           },
         ),
       ],
@@ -108,7 +113,11 @@ class LibraryState extends State<Library> {
     List<Widget> actions = new List();
     ActionButton rentMovie = ActionButton(
       title: 'Түрээслэх',
-      onTap: () => onRentAgreeTap(),
+      onTap: () {
+        Navigator.pop(context);
+        _bloc.dispatch(ContentOrderClicked(
+            contentId: int.parse(movieIdFieldController.text)));
+      },
     );
     ActionButton closeDialog = ActionButton(
       title: 'Болих',
@@ -140,7 +149,7 @@ class LibraryState extends State<Library> {
                   TextSpan(
                       text: movieIdFieldController.text,
                       style: TextStyle(fontWeight: FontWeight.w600)),
-                  TextSpan(text: ' киног түрээслэх гэж байна. '),
+                  TextSpan(text: ' ID-тай киног түрээслэх гэж байна. '),
                 ],
               ),
             ),
@@ -149,7 +158,12 @@ class LibraryState extends State<Library> {
         });
   }
 
-  onRentAgreeTap() {
-    // validart
+  _showResultMessage(Result result) {
+    message.show(
+        context,
+        result.resultMessage,
+        result.isSuccess
+            ? message.SnackBarType.SUCCESS
+            : message.SnackBarType.ERROR);
   }
 }

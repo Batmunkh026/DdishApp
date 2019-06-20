@@ -1,21 +1,22 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-abstract class MovieLibraryEvent extends Equatable{
+abstract class MovieLibraryEvent extends Equatable {
   MovieLibraryEvent([List props = const []]) : super(props);
 }
 
-class MovieLibraryStarted extends MovieLibraryEvent {
-  MovieLibraryStarted();
+class ContentLibraryStarted extends MovieLibraryEvent {
+  ContentLibraryStarted();
+
   @override
-  String toString() => "movie library started.";
+  String toString() => "content library started.";
 }
 
-class MovieRentClicked extends MovieLibraryEvent {
-  final int movieId;
+class ContentOrderClicked extends MovieLibraryEvent {
+  final int contentId;
 
-  MovieRentClicked({@required this.movieId});
+  ContentOrderClicked({@required this.contentId});
 
   @override
-  String toString() => "movie rent clicked. id: $movieId";
+  String toString() => "content order clicked. id: $contentId";
 }

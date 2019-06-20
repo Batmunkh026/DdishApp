@@ -51,9 +51,12 @@ class TheatreWidgetState extends State<TheatreWidget> {
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: selectedChannel == null
-                ? ProgramSearchWidget(
-                    searchById: false,
-                    onSearchTap: onSearchTap,
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: ProgramSearchWidget(
+                      searchById: false,
+                      onSearchTap: onSearchTap,
+                    ),
                   )
                 : ChannelHeaderWidget(
                     selectedChannel: selectedChannel,
