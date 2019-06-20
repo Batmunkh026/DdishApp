@@ -56,3 +56,42 @@ class BranchFilter {
     if (service.isNotEmpty) this.service = service;
   }
 }
+
+class BranchParam {
+  List<BranchArea> branchAreas;
+  List<BranchType> branchTypes;
+  List<BranchService> branchServices;
+
+  BranchParam(@required this.branchAreas, @required this.branchTypes,
+      @required this.branchServices)
+      : assert(branchAreas != null),
+        assert(branchTypes != null),
+        assert(branchServices != null);
+}
+
+class BranchArea {
+  String name;
+  String code;
+
+  BranchArea.fromMap(Map<String, dynamic> map)
+      : name = map['areaName'],
+        code = map['areaCode'];
+}
+
+class BranchType {
+  String name;
+  String code;
+
+  BranchType.fromMap(Map<String, dynamic> map)
+      : name = map['typeName'],
+        code = map['typeCode'];
+}
+
+class BranchService {
+  String name;
+  String code;
+
+  BranchService.fromMap(Map<String, dynamic> map)
+      : name = map['serviceName'],
+        code = map['serviceCode'];
+}
