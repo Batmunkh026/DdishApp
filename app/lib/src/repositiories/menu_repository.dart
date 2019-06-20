@@ -22,12 +22,15 @@ class MenuRepository {
     return result;
   }
 
-  Future<List<Branch>> fetchBranches() async {
+  Future<List<Branch>> fetchBranches(area, type, service) async {
     try {
-      final _response = await http
-          .read('${globals.serverEndpoint}/getSalesCenter', headers: {
-        HttpHeaders.authorizationHeader: globals.authorizationToken
-      });
+      var params = _collectParams(area, type, service);
+      final _response = await http.read(
+          '${globals.serverEndpoint}/getSalesCenter' +
+              params,
+          headers: {
+            HttpHeaders.authorizationHeader: globals.authorizationToken
+          });
       var _branchReponse = json.decode(_response) as Map;
 
       if (_branchReponse["isSuccess"])
@@ -39,4 +42,40 @@ class MenuRepository {
       throw (e);
     }
   }
+
+  Future<BranchParam> fetchBranchParams() async {
+    try {
+      final _response = await http
+          .read('${globals.serverEndpoint}/getSalesCenter', headers: {
+        HttpHeaders.authorizationHeader: globals.authorizationToken
+      });
+      var _branchReponse = json.decode(_response) as Map;
+
+      if (_branchReponse["isSuccess"]) {
+        List<BranchArea> areas = List<BranchArea>.from(
+            _branchReponse["branchAreas"]
+                .map((branchArea) => BranchArea.fromMap(branchArea)));
+
+        List<BranchType> types = List<BranchType>.from(
+            _branchReponse["branchTypes"]
+                .map((branchType) => BranchType.fromMap(branchType)));
+
+        List<BranchService> services = List<BranchService>.from(
+            _branchReponse["branchServices"]
+                .map((branchService) => BranchService.fromMap(branchService)));
+
+        return BranchParam(areas, types, services);
+      }
+      return null;
+    } on http.ClientException catch (e) {
+      // TODO catch SocketException
+      throw (e);
+    }
+  }
+
+  String _collectParams(area, type, service) =>
+      _createParam(area) + _createParam(type) + _createParam(service);
+
+  String _createParam(String param) =>
+      param == null || param.isEmpty ? "/all" : "/$param";
 }
