@@ -12,22 +12,27 @@ class DateUtil {
     return DateTime.parse(dateTime);
   }
 
+  ///yyyy-MM-dd
   static String formatDateTime(DateTime dateTime) {
     return formatter.format(dateTime);
   }
 
+  ///yyyyMMdd
   static String formatParamDate(DateTime dateTime) {
     return parameterFormatter.format(dateTime);
   }
 
+  ///HH:mm
   static String formatTime(DateTime dateTime) {
     return timeFormatter.format(dateTime);
   }
 
+  ///dd | MM | yyyy
   static String formatTheatreDate(DateTime dateTime) {
     return theatreDateFormatter.format(dateTime);
   }
 
+  ///dd.MM.yyyy
   static String formatProductDate(DateTime dateTime) {
     if (dateTime == null) return "_";
     return productDateFormatter.format(dateTime);
