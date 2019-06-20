@@ -1,4 +1,5 @@
 import 'package:ddish/src/blocs/menu/menu_bloc.dart';
+import 'package:ddish/src/widgets/menu_expansion_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ class MenuPageState extends State<MenuPage> {
   bool authenticated;
   MenuBloc _menuBloc;
   List<Menu> menuItems;
+  List<GlobalKey<MenuExpansionTileState>> expansionTileKeys;
 
   @override
   void initState() {
@@ -58,6 +60,7 @@ class MenuPageState extends State<MenuPage> {
                   ],
                 );
               } else if (state is MenuOpened || state is MenuInitial) {
+                expansionTileKeys = List();
                 return Column(
                   children: <Widget>[
                     Visibility(
@@ -114,11 +117,18 @@ class MenuPageState extends State<MenuPage> {
         onTap: () => menu.screen == null && menu.event != null ? Future(menu.event) : onMenuTap(menu),
       );
     }
-    return ExpansionTile(
-      key: PageStorageKey<Menu>(menu),
+    GlobalKey<MenuExpansionTileState> _key = new GlobalKey();
+    expansionTileKeys.add(_key);
+    return MenuExpansionTile(
+      key: _key,
       trailing: SizedBox.shrink(),
       title: _buildTitle(menu.title),
       children: menu.children.map((m) => _buildMenuItem(m, false)).toList(),
+      onExpansionChanged: (expanded) {
+        if(expanded) {
+          expansionTileKeys.where((key) => key != _key).forEach((key) => key.currentState.collapse());
+        }
+      },
     );
   }
 
