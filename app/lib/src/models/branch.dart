@@ -40,21 +40,18 @@ class Branch {
 }
 
 class BranchFilter {
-  String city = "";
-  String type = ""; //TODO салбарын төрөл ямар төрлийн өгөгдөл байх
-  String state = ""; //TODO салбарын төлөв ямар төрлийн өгөгдөл байх
-  String service = "";
+  BranchArea city;
+  BranchType type;
+  String state;
+  BranchService service;
 
-  BranchFilter(
-      {String city = "",
-      String type = "",
-      String state = "",
-      String service = ""}) {
-    if (city.isNotEmpty) this.city = city;
-    if (type.isNotEmpty) this.type = type;
-    if (state.isNotEmpty) this.state = state;
-    if (service.isNotEmpty) this.service = service;
-  }
+  get cityCode => city == null ? null : city.code;
+
+  get typeCode => type == null ? null : type.code;
+
+  get serviceCode => service == null ? null : service.code;
+
+  BranchFilter(this.city, this.type, this.state, this.service);
 }
 
 class BranchParam {

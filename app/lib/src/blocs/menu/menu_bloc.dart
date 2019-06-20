@@ -22,69 +22,11 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
       yield ChildMenuOpened(menu: event.selectedMenu);
     }
   }
-  Future<List<Branch>> getBranchData(){
-    return repository.fetchBranches();
+  Future<List<Branch>> getBranches(String area, String type, String service){
+    return repository.fetchBranches(area, type, service);
   }
-//  List<Branch> getDemoBranchLocations() {
-//    List<Branch> branches = [
-//      Branch(
-//          47.9176489,
-//          106.9045286,
-//          "Цэцэг төв",
-//          "A",
-//          "t",
-//          ["Үйлчилгээ 1", "Үйлчилгээ 2", "Үйлчилгээ 3"],
-//          "Салбар 1",
-//          "Ерөнхий сайд А.Амарын гудамж, Ulaanbaatar 14200, Mongolia",
-//          [
-//            "Даваа-Баасан: 09:00-19:00",
-//            "Бямба-Ням: "
-//                "10:00-18:00"
-//          ]),
-//      Branch(
-//          47.9143551,
-//          106.9118418,
-//          "Бөхийн өргөө",
-//          "B",
-//          "x",
-//          ["Үйлчилгээ 1", "Үйлчилгээ 2"],
-//          "Салбар 2",
-//          "Тээвэрчидийн Гудамж, Улаанбаатар 14210",
-//          [
-//            "Даваа-Баасан: 09:00-19:00",
-//            "Бямба-Ням: "
-//                "10:00-18:00"
-//          ]),
-//      Branch(
-//          47.9171697,
-//          106.9256163,
-//          "Гандан",
-//          "C",
-//          "y",
-//          ["Үйлчилгээ 1", "Үйлчилгээ 2", "Үйлчилгээ 3"],
-//          "Салбар 3",
-//          "Бага тойрог, Улаанбаатар",
-//          [
-//            "Даваа-Баасан: 09:00-19:00",
-//            "Бямба-Ням: "
-//                "10:00-18:00"
-//          ]),
-//      Branch(
-//          47.9180952,
-//          106.9190746,
-//          "100 айл",
-//          "D",
-//          "z",
-//          ["Үйлчилгээ 1"],
-//          "Салбар 4",
-//          "Sukhbaatar St 15, Улаанбаатар 14240",
-//          [
-//            "Даваа-Баасан: 09:00-19:00",
-//            "Бямба-Ням: "
-//                "10:00-18:00"
-//          ]),
-//    ];
-//
-//    return branches;
-//  }
+  Future<BranchParam> getBranchParam(){
+    return repository.fetchBranchParams();
+  }
+  
 }
