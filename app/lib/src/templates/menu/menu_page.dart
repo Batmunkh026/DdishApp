@@ -1,5 +1,4 @@
 import 'package:ddish/src/blocs/menu/menu_bloc.dart';
-import 'package:ddish/src/widgets/menu_expansion_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/header.dart';
 import 'menu.dart';
+import 'package:ddish/src/widgets/menu_expansion_tile.dart';
 
 class MenuPage extends StatefulWidget {
   final VoidCallback onBackButtonTap;
@@ -78,7 +78,7 @@ class MenuPageState extends State<MenuPage> {
                           return Column(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.only(left: 25.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 25.0),
                                 child: menuItem != null ? menuItem : Container(),
                               ),
                               Visibility(
