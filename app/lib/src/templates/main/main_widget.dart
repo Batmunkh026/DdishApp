@@ -1,4 +1,5 @@
 import 'package:ddish/src/templates/menu/menu_page.dart';
+import 'package:ddish/src/templates/notification/notification_page.dart';
 import 'package:ddish/src/templates/service/service_page.dart';
 import 'package:flutter/material.dart';
 
@@ -14,13 +15,13 @@ class MainViewState extends State<MainView> {
 
   MenuPage menuPage;
   ServicePage servicePage;
-  Text notificationText;
+  NotificationPage notificationPage;
 
   @override
   void initState() {
     menuPage = MenuPage();
     servicePage = ServicePage();
-    notificationText = Text("NOTIFICATION");
+    notificationPage = NotificationPage();
     super.initState();
   }
 
@@ -33,7 +34,7 @@ class MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     List<Widget> content = [
       servicePage,
-      notificationText,
+      notificationPage,
       menuPage,
     ];
     final double height = MediaQuery.of(context).size.height;
