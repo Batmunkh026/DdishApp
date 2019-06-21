@@ -8,7 +8,6 @@ import 'package:ddish/src/templates/service/product/widgets.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,6 +32,7 @@ class ProductPageState extends State<ProductPage> {
             bloc.dispatch(ProductTabChanged(productTabs[tabIndex].state)),
         indicatorColor: Color.fromRGBO(48, 105, 178, 1),
       );
+
   @override
   void initState() {
     bloc = ProductBloc();
@@ -121,9 +121,8 @@ class ProductPageState extends State<ProductPage> {
                   )))
               .toList(),
           //TODO Багц сунгах таб биш бол яах?
-          value: bloc.selectedProduct == null
-              ? items.first
-              : bloc.selectedProduct,
+          value:
+              bloc.selectedProduct == null ? items.first : bloc.selectedProduct,
           onChanged: (value) {
             if (state.selectedProductTab ==
                 ProductTabType
@@ -151,21 +150,13 @@ class ProductPageState extends State<ProductPage> {
 
     if (_state is ProductPaymentState) {
       //Багц сунгах төлбөр төлөлтийн үр дүн
-      ActionButton chargeAccountBtn =
-          ActionButton(title: 'Цэнэглэх', onTap: () {});
-      ActionButton closeDialog = ActionButton(title: 'Болих', onTap: () {});
-
       var paymentResultDialog = CustomDialog(
-        title: Text('Анхааруулга',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: const Color(0xfffcfdfe),
-                fontWeight: FontWeight.w600,
-                fontStyle: FontStyle.normal,
-                fontSize: 15.0)),
+        title: 'Анхааруулга',
+        submitButtonText: 'Цэнэглэх',
+        onSubmit: () {},
+        closeButtonText: 'Болих',
 //        TODO мэдэгдлийг хаа нэгтээ хадгалаад авч харуулах. хаана ???
 //        content: Text(Constants.paymentStates[_state.paymentState].values),
-        actions: [chargeAccountBtn, closeDialog],
       );
     } else if (_state is ProductTabState || _state is ProductSelectionState) {
       //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг

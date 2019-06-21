@@ -10,13 +10,13 @@ import 'package:ddish/src/repositiories/menu_repository.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'style.dart' as style;
 
 class OrderWidget extends StatefulWidget {
@@ -111,6 +111,7 @@ class OrderWidgetState extends State<OrderWidget> {
                                   : Color(0xffd32f2f)),
                           value: selectedDistrict,
                           items: dropDownItems,
+                          elevation: 1,
                           style: TextStyle(
                             color: Color(0xffe8e8e8),
                             fontWeight: FontWeight.w400,
@@ -162,23 +163,16 @@ class OrderWidgetState extends State<OrderWidget> {
   }
 
   showMessage(Result result) {
-    List<Widget> actions = new List();
-    ActionButton closeDialog = ActionButton(
-      title: 'Хаах',
-      onTap: () => Navigator.pop(context),
-    );
-    actions.add(closeDialog);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
-            title: Text('Санамж',
-                textAlign: TextAlign.center, style: style.dialogTitleStyle),
+            title: 'Санамж',
+            closeButtonText: 'Хаах',
             content: Text(
               result.resultMessage,
               style: style.messageStyle,
             ),
-            actions: actions,
           );
         });
   }
