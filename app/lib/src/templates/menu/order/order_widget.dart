@@ -11,6 +11,7 @@ import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/dialog_action.dart';
+import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,11 @@ class OrderWidgetState extends State<OrderWidget> {
   MenuRepository _repository;
   OrderBloc _bloc;
   District selectedDistrict;
+  bool submitError = false;
   final _usernameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     Constants.districtItems
@@ -76,6 +79,7 @@ class OrderWidgetState extends State<OrderWidget> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 80.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       InputField(
                         placeholder: 'НЭР',
@@ -92,24 +96,52 @@ class OrderWidgetState extends State<OrderWidget> {
                         textController: _phoneController,
                         validateFunction: InputValidations.validateNumberValue,
                       ),
-                      DropdownButton(
-                        isExpanded: true,
-                        iconEnabledColor: Color(0xffa4cafb),
-                        value: selectedDistrict,
-                        items: dropDownItems,
-                        hint: Text(
-                          'ДҮҮРЭГ СОНГОХ',
-                          textAlign: TextAlign.center,
+                      Theme(
+                        data: ThemeData(
+                            canvasColor: Theme.of(context).primaryColor),
+                        child: DropdownButton<dynamic>(
+                          isExpanded: true,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Color.fromRGBO(202, 224, 252, 1),
+                          ),
+                          underline: Line(
+                              color: !submitError
+                                  ? Color(0xffffffff)
+                                  : Color(0xffd32f2f)),
+                          value: selectedDistrict,
+                          items: dropDownItems,
                           style: TextStyle(
-                            color: Color(0xffa4cafb),
+                            color: Color(0xffe8e8e8),
                             fontWeight: FontWeight.w400,
                             fontStyle: FontStyle.normal,
                             fontSize: 15.0,
                           ),
+                          hint: Text(
+                            'ДҮҮРЭГ СОНГОХ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xffa4cafb),
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 15.0,
+                            ),
+                          ),
+                          onChanged: (value) =>
+                              setState(() => selectedDistrict = value),
                         ),
-                        onChanged: (value) =>
-                            setState(() => selectedDistrict = value),
                       ),
+                      !submitError
+                          ? SizedBox.shrink()
+                          : Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Та дүүргээ сонгоно уу!',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: Color(0xffd32f2f), fontSize: 12.0),
+                              ),
+                            ),
                       SubmitButton(
                         padding: EdgeInsets.only(top: 30.0),
                         horizontalMargin: 35.0,
@@ -152,7 +184,8 @@ class OrderWidgetState extends State<OrderWidget> {
   }
 
   onOrderTap() {
-    if(_formKey.currentState.validate()) {
+    setState(() => submitError = selectedDistrict == null);
+    if (_formKey.currentState.validate()) {
       Order order = Order(
         orderType: widget.orderType,
         userName: _usernameController.text,
