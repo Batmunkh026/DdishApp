@@ -105,7 +105,7 @@ class BranchLocationState extends State<BranchLocationView> {
             padding: EdgeInsets.only(bottom: 8),
           ),
           Theme(
-              data: ThemeData(canvasColor: Colors.black),
+              data: ThemeData(canvasColor: Theme.of(context).primaryColor),
               child: Container(
                 padding: EdgeInsets.only(right: 5, left: 5, top: 0, bottom: 0),
                 height: MediaQuery.of(context).size.height * 0.05,
