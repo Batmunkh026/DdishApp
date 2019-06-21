@@ -29,7 +29,7 @@ class BranchLocationState extends State<BranchLocationView> {
   Branch selectedBranch = null;
 
   var textStyle =
-      TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 10);
+      TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 13.0);
 
   @override
   void initState() {
@@ -132,7 +132,7 @@ class BranchLocationState extends State<BranchLocationView> {
                               child: Text(
                                 item.name,
                                 style: TextStyle(
-                                    fontSize: 8, color: textStyle.color),
+                                    fontSize: textStyle.fontSize, color: textStyle.color),
                               ),
                             ),
                             value: item),
