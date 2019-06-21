@@ -105,4 +105,23 @@ class VodRepository {
     var decoded = json.decode(response);
     return Result.fromJson(decoded);
   }
+
+  Future<List> searchProgram(String value) async {
+    var response;
+    try {
+      response = await client.read('${globals.serverEndpoint}/vodList/$value?res=0');
+    } on Exception catch (e) {
+      // TODO catch SocketException
+      throw (e);
+    }
+
+    var decoded = json.decode(response);
+    Result result = Result.fromJson(decoded);
+    List<Program> programList;
+    if (result.isSuccess)
+      programList = List<Program>.from(
+          decoded['programList'].map((program) => Program.fromJson(program)));
+    // TODO handle isSuccess = false
+    return programList;
+  }
 }

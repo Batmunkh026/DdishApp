@@ -37,5 +37,11 @@ class MovieTheatreBloc extends Bloc<MovieTheatreEvent, MovieTheatreState> {
       Movie contentDetails = await vodRepository.fetchContentDetails(event.selectedProgram);
       yield ProgramDetailsLoaded(content: contentDetails);
     }
+
+    if(event is SearchTapped) {
+      yield ProgramListLoading();
+      List<Program> programList = await vodRepository.searchProgram(event.value);
+      yield ProgramListLoaded(programList: programList);
+    }
   }
 }

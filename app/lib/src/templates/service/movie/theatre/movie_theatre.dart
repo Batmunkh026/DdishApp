@@ -22,6 +22,7 @@ class TheatreWidget extends StatefulWidget {
 }
 
 class TheatreWidgetState extends State<TheatreWidget> {
+  final _searchFieldController = TextEditingController();
   VodRepository vodRepository;
   MovieTheatreBloc _bloc;
   DateTime date = DateTime.now();
@@ -56,6 +57,8 @@ class TheatreWidgetState extends State<TheatreWidget> {
                     child: ProgramSearchWidget(
                       searchById: false,
                       onSearchTap: onSearchTap,
+                      controller: _searchFieldController,
+                      onClearTap: () => onSearchClear(),
                     ),
                   )
                 : ChannelHeaderWidget(
@@ -100,7 +103,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
               }
               if (state is ProgramListLoaded) {
                 List<Program> programList = state.programList;
-                return ListView.builder(
+                return programList != null && programList.isNotEmpty ? ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   itemCount: programList.length,
@@ -146,7 +149,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
                       ),
                     );
                   },
-                );
+                ) : Center(child: Text('Үр дүн олдсонгүй.'),);
               }
               if (state is ProgramDetailsLoading) {
                 return Center(
@@ -175,7 +178,12 @@ class TheatreWidgetState extends State<TheatreWidget> {
   }
 
   onSearchTap() {
-    // кино хайх
+    _bloc.dispatch(SearchTapped(value: _searchFieldController.text));
+  }
+
+  onSearchClear() {
+    if(_bloc.currentState.toString() != ChannelListLoaded().toString())
+      _bloc.dispatch(MovieTheatreStarted());
   }
 
   onProgramTap(Program program) {

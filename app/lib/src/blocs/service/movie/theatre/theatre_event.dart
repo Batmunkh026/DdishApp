@@ -41,3 +41,12 @@ class ProgramTapped extends MovieTheatreEvent {
   @override
   String toString() => 'program tapped.';
 }
+
+class SearchTapped extends MovieTheatreEvent {
+  final String value;
+
+  SearchTapped({this.value});
+
+  @override
+  String toString() => 'search tapped.';
+}

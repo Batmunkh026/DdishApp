@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class InputField extends StatelessWidget {
-  String initialValue;
-  String placeholder;
-  Color textFieldColor;
-  TextInputType textInputType;
-  bool obscureText;
-  double bottomMargin;
-  double fontSize;
+  final String initialValue;
+  final String placeholder;
+  final Color textFieldColor;
+  final TextInputType textInputType;
+  final bool obscureText;
+  final double bottomMargin;
+  final double fontSize;
   var validateFunction;
   var onSaved;
-  var textController;
-  bool hasBorder;
-  Key key;
-  TextAlign align;
-  EdgeInsets padding;
+  final TextEditingController textController;
+  final bool hasBorder;
+  final Key key;
+  final TextAlign align;
+  final EdgeInsets padding;
+  final bool hasClearButton;
+  final VoidCallback onClear;
 
   //passing props in the Constructor.
   //Java like style
@@ -27,11 +30,14 @@ class InputField extends StatelessWidget {
       this.textInputType,
       this.bottomMargin,
       this.validateFunction,
+      this.fontSize,
       this.onSaved,
       this.textController,
       this.hasBorder = false,
       this.align = TextAlign.start,
-      this.padding});
+      this.padding,
+      this.hasClearButton = false,
+      this.onClear});
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +63,11 @@ class InputField extends StatelessWidget {
         controller: textController,
         textAlign: align,
         decoration: new InputDecoration(
-          enabledBorder: hasBorder ? null : UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          ),
+          enabledBorder: hasBorder
+              ? null
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
           border: hasBorder
               ? OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),
@@ -73,6 +81,14 @@ class InputField extends StatelessWidget {
             fontStyle: FontStyle.normal,
             fontSize: fontSize,
           ),
+          suffixIcon: hasClearButton
+              ? IconButton(
+                  icon: Icon(
+                    Icons.close,
+                  ),
+                  onPressed: onClear,
+                )
+              : null,
         ),
       ),
     ));
