@@ -36,11 +36,15 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
     //аль табаас хамаарч түүний GridView д харуулах content уудыг бэлдэх
     var contentsForGrid = _buildContents();
 
+
+    double width = MediaQuery.of(context).size.width;
+    double ratio = MediaQuery.of(context).devicePixelRatio;
+    EdgeInsets insets = MediaQuery.of(context).viewInsets;
     if (_stateTab == ProductTabType.UPGRADE) {
-      return GridView.extent(
-        maxCrossAxisExtent: 200,
+      return GridView.count(
         children: contentsForGrid,
-        childAspectRatio: 0.23,
+        childAspectRatio: 0.38,
+        crossAxisCount: 2,
         scrollDirection: Axis.vertical,
       );
     } else {
