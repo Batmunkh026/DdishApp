@@ -6,15 +6,14 @@ import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/templates/service/movie/description/program_description.dart';
 import 'package:ddish/src/templates/service/movie/program_search.dart';
-import 'package:ddish/src/utils/date_util.dart';
+import 'package:ddish/src/templates/service/movie/theatre/search.dart';
 import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ddish/src/widgets/movie/poster_image.dart';
 
 import 'channel_header.dart';
-import 'style.dart' as style;
+import 'program_tile.dart';
 
 class TheatreWidget extends StatefulWidget {
   @override
@@ -33,6 +32,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
   @override
   void initState() {
     vodRepository = VodRepository();
+    _searchFieldController.addListener(onSearchTextChange());
     _bloc = MovieTheatreBloc(vodRepository: vodRepository);
     super.initState();
   }
@@ -45,7 +45,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+//    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Column(
       children: <Widget>[
@@ -58,7 +58,6 @@ class TheatreWidgetState extends State<TheatreWidget> {
                       searchById: false,
                       onSearchTap: onSearchTap,
                       controller: _searchFieldController,
-                      onClearTap: () => onSearchClear(),
                     ),
                   )
                 : ChannelHeaderWidget(
@@ -103,53 +102,21 @@ class TheatreWidgetState extends State<TheatreWidget> {
               }
               if (state is ProgramListLoaded) {
                 List<Program> programList = state.programList;
-                return programList != null && programList.isNotEmpty ? ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: programList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Program program = programList[index];
-                    return Container(
-                      height: height * 0.15,
-                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: GestureDetector(
-                        onTap: () => onProgramTap(programList[index]),
-                        child: ListTile(
-                          title: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 15.0),
-                                child: PosterImage(
-                                  url: program.posterUrl,
-                                ),
-                              ),
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(program.contentNameMon,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: style.programTitleStyle),
-                                    Visibility(
-                                      visible: program.contentGenres != null &&
-                                          program.contentGenres.isNotEmpty,
-                                      child: Text(program.contentGenres,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: style.programGenresStyle),
-                                    ),
-                                    Text(DateUtil.formatTime(program.beginDate),
-                                        style: style.programStartTimeStyle),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ) : Center(child: Text('Үр дүн олдсонгүй.'),);
+                return programList != null && programList.isNotEmpty
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: programList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ProgramTile(
+                            program: programList[index],
+                            onTap: () => onProgramTap(programList[index]),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Text('Үр дүн олдсонгүй.'),
+                      );
               }
               if (state is ProgramDetailsLoading) {
                 return Center(
@@ -162,6 +129,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
                   selectedProgram: selectedProgram,
                   channel: selectedChannel,
                 );
+              }
+              if (state is SearchResultOpened) {
+                return SearchResult(value: _searchFieldController.text,);
               }
               return Container();
             },
@@ -181,8 +151,8 @@ class TheatreWidgetState extends State<TheatreWidget> {
     _bloc.dispatch(SearchTapped(value: _searchFieldController.text));
   }
 
-  onSearchClear() {
-    if(_bloc.currentState.toString() != ChannelListLoaded().toString())
+  onSearchTextChange() {
+    if (_bloc != null && _searchFieldController.text.isEmpty)
       _bloc.dispatch(MovieTheatreStarted());
   }
 

@@ -5,7 +5,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 ///Багцын төлөв
-abstract class MovieTheatreState extends Equatable {}
+abstract class MovieTheatreState extends Equatable {
+  MovieTheatreState([List props = const []]) : super(props);
+}
 
 class TheatreStateInitial extends MovieTheatreState {
   TheatreStateInitial();
@@ -64,4 +66,10 @@ class SearchProgramLoading extends MovieTheatreState {
   SearchProgramLoading();
   @override
   String toString() => "search program loading.";
+}
+
+class SearchResultOpened extends MovieTheatreState {
+  SearchResultOpened();
+  @override
+  String toString() => 'search result opened.';
 }

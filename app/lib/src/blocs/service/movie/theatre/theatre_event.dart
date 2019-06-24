@@ -50,3 +50,4 @@ class SearchTapped extends MovieTheatreEvent {
   @override
   String toString() => 'search tapped.';
 }
+

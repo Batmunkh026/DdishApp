@@ -21,27 +21,28 @@ class MovieTheatreBloc extends Bloc<MovieTheatreEvent, MovieTheatreState> {
       List<VodChannel> vodChannels = await vodRepository.fetchVodChannels();
       yield ChannelListLoaded(channelList: vodChannels);
     }
-    if(event is ChannelSelected) {
+    if (event is ChannelSelected) {
       yield ProgramListLoading(channel: event.channel);
-      List<Program> programList = await vodRepository.fetchProgramList(event.channel, date: event.date);
+      List<Program> programList = await vodRepository.fetchProgramList(
+          event.channel, date: event.date);
       yield ProgramListLoaded(programList: programList);
     }
-    if(event is DateChanged) {
+    if (event is DateChanged) {
       yield ProgramListLoading(channel: event.channel);
-      List<Program> programList = await vodRepository.fetchProgramList(event.channel, date: event.date);
+      List<Program> programList = await vodRepository.fetchProgramList(
+          event.channel, date: event.date);
       yield ProgramListLoaded(programList: programList);
     }
 
-    if(event is ProgramTapped) {
+    if (event is ProgramTapped) {
       yield ProgramDetailsLoading();
-      Movie contentDetails = await vodRepository.fetchContentDetails(event.selectedProgram);
+      Movie contentDetails = await vodRepository.fetchContentDetails(
+          event.selectedProgram);
       yield ProgramDetailsLoaded(content: contentDetails);
     }
 
-    if(event is SearchTapped) {
-      yield ProgramListLoading();
-      List<Program> programList = await vodRepository.searchProgram(event.value);
-      yield ProgramListLoaded(programList: programList);
+    if (event is SearchTapped) {
+      yield SearchResultOpened();
     }
   }
 }

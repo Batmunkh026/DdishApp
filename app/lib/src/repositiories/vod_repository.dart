@@ -5,6 +5,7 @@ import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'globals.dart' as globals;
@@ -106,10 +107,10 @@ class VodRepository {
     return Result.fromJson(decoded);
   }
 
-  Future<List> searchProgram(String value) async {
+  Future<List> searchProgram(String value, int page) async {
     var response;
     try {
-      response = await client.read('${globals.serverEndpoint}/vodList/$value?res=0');
+      response = await client.read('${globals.serverEndpoint}/searchVodContent/$value/0?pageNumber=${(page / 10 + 1).toInt()}');
     } on Exception catch (e) {
       // TODO catch SocketException
       throw (e);

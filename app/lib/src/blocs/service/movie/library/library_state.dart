@@ -1,4 +1,3 @@
-import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';

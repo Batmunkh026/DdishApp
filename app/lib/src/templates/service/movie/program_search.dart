@@ -6,9 +6,8 @@ class ProgramSearchWidget extends StatelessWidget {
   final VoidCallback onSearchTap;
   final bool searchById;
   final TextEditingController controller;
-  final VoidCallback onClearTap;
 
-  ProgramSearchWidget({this.searchById, this.onSearchTap, this.controller, this.onClearTap});
+  ProgramSearchWidget({this.searchById, this.onSearchTap, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +22,6 @@ class ProgramSearchWidget extends StatelessWidget {
                 searchById ? 'Кино ID оруулна уу' : 'Кино нэр оруулна уу',
             textController: controller,
             hasClearButton: true,
-            onClear: () {
-              controller.clear();
-              FocusScope.of(context).requestFocus(new FocusNode());
-              onClearTap();
-            },
           ),
         ),
         SubmitButton(

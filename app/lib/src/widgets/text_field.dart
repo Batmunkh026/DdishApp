@@ -9,8 +9,8 @@ class InputField extends StatelessWidget {
   final bool obscureText;
   final double bottomMargin;
   final double fontSize;
-  var validateFunction;
-  var onSaved;
+  final Function validateFunction;
+  final Function onSaved;
   final TextEditingController textController;
   final bool hasBorder;
   final Key key;
@@ -74,6 +74,7 @@ class InputField extends StatelessWidget {
                 )
               : null,
           contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0),
+
           hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),
@@ -81,14 +82,14 @@ class InputField extends StatelessWidget {
             fontStyle: FontStyle.normal,
             fontSize: fontSize,
           ),
-          suffixIcon: hasClearButton
-              ? IconButton(
-                  icon: Icon(
-                    Icons.close,
-                  ),
-                  onPressed: onClear,
-                )
-              : null,
+//          suffixIcon: hasClearButton
+//              ? IconButton(
+//                  icon: Icon(
+//                    Icons.close,
+//                  ),
+//                  onPressed: onClear,
+//                )
+//              : null,
         ),
       ),
     ));

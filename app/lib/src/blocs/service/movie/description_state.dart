@@ -7,27 +7,30 @@ abstract class DescriptionState extends Equatable {}
 
 class ProgramDescriptionInitial extends DescriptionState {
   ProgramDescriptionInitial();
+
   @override
   String toString() => "program description initial.";
 }
 
 class ProgramDetailsLoading extends DescriptionState {
   ProgramDetailsLoading();
+
   @override
   String toString() => 'program details loading.';
 }
-
 
 class ProgramDetailsLoaded extends DescriptionState {
   final Movie content;
 
   ProgramDetailsLoaded({@required this.content});
+
   @override
   String toString() => 'program details loaded.';
 }
 
 class RentRequestProcessing extends DescriptionState {
   RentRequestProcessing();
+
   @override
   String toString() => "rent request processing.";
 }
