@@ -5,6 +5,7 @@ import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
+import 'package:ddish/src/utils/price_format.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
   var _state;
   var _stateTab;
   BuildContext _context;
-  dynamic _productContent;//products or product
+  dynamic _productContent; //products or product
 
   ProductGridPicker(this._bloc, this._productContent) : assert(_bloc != null) {
     _state = _bloc.currentState;
@@ -37,23 +38,18 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       return GridView.extent(
         maxCrossAxisExtent: 200,
         children: contentsForGrid,
-        childAspectRatio: 0.33,
+        childAspectRatio: 0.23,
         scrollDirection: Axis.vertical,
       );
     } else {
-//      var size = MediaQuery.of(context).size;
-//
-//      final double _itemHeight = (size.height - kToolbarHeight - 24) / 2;
-//      final double _itemWidth = size.width / 2;
-
-      //    is channel detail picker бол
       var _isChannelDetailPicker =
-          _stateTab == ProductTabType.ADDITIONAL_CHANNEL && _productContent is Product;
+          _stateTab == ProductTabType.ADDITIONAL_CHANNEL &&
+              _productContent is Product;
 
       var pickerContainer = GridView.count(
         scrollDirection: Axis.vertical,
         crossAxisCount: 2,
-        childAspectRatio: 2.2,
+        childAspectRatio: 1.8,
         children: contentsForGrid,
       );
 
@@ -88,7 +84,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
   }
 
   List<Widget> _buildChannelContents() {
-    bool _isChannelDetail = _productContent is Product; //list биш бол channel detail
+    bool _isChannelDetail =
+        _productContent is Product; //list биш бол channel detail
 
     List<Widget> _contentItems = [];
 
@@ -124,12 +121,12 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       )); //channelPackImage
 
       List<Widget> itemsOfChannel = Constants.extendableMonths
-          .map((month) => Expanded(child: _createComponentForPick(month, product)))
+          .map((month) => _createComponentForPick(month, product))
           .toList();
 
       children.addAll(itemsOfChannel);
 
-      children.add(Expanded(child: _createComponentForPick(null, product)));
+      children.add(_createComponentForPick(null, product));
 
       Column packContainer = Column(children: children);
       _contentItems.add(packContainer);
@@ -157,39 +154,49 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
                 placeholder: (context, text) => Text(selectedPack.name),
               ))
             ]
-          : [Text("${item} сар"), Text("₮${item * selectedPack.price}")];
-
-    return Card(
-      elevation: 0,
-      child: GestureDetector(
-          child: Card(
-            elevation: 0,
-            color: isChannelPicker
-                ? Colors.white
-                : Color.fromRGBO(49, 138, 255, 1),
-            child: Padding(
-              padding: EdgeInsets.only(right: 40, left: 40),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: children,
+          : [
+              Text("${item} сар"),
+              Container(
+                height: 10,
               ),
+              Text(
+                "₮ ${PriceFormatter.productPriceFormat(item * selectedPack.price)}",
+                style: TextStyle(fontWeight: FontWeight.w500),
+              )
+            ];
+
+    return GestureDetector(
+        child: Container(
+          padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+          child: Container(
+            decoration: BoxDecoration(
+                color: isChannelPicker
+                    ? Colors.white
+                    : Color.fromRGBO(134, 187, 255, 1),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
             ),
           ),
-          onTap: () {
-            var selected = selectedPack != null ? selectedPack : _productContent;
-            if (item == null) //өөр сонголт хийх бол
-              _bloc.dispatch(
-                  CustomProductSelected(_state.selectedProductTab, selected, 0));
-            else if (isChannelPicker)
-              _bloc.dispatch(ProductItemSelected(_state.selectedProductTab, item, null));
-            else {
-              var event = ProductItemSelected(_state.selectedProductTab, selected, item);
-              openPermissionDialog(_bloc, _context, event, item);
-            }
-          }),
-    );
+        ),
+        onTap: () {
+          var selected = selectedPack != null ? selectedPack : _productContent;
+          if (item == null) //өөр сонголт хийх бол
+            _bloc.dispatch(
+                CustomProductSelected(_state.selectedProductTab, selected, 0));
+          else if (isChannelPicker)
+            _bloc.dispatch(
+                ProductItemSelected(_state.selectedProductTab, item, null));
+          else {
+            var event =
+                ProductItemSelected(_state.selectedProductTab, selected, item);
+            openPermissionDialog(_bloc, _context, event, item);
+          }
+        });
   }
 
   Widget _buildChannelDetailPickerHeader(selectedChannel) {
@@ -206,8 +213,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
         ],
       ),
       //TODO back to previous page
-      onPressed: () =>
-          _bloc.dispatch(BackToPrevState(_bloc.currentState.selectedProductTab)),
+      onPressed: () => _bloc
+          .dispatch(BackToPrevState(_bloc.currentState.selectedProductTab)),
     );
   }
 }
@@ -267,8 +274,8 @@ class ProductPaymentPreview extends StatelessWidget {
                 Divider(),
               ],
             ),
-            onPressed: () =>
-                _bloc.dispatch(BackToPrevState(_bloc.currentState.selectedProductTab)),
+            onPressed: () => _bloc.dispatch(
+                BackToPrevState(_bloc.currentState.selectedProductTab)),
           ),
           Expanded(
             child: Scaffold(
@@ -315,7 +322,8 @@ class CustomProductChooser extends StatefulWidget {
   State<StatefulWidget> createState() => CustomProductChooserState();
 }
 
-class CustomProductChooserState extends State<CustomProductChooser> with WidgetMixin {
+class CustomProductChooserState extends State<CustomProductChooser>
+    with WidgetMixin {
   String paymentPreview = "0";
   String customMonthValue = "0";
 
@@ -338,7 +346,8 @@ class CustomProductChooserState extends State<CustomProductChooser> with WidgetM
                 padding: EdgeInsets.only(right: 40, left: 40, top: 20),
                 child: CachedNetworkImage(
                   imageUrl: state.selectedProduct.image,
-                  placeholder: (context, url) => Text(state.selectedProduct.name),
+                  placeholder: (context, url) =>
+                      Text(state.selectedProduct.name),
                   fit: BoxFit.contain,
                 ),
               ),
@@ -363,8 +372,8 @@ class CustomProductChooserState extends State<CustomProductChooser> with WidgetM
                 ],
               ),
               //TODO back to previous page
-              onPressed: () => widget._bloc.dispatch(
-                  BackToPrevState(widget._bloc.currentState.selectedProductTab)),
+              onPressed: () => widget._bloc.dispatch(BackToPrevState(
+                  widget._bloc.currentState.selectedProductTab)),
             ),
             Card(
               margin: EdgeInsets.all(40),
@@ -402,8 +411,8 @@ class CustomProductChooserState extends State<CustomProductChooser> with WidgetM
 
   toExtend(state) {
     var time = _toInt(customMonthValue);
-    var event =
-        PreviewSelectedProduct(state.selectedProductTab, state.selectedProduct, time);
+    var event = PreviewSelectedProduct(
+        state.selectedProductTab, state.selectedProduct, time);
 
     //TODO сарыг өөр дүнгээр оруулсан үед үнийг тооцох
     openPermissionDialog(widget._bloc, context, event, time);
