@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
+import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
@@ -48,8 +49,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
 
       var pickerContainer = GridView.count(
         scrollDirection: Axis.vertical,
-        crossAxisCount: 2,
-        childAspectRatio: 1.8,
+        crossAxisCount: _isChannelDetailPicker ? 3 : 2,
+        childAspectRatio: _isChannelDetailPicker ? 1.7 : 1.8,
         children: contentsForGrid,
       );
 
@@ -92,10 +93,10 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
     if (_isChannelDetail) {
       for (final month in Constants
           .extendableMonths) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
-        _contentItems.add(_createComponentForPick(month, _productContent));
+        _contentItems.add(_createComponentForPick(month, _productContent, isChannelDetail: true));
 
       ///Өөр сонголт оруулах button <нэмэлт суваг сонгох талбар биш бол харуулна>
-      _contentItems.add(_createComponentForPick(null, _productContent));
+      _contentItems.add(_createComponentForPick(null, _productContent, isChannelDetail: true));
     } else
       for (final product
           in _productContent) //TODO List<Widget> рүү яагаад map хийж болохгүй байгааг шалгах
@@ -136,11 +137,17 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
   }
 
   Widget _createComponentForPick(dynamic item, dynamic selectedPack,
-      {isChannelPicker = false}) {
+      {isChannelPicker = false, isChannelDetail = false}) {
+    TextStyle pickerTextStyle = TextStyle(fontSize: 12);
+
     List<Widget> children = [
-      Text(
-        "Өөр сонголт хийх",
-        textAlign: TextAlign.center,
+      Padding(
+        padding: EdgeInsets.all(2),
+        child: Text(
+          "Өөр сонголт хийх",
+          textAlign: TextAlign.center,
+          style: pickerTextStyle,
+        ),
       )
     ];
 
@@ -155,24 +162,33 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
               ))
             ]
           : [
-              Text("${item} сар"),
+              Text(
+                "${item} сар",
+                style: pickerTextStyle,
+              ),
               Container(
-                height: 10,
+                height: 5,
               ),
               Text(
                 "₮ ${PriceFormatter.productPriceFormat(item * selectedPack.price)}",
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: pickerTextStyle.fontSize),
               )
             ];
 
+    var pickerPadding = isChannelDetail ? EdgeInsets.only(top: 2, bottom: 2, left: 6, right: 6) : EdgeInsets.only(top: 14, bottom: 14, left: 24, right: 24);
+
     return GestureDetector(
         child: Container(
-          padding: EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+          padding: pickerPadding,
           child: Container(
             decoration: BoxDecoration(
                 color: isChannelPicker
                     ? Colors.white
-                    : Color.fromRGBO(134, 187, 255, 1),
+                    : item == null
+                        ? Color.fromRGBO(164, 207, 255, 1)
+                        : Color.fromRGBO(134, 187, 255, 1),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             padding: EdgeInsets.only(top: 10, bottom: 10),
             child: Column(
@@ -204,7 +220,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Icon(Icons.arrow_back_ios),
+          Constants.appIcons[AppIcons.Back],
           CachedNetworkImage(
             imageUrl: selectedChannel.image,
             placeholder: (context, text) => Text(selectedChannel.name),
@@ -225,14 +241,22 @@ class ProductPaymentPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var titles = ["Багц", "Хугацаа", "Үнэ"];
+    var titles = ["Багц", "Хугацаа", "Дүн"];
     List<Widget> contentsForGrid = [];
 
-    contentsForGrid.addAll(titles.map((title) => Text("$title")).toList());
-    SelectedProductPreview state = _bloc.currentState;
+    var style = TextStyle(
+        fontWeight: FontWeight.w500,
+        color: Color(0xff071f49),
+        fontSize: 12,
+        fontFamily: 'Montserrat');
+    var boldStyle = TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: style.fontSize,
+        fontFamily: 'Montserrat');
 
-    var style =
-        TextStyle(fontWeight: FontWeight.bold, color: Color(0xff071f49));
+    contentsForGrid
+        .addAll(titles.map((title) => Text("$title", style: style)).toList());
+    SelectedProductPreview state = _bloc.currentState;
 
     var isUpgradeOrChannel =
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
@@ -240,73 +264,82 @@ class ProductPaymentPreview extends StatelessWidget {
 
     contentsForGrid.add(isUpgradeOrChannel
         ? Padding(
-            padding: EdgeInsets.only(right: 40, bottom: 15),
+            padding: EdgeInsets.only(right: 40),
             child: CachedNetworkImage(
               imageUrl: state.selectedProduct.image,
-              placeholder: (context, url) => Text(state.selectedProduct.name),
+              placeholder: (context, url) => Text(
+                    state.selectedProduct.name,
+                    style: style,
+                  ),
               fit: BoxFit.contain,
             ))
-        : Text(state.selectedProduct.name, style: style));
-    contentsForGrid.add(Text("${state.monthToExtend} сар", style: style));
+        : Text(
+            state.selectedProduct.name,
+            style: boldStyle,
+            softWrap: true,
+          ));
+    contentsForGrid.add(Text("${state.monthToExtend} сар", style: boldStyle));
 
 //      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
     contentsForGrid.add(Text(
-        "₮${state.selectedProduct.price * state.monthToExtend}",
-        style: style));
+        "₮${PriceFormatter.productPriceFormat(state.selectedProduct.price * state.monthToExtend)}",
+        style: boldStyle));
 
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Padding(
-              padding: EdgeInsets.all(20),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(10),
               child: Text(
-                "Буцах",
-                style: style,
+                "Сунгах",
+                style: boldStyle,
                 textAlign: TextAlign.start,
               )),
           FlatButton(
             padding: EdgeInsets.only(bottom: 20, right: 40),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Icon(Icons.arrow_back_ios),
-                Text("Төлбөрийн мэдээлэл"),
+                Constants.appIcons[AppIcons.Back],
+                UnderlinedText(
+                  "Төлбөрийн мэдээлэл",
+                  textStyle: TextStyle(fontSize: 13),
+                  underlineWidth: 1,
+                ),
                 Divider(),
               ],
             ),
             onPressed: () => _bloc.dispatch(
                 BackToPrevState(_bloc.currentState.selectedProductTab)),
           ),
-          Expanded(
+          Container(
+            height: MediaQuery.of(context).size.height * 0.25,
             child: Scaffold(
               body: GridView.count(
-                padding: EdgeInsets.only(left: 30),
-                childAspectRatio: 3,
+                padding: EdgeInsets.only(left: 40),
+                childAspectRatio: 2.5,
                 crossAxisCount: 3,
+                crossAxisSpacing: 10,
                 children: contentsForGrid,
               ),
+              floatingActionButton: FlatButton(
+                child: UnderlinedText("Үндсэн дансаар"),
+                onPressed: () => {},
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
             ),
           ),
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                FlatButton(
-                  child: Text(
-                    "Үндсэн дансаар",
-                    style: TextStyle(decoration: TextDecoration.underline),
-                  ),
-                ),
-                SubmitButton(
-                    text: "Сунгах",
-                    onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
-                        state.selectedProductTab,
-                        state.selectedProduct,
-                        state.monthToExtend)),
-                    verticalMargin: 0,
-                    horizontalMargin: 0)
-              ],
-            ),
-          )
+          SubmitButton(
+              text: "Сунгах",
+              padding: EdgeInsets.only(top: 50),
+              onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
+                  state.selectedProductTab,
+                  state.selectedProduct,
+                  state.monthToExtend)),
+              verticalMargin: 0,
+              horizontalMargin: 0)
         ],
       ),
     );
@@ -336,14 +369,14 @@ class CustomProductChooserState extends State<CustomProductChooser>
 
     var label = Text(
       "Сунгах сарын тоогоо оруулна уу",
-      style: TextStyle(fontSize: 12),
+      style: TextStyle(fontSize: 10),
     );
     Widget backComponent = isUpgradeOrChannel
         ? Column(children: <Widget>[
             Container(
-              height: 60,
-              child: Padding(
-                padding: EdgeInsets.only(right: 40, left: 40, top: 20),
+              height: MediaQuery.of(context).size.height * 0.1,
+              padding: EdgeInsets.only(top: 10),
+              child: Center(
                 child: CachedNetworkImage(
                   imageUrl: state.selectedProduct.image,
                   placeholder: (context, url) =>
@@ -352,33 +385,40 @@ class CustomProductChooserState extends State<CustomProductChooser>
                 ),
               ),
             ),
-            label
+            Container(width: MediaQuery.of(context).size.width, child: label)
           ])
         : label;
     return ListView(
-      padding: EdgeInsets.all(20),
       children: [
         Column(
           children: <Widget>[
             FlatButton(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(Icons.arrow_back_ios),
+                  Constants.appIcons[AppIcons.Back],
                   Container(
                     width: MediaQuery.of(context).size.width * 0.55,
                     child: backComponent,
-                  )
+                  ),
+                  Divider()
                 ],
               ),
               //TODO back to previous page
               onPressed: () => widget._bloc.dispatch(BackToPrevState(
                   widget._bloc.currentState.selectedProductTab)),
             ),
-            Card(
-              margin: EdgeInsets.all(40),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: MediaQuery.of(context).size.height * 0.055,
+              margin: EdgeInsets.only(top: 15, bottom: 15),
               child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
+                style: TextStyle(fontFamily: "Segoe UI"),
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(30)))),
                 onChanged: (value) => setState(() {
                       customMonthValue = value;
                       paymentPreview =
@@ -388,10 +428,14 @@ class CustomProductChooserState extends State<CustomProductChooser>
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
             ),
-            Text("Сунгах сарын үнийн дүн"),
+            Text(
+              "Сунгах сарын үнийн дүн",
+              style: TextStyle(fontSize: 10),
+            ),
             Padding(
-              padding: EdgeInsets.all(30),
-              child: Text("₮${paymentPreview}",
+              padding: EdgeInsets.all(15),
+              child: Text(
+                  "₮${PriceFormatter.productPriceFormat(paymentPreview)}",
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             SubmitButton(
@@ -416,5 +460,32 @@ class CustomProductChooserState extends State<CustomProductChooser>
 
     //TODO сарыг өөр дүнгээр оруулсан үед үнийг тооцох
     openPermissionDialog(widget._bloc, context, event, time);
+  }
+}
+
+class UnderlinedText extends StatelessWidget {
+  String title;
+  TextStyle textStyle;
+  Color underlineColor;
+  double underlineWidth;
+
+  UnderlinedText(this.title,
+      {this.textStyle = const TextStyle(fontSize: 13),
+      this.underlineWidth = 2,
+      this.underlineColor = const Color.fromRGBO(48, 105, 178, 1)});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text(
+        "$title",
+        style: textStyle,
+      ),
+      padding: EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+          border: Border(
+              bottom:
+                  BorderSide(color: underlineColor, width: underlineWidth))),
+    );
   }
 }
