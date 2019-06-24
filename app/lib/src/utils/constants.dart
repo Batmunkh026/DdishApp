@@ -42,8 +42,8 @@ class Constants {
 
   static const List<int> extendableMonths = [1,2,3,6,12];
 
-  static String createPermissionContentStr(ProductTabType packTab, contentToBuy, int time, payment){
-    return "Та $contentToBuy ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
+  static String createPermissionContentStr(ProductTabType packTab, String productName, int time, payment){
+    return "Та $productName ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
   }
 
   static List<Menu> menuItems = <Menu>[

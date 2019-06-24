@@ -38,9 +38,10 @@ class ProductTabChanged extends ProductEvent {
 class ProductItemSelected extends ProductEvent {
   Product selectedProduct;
   int monthToExtend;
+  int priceToExtend;
 
   ProductItemSelected(
-      ProductTabType selectedProductTabType, Product this.selectedProduct, this.monthToExtend)
+      ProductTabType selectedProductTabType, Product this.selectedProduct, this.monthToExtend, this.priceToExtend)
       : super(selectedProductTabType,
             [selectedProductTabType, monthToExtend, selectedProduct]);
 }
@@ -49,8 +50,9 @@ class ProductItemSelected extends ProductEvent {
 class CustomProductSelected extends ProductEvent {
   Product selectedProduct;
   int monthToExtend;
+  int priceToExtend;//сунгах багц өөрийн үнэтэй
 
-  CustomProductSelected(selectedProductTabType,Product this.selectedProduct, this.monthToExtend)
+  CustomProductSelected(selectedProductTabType,Product this.selectedProduct, this.monthToExtend, this.priceToExtend)
       : super(selectedProductTabType,
             [selectedProductTabType, selectedProduct, monthToExtend]);
 }
@@ -60,9 +62,10 @@ class CustomProductSelected extends ProductEvent {
 class PreviewSelectedProduct extends ProductEvent {
   Product selectedProduct;
   int monthToExtend;
+  int priceToExtend;
 
   PreviewSelectedProduct(
-      ProductTabType selectedProductTab, Product this.selectedProduct, this.monthToExtend)
+      ProductTabType selectedProductTab, Product this.selectedProduct, this.monthToExtend, this.priceToExtend)
       : super(selectedProductTab, [selectedProductTab, monthToExtend]);
 }
 
@@ -70,8 +73,9 @@ class PreviewSelectedProduct extends ProductEvent {
 class ExtendSelectedProduct extends ProductEvent {
   Product selectedProduct;
   int extendMonth;
+  int extendPrice;
   ExtendSelectedProduct(
-      ProductTabType selectedProductTab, Product this.selectedProduct, this.extendMonth)
+      ProductTabType selectedProductTab, Product this.selectedProduct, this.extendMonth, this.extendPrice)
       : super(selectedProductTab, [selectedProductTab]);
 }
 

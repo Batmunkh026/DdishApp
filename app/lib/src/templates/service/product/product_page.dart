@@ -178,7 +178,7 @@ class ProductPageState extends State<ProductPage> {
     } else if (_state is SelectedProductPreview) {
       return ProductPaymentPreview(bloc);
     } else if (_state is CustomProductSelector) {
-      return CustomProductChooser(bloc);
+      return CustomProductChooser(bloc, _state.priceToExtend);
     } else
       throw UnsupportedError("Тодорхойгүй state: $_state");
   }

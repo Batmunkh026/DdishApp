@@ -105,8 +105,9 @@ class SelectedProductPreview extends ProductState {
   ProductTabType selectedProductTab;
   var selectedProduct;
   int monthToExtend;
+  int priceToExtend;
 
-  SelectedProductPreview(this.selectedProductTab, this.selectedProduct, this.monthToExtend)
+  SelectedProductPreview(this.selectedProductTab, this.selectedProduct, this.monthToExtend, this.priceToExtend)
       : assert(selectedProduct != null),
         super(selectedProductTab, null, selectedProduct);
 }
@@ -114,8 +115,9 @@ class SelectedProductPreview extends ProductState {
 class CustomProductSelector extends ProductState {
   ///сонгогдсон tab (сунгах, нэмэлт суваг)
   var selectedProduct;
+  int priceToExtend;
 
-  CustomProductSelector(selectedTab, this.selectedProduct, products)
+  CustomProductSelector(selectedTab, this.selectedProduct, this.priceToExtend, products)
       : super(selectedTab, products, selectedProduct,
             [selectedTab, products, selectedProduct]);
 
