@@ -1,4 +1,27 @@
+import 'package:flutter/services.dart';
+
+enum InputType { NumberInt, NumberDouble, Text, Email }
+
 class InputValidations {
+  static Map<InputType, WhitelistingTextInputFormatter> acceptedFormatters = {
+    InputType.NumberInt: WhitelistingTextInputFormatter(RegExp(r'\d+')),
+
+    //2
+    //2.3
+    //0.4
+    //0
+    //0.0
+    //0.000001
+    //20000.3
+    //300000
+    //1.2
+    //1.
+    //0.
+    //.3
+    InputType.NumberDouble: WhitelistingTextInputFormatter(
+        RegExp(r'^(?:((\d+)|([\.]{1}\d+))+|\d+\.|\d+\.\d+)$')),
+  };
+
   static String validateNumberValue(String value) {
     if (value.isEmpty) return 'Утга оруулна уу!';
     final RegExp usernameRegex = new RegExp(r'^\d+$');
