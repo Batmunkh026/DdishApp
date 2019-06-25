@@ -21,6 +21,28 @@ class ProductRepository {
     return List<UpProduct>.from(
         response["upProducts"].map((product) => UpProduct.fromJson(product)));
   }
+  ///хэрэв хэрэглэгч дурын сонголтоор сараа оруулсан бол
+  ///ахиулах багцын үнийн дүнг бодуулах
+  ///
+  /// currentProduct - хэрэглэгчийн идэвхитэй багц
+  /// productToExtend - ахиулах багц
+  /// monthToExtend - ахиулах багцын хугацаа
+  ///
+  /// тухайн багцыг ахиулахад төлөх дүн [String]
+  Future<String> getUpgradePrice(Product currentProduct, UpProduct productToExtend, int monthToExtend)async{
+    assert(currentProduct != null || productToExtend != null);
+
+    Price priceObj = productToExtend.prices.firstWhere((p) => p.month == monthToExtend , orElse: null);
+    if(priceObj != null)//хэрэглэгчийн оруулсан утга ахиулах багцын стандарт сарын утгатай ижил бол ахиулах багцын мэдээллээр бодож буцаах
+      return "${priceObj.month * priceObj.price}";
+      
+    Map<String, dynamic> response =
+        await _requestJson("upgradeProduct/{${currentProduct.id}/{$monthToExtend}/{${productToExtend.id}");
+
+    //TODO үр дүнг амжилтгүй бол???
+    return response["resultMessage"];
+  }
+
   Future<List<Product>> getAdditionalProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
