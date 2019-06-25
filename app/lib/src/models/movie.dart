@@ -13,6 +13,7 @@ class Movie {
   final String actors;
   final String trailerUrl;
   final String posterUrl;
+  final bool isOrdered;
 
   Movie.fromJson(Map<String, dynamic> json)
       : result = Result.fromJson(json),
@@ -26,5 +27,6 @@ class Movie {
         directors = json['directors'],
         actors = json['actors'],
         trailerUrl = json['trailerUrl'],
-        posterUrl = json['posterUrl'];
+        posterUrl = json['posterUrl'],
+        isOrdered = json['isOrdered'];
 }
