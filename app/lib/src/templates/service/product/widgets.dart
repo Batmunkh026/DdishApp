@@ -7,7 +7,9 @@ import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/converter.dart';
+import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/utils/price_format.dart';
+import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +37,6 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
   Widget buildContentContainer(context) {
     //аль табаас хамаарч түүний GridView д харуулах content уудыг бэлдэх
     var contentsForGrid = _buildContents();
-
 
     double width = MediaQuery.of(context).size.width;
     double ratio = MediaQuery.of(context).devicePixelRatio;
@@ -276,9 +277,10 @@ class ProductPaymentPreview extends StatelessWidget {
         .addAll(titles.map((title) => Text("$title", style: style)).toList());
     SelectedProductPreview state = _bloc.currentState;
 
+    var isUpgrade = state.selectedProductTab == ProductTabType.UPGRADE;
     var isUpgradeOrChannel =
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
-            state.selectedProductTab == ProductTabType.UPGRADE;
+            isUpgrade;
 
     contentsForGrid.add(isUpgradeOrChannel
         ? Padding(
@@ -300,7 +302,7 @@ class ProductPaymentPreview extends StatelessWidget {
 
 //      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
     contentsForGrid.add(Text(
-        "₮${PriceFormatter.productPriceFormat(state.monthToExtend * state.priceToExtend)}",
+        "₮${PriceFormatter.productPriceFormat(isUpgrade ? state.priceToExtend : state.monthToExtend * state.priceToExtend)}",
         style: boldStyle));
 
     return Scaffold(
@@ -368,8 +370,11 @@ class ProductPaymentPreview extends StatelessWidget {
 class CustomProductChooser extends StatefulWidget {
   ProductBloc _bloc;
   int priceToExtend;
+  String monthToExtend;
+  bool isPaymentComputed;
 
-  CustomProductChooser(this._bloc, this.priceToExtend);
+  CustomProductChooser(this._bloc, this.priceToExtend,
+      {this.monthToExtend = "", this.isPaymentComputed = false});
 
   @override
   State<StatefulWidget> createState() => CustomProductChooserState();
@@ -377,12 +382,15 @@ class CustomProductChooser extends StatefulWidget {
 
 class CustomProductChooserState extends State<CustomProductChooser>
     with WidgetMixin {
-  String paymentPreview = "0";
-  String customMonthValue = "0";
+  String paymentPreview = '0';
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isPaymentComputed) paymentPreview = "${widget.priceToExtend}";
+
     var state = widget._bloc.currentState;
+    TextEditingController inputController =
+        TextEditingController(text: '${widget.monthToExtend}');
     var isUpgradeOrChannel =
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             state.selectedProductTab == ProductTabType.UPGRADE;
@@ -394,9 +402,10 @@ class CustomProductChooserState extends State<CustomProductChooser>
     Widget backComponent = isUpgradeOrChannel
         ? Column(children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: MediaQuery.of(context).size.height * 0.08,
               padding: EdgeInsets.only(top: 10),
-              child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(8),
                 child: CachedNetworkImage(
                   imageUrl: state.selectedProduct.image,
                   placeholder: (context, url) =>
@@ -432,20 +441,29 @@ class CustomProductChooserState extends State<CustomProductChooser>
               width: MediaQuery.of(context).size.width * 0.3,
               height: MediaQuery.of(context).size.height * 0.055,
               margin: EdgeInsets.only(top: 15, bottom: 15),
-              child: TextField(
-                style: TextStyle(fontFamily: "Segoe UI"),
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(Radius.circular(30)))),
-                onChanged: (value) => setState(() {
-                      customMonthValue = value;
-                      paymentPreview =
-                          "${(value.isEmpty ? 0 : int.parse(value)) * widget.priceToExtend}";
+              //TODO widgets/text_field.dart ыг ашиглах
+              child: InputField(
+                textController: inputController,
+                hasBorder: true,
+                align: TextAlign.center,
+                textInputType: TextInputType.text,
+                inputFormatters: [
+                  InputValidations.acceptedFormatters[InputType.NumberInt]
+                ],
+                onFieldSubmitted: (value) => setState(() {
+                      widget.monthToExtend = inputController.text;
+
+                      if (state.selectedProductTab ==
+                          ProductTabType.UPGRADE) //server ээс авах
+                        widget._bloc.dispatch(CustomMonthChanged(
+                            state.selectedProductTab,
+                            widget._bloc.selectedProduct,
+                            state.selectedProduct,
+                            Converter.toInt(widget.monthToExtend)));
+                      else
+                        paymentPreview =
+                            "${(inputController.text.isEmpty ? 0 : Converter.toDouble(inputController.text)) * widget.priceToExtend}";
                     }),
-                autofocus: true,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
             ),
             Text(
@@ -470,7 +488,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
   }
 
   toExtend(state) {
-    var month = Converter.toInt(customMonthValue);
+    var month = Converter.toInt(widget.monthToExtend);
     var event = PreviewSelectedProduct(state.selectedProductTab,
         state.selectedProduct, month, widget.priceToExtend);
 

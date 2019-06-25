@@ -7,6 +7,7 @@ import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/product_repository.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
+import 'package:ddish/src/utils/converter.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   var productRepository = ProductRepository();
@@ -59,19 +60,23 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       if (event.selectedProductTabType == ProductTabType.ADDITIONAL_CHANNEL) {
         assert(selectedProduct != null);
 
-        additionalProducts = await productRepository.getAdditionalProducts(selectedProduct.id);
+        additionalProducts =
+            await productRepository.getAdditionalProducts(selectedProduct.id);
 
-        yield ProductTabState(event.selectedProductTabType, selectedProduct, additionalProducts);
+        yield ProductTabState(
+            event.selectedProductTabType, selectedProduct, additionalProducts);
       } else if (event.selectedProductTabType == ProductTabType.UPGRADE) {
         assert(selectedProduct != null);
         upProducts =
             await productRepository.getUpgradableProducts(selectedProduct.id);
-        yield ProductTabState(event.selectedProductTabType, selectedProduct, upProducts);
+        yield ProductTabState(
+            event.selectedProductTabType, selectedProduct, upProducts);
       }
       //TODO
       else {
         this.products = await productRepository.getProducts();
-        yield ProductTabState(event.selectedProductTabType, selectedProduct, products);
+        yield ProductTabState(
+            event.selectedProductTabType, selectedProduct, products);
       }
     } else if (event is ProductTypeSelectorClicked) {
       selectedProduct = event.selectedProduct;
@@ -83,15 +88,21 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           event.monthToExtend == null)
         yield AdditionalChannelState(event.selectedTab, event.selectedProduct);
       else
-        yield SelectedProductPreview(
-            event.selectedTab, event.selectedProduct, event.monthToExtend, event.priceToExtend);
+        yield SelectedProductPreview(event.selectedTab, event.selectedProduct,
+            event.monthToExtend, event.priceToExtend);
     } else if (event is CustomProductSelected) {
       assert(event.selectedProduct != null);
-      yield CustomProductSelector(
-          event.selectedTab, event.selectedProduct, event.priceToExtend, products);
+      yield CustomProductSelector(event.selectedTab, event.selectedProduct,
+          event.priceToExtend, products);
+    } else if (event is CustomMonthChanged) {
+      yield Loading(event.selectedTab);
+      String result = await productRepository.getUpgradePrice(
+          event.currentProduct, event.productToExtend, event.monthToExtend);
+      yield CustomMonthState(event.selectedTab, selectedProduct,
+          event.productToExtend, event.monthToExtend, Converter.toInt(result));
     } else if (event is PreviewSelectedProduct) {
-      yield SelectedProductPreview(
-          event.selectedTab, event.selectedProduct, event.monthToExtend, event.priceToExtend);
+      yield SelectedProductPreview(event.selectedTab, event.selectedProduct,
+          event.monthToExtend, event.priceToExtend);
     } else if (event is ExtendSelectedProduct) {
 //      //TODO төлбөр төлөлт хийх
       int monthToExtend = event.extendMonth; //сунгах сар
