@@ -16,9 +16,10 @@ class ProductRepository {
   Future<List<Product>> getUpgradableProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
-        await _requestJson("productList/$productId");
-    return List<Product>.from(
-        response["upProducts"].map((product) => Product.fromJson(product)));
+        await _requestJson("upgradeProduct/$productId");
+
+    return List<UpProduct>.from(
+        response["upProducts"].map((product) => UpProduct.fromJson(product)));
   }
   Future<List<Product>> getAdditionalProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);

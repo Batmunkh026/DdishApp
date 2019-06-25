@@ -27,7 +27,10 @@ class ProductPageState extends State<ProductPage> {
         tabs: productTabs
             .map((tabItem) => Tab(
                 child: Text(tabItem.title,
-                    style: TextStyle(color: Color(0xff071f49), fontSize: 11, fontWeight: FontWeight.w600))))
+                    style: TextStyle(
+                        color: Color(0xff071f49),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600))))
             .toList(),
         onTap: (tabIndex) =>
             bloc.dispatch(ProductTabChanged(productTabs[tabIndex].state)),
@@ -92,7 +95,7 @@ class ProductPageState extends State<ProductPage> {
       productContentContainer.children.add(createProductPicker(state));
 
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(8),
       child: productContentContainer,
     );
   }
@@ -178,12 +181,12 @@ class ProductPageState extends State<ProductPage> {
     } else if (_state is SelectedProductPreview) {
       return ProductPaymentPreview(bloc);
     } else if (_state is CustomProductSelector) {
-      return CustomProductChooser(bloc);
+      return CustomProductChooser(bloc, _state.priceToExtend);
     } else
       throw UnsupportedError("Тодорхойгүй state: $_state");
   }
 
-  AppBar buildAppBar() {
+  Widget buildAppBar() {
     var _state = bloc.currentState;
     if (_state is SelectedProductPreview)
       return AppBar(
@@ -191,14 +194,18 @@ class ProductPageState extends State<ProductPage> {
         title: buildAppBarHeader(context, _state),
       );
 
-    return AppBar(
-      automaticallyImplyLeading: false,
-      flexibleSpace: buildAppBarHeader(context, _state),
-      centerTitle: true,
-      titleSpacing: 10,
-      title: Container(padding: EdgeInsets.only(top: 25), height: 90, child: createTabBar,),
-      backgroundColor: Colors.white,
-    );
+    return PreferredSize(
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          flexibleSpace: buildAppBarHeader(context, _state),
+          titleSpacing: 10,
+          bottom: PreferredSize(child: Container(
+            child: createTabBar,
+          ), preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.03)),
+          backgroundColor: Colors.white,
+        ),
+        preferredSize:
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.12));
   }
 
   Widget buildBody() {

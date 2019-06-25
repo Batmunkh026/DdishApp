@@ -1,3 +1,4 @@
+import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/district.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/tab_menu.dart';
@@ -9,11 +10,17 @@ import 'package:ddish/src/templates/menu/order/order_widget.dart';
 import 'package:ddish/src/templates/menu/user_info/user_information.dart';
 
 class Constants {
+
+
   static const List<TabMenuItem> mainMenuItems = const <TabMenuItem>[
     TabMenuItem("", Icons.rss_feed, TabState.SERVICE),
     TabMenuItem("", Icons.access_alarms, TabState.NOTIFICATION),
     TabMenuItem("", Icons.menu, TabState.MENU),
   ];
+
+  static const Map<AppIcons, Icon> appIcons  = const {
+    AppIcons.Back: Icon(Icons.arrow_back_ios, color: Color.fromRGBO(57, 110, 170, 1)),
+  };
 
   static const serviceTabs = const[
     TabMenuItem("Данс", Icons.arrow_drop_down, ServiceTabType.ACCOUNT),
@@ -35,8 +42,8 @@ class Constants {
 
   static const List<int> extendableMonths = [1,2,3,6,12];
 
-  static String createPermissionContentStr(ProductTabType packTab, contentToBuy, int time, payment){
-    return "Та $contentToBuy ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
+  static String createPermissionContentStr(ProductTabType packTab, String productName, int time, payment){
+    return "Та $productName ${permissionStrings[packTab]} $time сараар $payment ₮ төлөн сунгах гэж байна.";
   }
 
   static List<Menu> menuItems = <Menu>[

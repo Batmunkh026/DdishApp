@@ -84,14 +84,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         yield AdditionalChannelState(event.selectedTab, event.selectedProduct);
       else
         yield SelectedProductPreview(
-            event.selectedTab, event.selectedProduct, event.monthToExtend);
+            event.selectedTab, event.selectedProduct, event.monthToExtend, event.priceToExtend);
     } else if (event is CustomProductSelected) {
       assert(event.selectedProduct != null);
       yield CustomProductSelector(
-          event.selectedTab, event.selectedProduct, products);
+          event.selectedTab, event.selectedProduct, event.priceToExtend, products);
     } else if (event is PreviewSelectedProduct) {
       yield SelectedProductPreview(
-          event.selectedTab, event.selectedProduct, event.monthToExtend);
+          event.selectedTab, event.selectedProduct, event.monthToExtend, event.priceToExtend);
     } else if (event is ExtendSelectedProduct) {
 //      //TODO төлбөр төлөлт хийх
       int monthToExtend = event.extendMonth; //сунгах сар
