@@ -11,23 +11,26 @@ abstract class MovieTheatreState extends Equatable {
 
 class TheatreStateInitial extends MovieTheatreState {
   TheatreStateInitial();
+
   @override
   String toString() => "theatre state initial.";
 }
 
 class ChannelListLoading extends MovieTheatreState {
   ChannelListLoading();
+
   @override
   String toString() => "channel list loading.";
 }
 
 class ChannelListLoaded extends MovieTheatreState {
   final List<VodChannel> channelList;
+
   ChannelListLoaded({this.channelList});
+
   @override
   String toString() => "channel list loaded.";
 }
-
 
 class ProgramListLoading extends MovieTheatreState {
   final VodChannel channel;
@@ -41,7 +44,7 @@ class ProgramListLoading extends MovieTheatreState {
 class ProgramListLoaded extends MovieTheatreState {
   final List<Program> programList;
 
-  ProgramListLoaded({@required this.programList});
+  ProgramListLoaded({this.programList});
 
   @override
   String toString() => 'program list loaded.';
@@ -49,27 +52,51 @@ class ProgramListLoaded extends MovieTheatreState {
 
 class ProgramDetailsLoading extends MovieTheatreState {
   ProgramDetailsLoading();
+
   @override
   String toString() => 'program details loading.';
 }
-
 
 class ProgramDetailsLoaded extends MovieTheatreState {
   final Movie content;
 
   ProgramDetailsLoaded({@required this.content});
+
   @override
   String toString() => 'program details loaded.';
 }
 
 class SearchProgramLoading extends MovieTheatreState {
   SearchProgramLoading();
+
   @override
   String toString() => "search program loading.";
 }
 
-class SearchResultOpened extends MovieTheatreState {
-  SearchResultOpened();
+class SearchStarted extends MovieTheatreState {
   @override
-  String toString() => 'search result opened.';
+  String toString() => 'search started';
+}
+
+class SearchResultLoaded extends MovieTheatreState {
+  final List<Program> programList;
+  final bool hasReachedMax;
+
+  SearchResultLoaded({
+    this.programList,
+    this.hasReachedMax,
+  }) : super([programList, hasReachedMax]);
+
+  SearchResultLoaded copyWith({
+    List<Program> programList,
+    bool hasReachedMax,
+  }) {
+    return SearchResultLoaded(
+      programList: programList ?? this.programList,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+    );
+  }
+
+  @override
+  String toString() => 'result loaded.';
 }

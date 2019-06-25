@@ -51,3 +51,22 @@ class SearchTapped extends MovieTheatreEvent {
   String toString() => 'search tapped.';
 }
 
+class ScrollReachedMax extends MovieTheatreEvent {
+  final String value;
+  final int page;
+
+  ScrollReachedMax({this.value, this.page});
+
+  @override
+  String toString() => 'Fetch';
+}
+
+class ReturnTapped extends MovieTheatreEvent {
+  final bool search;
+  final List programList;
+
+  ReturnTapped({this.search, this.programList});
+
+  @override
+  String toString() => 'return tapped.';
+}
