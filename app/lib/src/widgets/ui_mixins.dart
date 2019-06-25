@@ -1,10 +1,18 @@
+import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
+import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 
 mixin WidgetMixin {
-  openPermissionDialog(bloc, context, ProductEvent event, monthToExtend) {
+  openPermissionDialog(ProductBloc bloc, context, ProductEvent event,
+      productName, monthToExtend, price) {
+    var totalPriceToExtend =
+        bloc.currentState.selectedProductTab == ProductTabType.UPGRADE
+            ? price
+            : price * monthToExtend;
+
 //Багц сунгах төлбөр төлөлтийн үр дүн
     CustomDialog paymentResultDialog = CustomDialog(
       title: 'Анхааруулга',
@@ -13,9 +21,15 @@ mixin WidgetMixin {
       closeButtonText: 'Үгүй',
       content: Text(Constants.createPermissionContentStr(
           bloc.currentState.selectedProductTab,
-          bloc.currentState.selectedProduct.name,
+          productName,
           monthToExtend,
-          bloc.currentState.selectedProduct.price * monthToExtend)),
+          totalPriceToExtend))
+      
+      content: Text(Constants.createPermissionContentStr(
+          bloc.currentState.selectedProductTab,
+          productName,
+          monthToExtend,
+          totalPriceToExtend)),
     );
 //    paymentResultDialog.
     var dialog = paymentResultDialog;

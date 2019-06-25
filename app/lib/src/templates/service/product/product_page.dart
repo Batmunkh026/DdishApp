@@ -26,7 +26,10 @@ class ProductPageState extends State<ProductPage> {
         tabs: productTabs
             .map((tabItem) => Tab(
                 child: Text(tabItem.title,
-                    style: TextStyle(color: Color(0xff071f49)))))
+                    style: TextStyle(
+                        color: Color(0xff071f49),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600))))
             .toList(),
         onTap: (tabIndex) =>
             bloc.dispatch(ProductTabChanged(productTabs[tabIndex].state)),
@@ -50,28 +53,27 @@ class ProductPageState extends State<ProductPage> {
   }
 
   Widget buildAppBarHeader(BuildContext context, ProductState state) {
-    var fontStyle = TextStyle(
-        color: const Color(0xff071f49),
-        fontWeight: FontWeight.w500,
-        fontStyle: FontStyle.normal,
-        fontSize: 12.0);
+    var fontStyle = TextStyle(color: const Color(0xff071f49), fontSize: 11.0);
 
     var productContentContainer = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: MediaQuery.of(context).size.width * 0.5,
+          width: MediaQuery.of(context).size.width * 0.45,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  new Text("Идэвхтэй багц", style: fontStyle),
-                  new Text("Дуусах хугацаа: ", style: fontStyle),
-                ],
+              Container(
+                height: MediaQuery.of(context).size.height * 0.06,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Text("Идэвхтэй багц", style: fontStyle),
+                    new Text("Дуусах хугацаа: ", style: fontStyle),
+                  ],
+                ),
               ),
               new Text(
                   "${DateUtil.formatProductDate(bloc.getDateOfUserSelectedProduct())}",
@@ -93,7 +95,7 @@ class ProductPageState extends State<ProductPage> {
       productContentContainer.children.add(createProductPicker(state));
 
     return Container(
-      padding: EdgeInsets.only(bottom: 5, left: 5, right: 5),
+      padding: EdgeInsets.all(8),
       child: productContentContainer,
     );
   }
@@ -170,27 +172,38 @@ class ProductPageState extends State<ProductPage> {
       return ProductGridPicker(bloc, _state.selectedProduct);
     } else if (_state is SelectedProductPreview) {
       return ProductPaymentPreview(bloc);
-    } else if (_state is CustomProductSelector) {
-      return CustomProductChooser(bloc);
-    } else
+    } else if (_state is CustomProductSelector)
+      return CustomProductChooser(bloc, _state.priceToExtend);
+    else if (_state is CustomMonthState)
+      return CustomProductChooser(bloc, _state.priceToExtend,
+          monthToExtend: "${_state.monthToExtend}", isPaymentComputed: true);
+    else
       throw UnsupportedError("Тодорхойгүй state: $_state");
   }
 
-  AppBar buildAppBar() {
+  Widget buildAppBar() {
     var _state = bloc.currentState;
     if (_state is SelectedProductPreview)
       return AppBar(
         backgroundColor: Colors.white,
         title: buildAppBarHeader(context, _state),
-//        backgroundColor: Colors.white,
       );
 
-    return AppBar(
-      automaticallyImplyLeading: false,
-      title: buildAppBarHeader(context, _state),
-      bottom: createTabBar,
-      backgroundColor: Colors.white,
-    );
+    return PreferredSize(
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          flexibleSpace: buildAppBarHeader(context, _state),
+          titleSpacing: 10,
+          bottom: PreferredSize(
+              child: Container(
+                child: createTabBar,
+              ),
+              preferredSize:
+                  Size.fromHeight(MediaQuery.of(context).size.height * 0.03)),
+          backgroundColor: Colors.white,
+        ),
+        preferredSize:
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.12));
   }
 
   Widget buildBody() {
