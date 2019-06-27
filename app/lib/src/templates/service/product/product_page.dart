@@ -4,7 +4,9 @@ import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
-import 'package:ddish/src/templates/service/product/widgets.dart';
+import 'package:ddish/src/templates/service/product/custom_option.dart';
+import 'package:ddish/src/templates/service/product/payment.dart';
+import 'package:ddish/src/templates/service/product/product_grid.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/dialog.dart';
@@ -202,6 +204,7 @@ class ProductPageState extends State<ProductPage> {
           automaticallyImplyLeading: false,
           flexibleSpace: buildAppBarHeader(context, _state),
           titleSpacing: 10,
+          elevation: 0,
           bottom: PreferredSize(
               child: Container(
                 child: createTabBar,
