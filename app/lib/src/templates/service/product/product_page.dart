@@ -180,9 +180,12 @@ class ProductPageState extends State<ProductPage> {
       return ProductGridPicker(bloc, _state.selectedProduct);
     } else if (_state is SelectedProductPreview) {
       return ProductPaymentPreview(bloc);
-    } else if (_state is CustomProductSelector) {
+    } else if (_state is CustomProductSelector)
       return CustomProductChooser(bloc, _state.priceToExtend);
-    } else
+    else if (_state is CustomMonthState)
+      return CustomProductChooser(bloc, _state.priceToExtend,
+          monthToExtend: "${_state.monthToExtend}", isPaymentComputed: true);
+    else
       throw UnsupportedError("Тодорхойгүй state: $_state");
   }
 
@@ -199,9 +202,12 @@ class ProductPageState extends State<ProductPage> {
           automaticallyImplyLeading: false,
           flexibleSpace: buildAppBarHeader(context, _state),
           titleSpacing: 10,
-          bottom: PreferredSize(child: Container(
-            child: createTabBar,
-          ), preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.03)),
+          bottom: PreferredSize(
+              child: Container(
+                child: createTabBar,
+              ),
+              preferredSize:
+                  Size.fromHeight(MediaQuery.of(context).size.height * 0.03)),
           backgroundColor: Colors.white,
         ),
         preferredSize:

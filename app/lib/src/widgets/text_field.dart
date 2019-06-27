@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class InputField extends StatelessWidget {
-  final String initialValue;
-  final String placeholder;
-  final Color textFieldColor;
-  final TextInputType textInputType;
-  final bool obscureText;
-  final double bottomMargin;
-  final double fontSize;
-  final Function validateFunction;
-  final Function onSaved;
-  final TextEditingController textController;
-  final bool hasBorder;
-  final Key key;
-  final TextAlign align;
-  final EdgeInsets padding;
+  String initialValue;
+  String placeholder;
+  Color textFieldColor;
+  TextInputType textInputType;
+  bool obscureText;
+  double bottomMargin;
+  double fontSize;
+  var validateFunction;
+  var onSaved;
+  var onFieldSubmitted;
+  var textController;
+  bool hasBorder;
+  Key key;
+  TextAlign align;
+  EdgeInsets padding;
+  List<TextInputFormatter> inputFormatters;
   final bool hasClearButton;
   final VoidCallback onClear;
 
@@ -36,6 +39,8 @@ class InputField extends StatelessWidget {
       this.hasBorder = false,
       this.align = TextAlign.start,
       this.padding,
+      this.inputFormatters,
+      this.onFieldSubmitted,
       this.hasClearButton = false,
       this.onClear});
 
@@ -60,8 +65,10 @@ class InputField extends StatelessWidget {
         keyboardType: textInputType,
         validator: validateFunction,
         onSaved: onSaved,
+        onFieldSubmitted: onFieldSubmitted,
         controller: textController,
         textAlign: align,
+        inputFormatters: inputFormatters,
         decoration: new InputDecoration(
           enabledBorder: hasBorder
               ? null
@@ -74,7 +81,6 @@ class InputField extends StatelessWidget {
                 )
               : null,
           contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0),
-
           hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),
@@ -82,14 +88,6 @@ class InputField extends StatelessWidget {
             fontStyle: FontStyle.normal,
             fontSize: fontSize,
           ),
-//          suffixIcon: hasClearButton
-//              ? IconButton(
-//                  icon: Icon(
-//                    Icons.close,
-//                  ),
-//                  onPressed: onClear,
-//                )
-//              : null,
         ),
       ),
     ));
