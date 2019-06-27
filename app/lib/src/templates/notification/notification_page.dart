@@ -64,12 +64,18 @@ class NotificationPageState extends State<NotificationPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(notification.name),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: Text(
+                              notification.name,
+                              softWrap: true,
+                            ),
+                          ),
                           Text(DateUtil.formatDateTime(notification.date)),
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 5),
+                        padding: EdgeInsets.only(top: 15),
                         child: Text(notification.text),
                       )
                     ],
