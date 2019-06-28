@@ -91,7 +91,7 @@ class ExtendSelectedProduct extends ProductEvent {
   int extendPrice;
   ExtendSelectedProduct(ProductTabType selectedProductTab,
       Product this.selectedProduct, this.extendMonth, this.extendPrice)
-      : super(selectedProductTab, [selectedProductTab]);
+      : super(selectedProductTab, [selectedProductTab, selectedProduct, extendMonth, extendPrice]);
 }
 
 class BackToPrevState extends ProductEvent {

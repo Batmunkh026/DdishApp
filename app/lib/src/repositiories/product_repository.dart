@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:http/http.dart' as http;
 import 'package:ddish/src/repositiories/globals.dart' as globals;
@@ -16,7 +17,7 @@ class ProductRepository {
   Future<List<Product>> getUpgradableProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
-        await _requestJson("upgradeProduct/$productId");
+    await _requestJson("upgradeProduct/$productId");
 
     return List<UpProduct>.from(
         response["upProducts"].map((product) => UpProduct.fromJson(product)));
@@ -47,10 +48,26 @@ class ProductRepository {
     return response["priceInfo"]["price"];
   }
 
+  ///Бүтээгдэхүүн сунгах
+  Future<ProductPaymentState> extendProduct(ProductPaymentState state)async{
+    Product current = state.selectedProduct;
+    Product toExtend = state.productToExtend;
+
+    assert(current != null || toExtend != null);
+
+    Map<String, dynamic> response =
+        await _requestJson("upgradeProduct/${current.id}/${state.monthToExtend}/${state.priceToExtend}/${toExtend.id}");
+
+    state.isSuccess = response['isSuccess'];
+    state.resultMessage = response['resultMessage'];
+
+    return state;
+  }
+
   Future<List<Product>> getAdditionalProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
-        await _requestJson("productList/$productId");
+    await _requestJson("productList/$productId");
     return List<Product>.from(response["additionalProducts"]
         .map((product) => Product.fromJson(product)));
   }

@@ -4,8 +4,8 @@ import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
-import 'package:ddish/src/templates/service/product/custom_option.dart';
-import 'package:ddish/src/templates/service/product/payment.dart';
+import 'package:ddish/src/templates/service/product/custom_option_page.dart';
+import 'package:ddish/src/templates/service/product/payment_result_page.dart';
 import 'package:ddish/src/templates/service/product/product_grid.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/date_util.dart';
@@ -180,7 +180,7 @@ class ProductPageState extends State<ProductPage> {
     } else if (_state is AdditionalChannelState) {
       //нэмэлт суваг сонгосон төлөв
       return ProductGridPicker(bloc, _state.selectedProduct);
-    } else if (_state is SelectedProductPreview) {
+    } else if (_state is SelectedProductPreview || _state is ProductPaymentState) {
       return ProductPaymentPreview(bloc);
     } else if (_state is CustomProductSelector)
       return CustomProductChooser(bloc, _state.priceToExtend);

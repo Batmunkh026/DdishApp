@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/models/product.dart';
-import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/product_repository.dart';
@@ -43,9 +42,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     //хэрэглэгчийн идэвхтэй бүтээгдэхүүнийг авах
     //байхгүй бол products.first
     selectedProduct = products.firstWhere(
-        (p) =>
-            user.activeProducts.singleWhere((up) => up.isMain && p.id == up.id,
-                orElse: () => null) !=
+            (p) =>
+        user.activeProducts.singleWhere((up) => up.isMain && p.id == up.id,
+            orElse: () => null) !=
             null,
         orElse: () => products.first);
 
@@ -61,14 +60,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         assert(selectedProduct != null);
 
         additionalProducts =
-            await productRepository.getAdditionalProducts(selectedProduct.id);
+        await productRepository.getAdditionalProducts(selectedProduct.id);
 
         yield ProductTabState(
             event.selectedProductTabType, selectedProduct, additionalProducts);
       } else if (event.selectedProductTabType == ProductTabType.UPGRADE) {
         assert(selectedProduct != null);
         upProducts =
-            await productRepository.getUpgradableProducts(selectedProduct.id);
+        await productRepository.getUpgradableProducts(selectedProduct.id);
         yield ProductTabState(
             event.selectedProductTabType, selectedProduct, upProducts);
       }
@@ -104,13 +103,19 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       yield SelectedProductPreview(event.selectedTab, event.selectedProduct,
           event.monthToExtend, event.priceToExtend);
     } else if (event is ExtendSelectedProduct) {
+      yield Loading(event.selectedTab);
 //      //TODO төлбөр төлөлт хийх
       int monthToExtend = event.extendMonth; //сунгах сар
-      Product selectedProduct = event.selectedProduct;
-//      TODO төлбөр төлөлтийн үр дүнг дамжуулах
-      PaymentState paymentState;
-      yield ProductPaymentState(
-          event.selectedTab, selectedProduct, monthToExtend, paymentState);
+      Product productToExtend = event.selectedProduct;
+      ProductPaymentState state = ProductPaymentState(
+          event.selectedTab,
+          this.selectedProduct,
+          productToExtend,
+          event.extendPrice,
+          event.extendMonth);
+
+      ProductPaymentState resultState = await productRepository.extendProduct(state);
+      yield resultState;
     } else if (event is BackToPrevState) {
       yield currentState.prevStates.last;
     }
@@ -138,7 +143,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ///буцаах утга нь null байж болно [хэрэглэгчид сонгосон багц байхгүй бол? ]
   DateTime getDateOfUserSelectedProduct() {
     var activeProduct =
-        user.activeProducts.firstWhere((p) => p.isMain, orElse: () => null);
+    user.activeProducts.firstWhere((p) => p.isMain, orElse: () => null);
     return activeProduct == null ? null : activeProduct.expireDate;
   }
 }
