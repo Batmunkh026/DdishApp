@@ -17,8 +17,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductPaymentPreview extends StatelessWidget {
   final ProductBloc _bloc;
+  var state;
 
-  ProductPaymentPreview(this._bloc);
+  ProductPaymentPreview(this._bloc, this.state);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,9 @@ class ProductPaymentPreview extends StatelessWidget {
 
     contentsForGrid
         .addAll(titles.map((title) => Text("$title", style: style)).toList());
-    SelectedProductPreview state = _bloc.currentState;
+
+//    var currentState = _bloc.currentState;
+//    var state = currentState is ProductPaymentState ? currentState as ProductPaymentState : currentState as SelectedProductPreview;
 
     var isUpgrade = state.selectedProductTab == ProductTabType.UPGRADE;
     var isUpgradeOrChannel =
@@ -68,7 +71,7 @@ class ProductPaymentPreview extends StatelessWidget {
         style: boldStyle));
 
     if (state is ProductPaymentState)
-      openResultDialog(context, state as ProductPaymentState);
+      Future(()=>openResultDialog(context, state as ProductPaymentState));
 
     return Scaffold(
       body: Column(
@@ -140,10 +143,11 @@ class ProductPaymentPreview extends StatelessWidget {
         ActionButton(
           title: 'Цэнэглэх',
           onTap: () {
+            //close dialog
+            Navigator.pop(context);
             //TODO navigate to Account Tab
             var serviceBloc = BlocProvider.of<ServiceBloc>(context);
-            var event = ServiceTabSelected(Constants.serviceTabs[0].state);
-            serviceBloc.dispatch(event);
+            serviceBloc.chargeAccount();
           },
         ),
       );

@@ -39,16 +39,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     products = await productStream;
 
-    //хэрэглэгчийн идэвхтэй бүтээгдэхүүнийг авах
-    //байхгүй бол products.first
-    selectedProduct = products.firstWhere(
-            (p) =>
-        user.activeProducts.singleWhere((up) => up.isMain && p.id == up.id,
-            orElse: () => null) !=
-            null,
-        orElse: () => products.first);
+    if (!products.isEmpty) {
+      //хэрэглэгчийн идэвхтэй бүтээгдэхүүнийг авах
+      selectedProduct = products.firstWhere(
+          (p) =>
+              user.activeProducts.singleWhere(
+                  (up) => up.isMain && p.id == up.id,
+                  orElse: () => null) !=
+              null,
+          orElse: () => products.first);
 
-    dispatch(ProductTabChanged(ProductTabType.EXTEND));
+      dispatch(ProductTabChanged(ProductTabType.EXTEND));
+    }
   }
 
   @override
@@ -60,14 +62,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         assert(selectedProduct != null);
 
         additionalProducts =
-        await productRepository.getAdditionalProducts(selectedProduct.id);
+            await productRepository.getAdditionalProducts(selectedProduct.id);
 
         yield ProductTabState(
             event.selectedProductTabType, selectedProduct, additionalProducts);
       } else if (event.selectedProductTabType == ProductTabType.UPGRADE) {
         assert(selectedProduct != null);
         upProducts =
-        await productRepository.getUpgradableProducts(selectedProduct.id);
+            await productRepository.getUpgradableProducts(selectedProduct.id);
         yield ProductTabState(
             event.selectedProductTabType, selectedProduct, upProducts);
       }
@@ -114,7 +116,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           event.extendPrice,
           event.extendMonth);
 
-      ProductPaymentState resultState = await productRepository.extendProduct(state);
+      ProductPaymentState resultState =
+          await (event.selectedTab == ProductTabType.UPGRADE
+              ? productRepository.extendProduct(state)
+              : productRepository.chargeProduct(state));
+
+      if (resultState.isSuccess) {
+        //TODO бүтээгдэхүүн сунгалт амжилттай болсон тохиолдолд user data шинэчлэх
+      }
+
       yield resultState;
     } else if (event is BackToPrevState) {
       yield currentState.prevStates.last;
@@ -143,7 +153,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ///буцаах утга нь null байж болно [хэрэглэгчид сонгосон багц байхгүй бол? ]
   DateTime getDateOfUserSelectedProduct() {
     var activeProduct =
-    user.activeProducts.firstWhere((p) => p.isMain, orElse: () => null);
+        user.activeProducts.firstWhere((p) => p.isMain, orElse: () => null);
     return activeProduct == null ? null : activeProduct.expireDate;
   }
 }

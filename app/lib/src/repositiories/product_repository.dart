@@ -10,17 +10,19 @@ class ProductRepository {
 
   Future<List<Product>> getProducts() async {
     Map<String, dynamic> response = await _requestJson("productList");
-    return List<Product>.from(
-        response["productList"].map((product) => Product.fromJson(product)));
+    return response["isSuccess"]
+        ? List<Product>.from(response["productList"]
+            .map((product) => Product.fromJson(product))) : [];
   }
 
   Future<List<Product>> getUpgradableProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
-    await _requestJson("upgradeProduct/$productId");
+        await _requestJson("upgradeProduct/$productId");
 
-    return List<UpProduct>.from(
-        response["upProducts"].map((product) => UpProduct.fromJson(product)));
+    return response["isSuccess"]
+        ? List<UpProduct>.from(response["upProducts"]
+            .map((product) => UpProduct.fromJson(product))) : [];
   }
 
   ///хэрэв хэрэглэгч дурын сонголтоор сараа оруулсан бол
@@ -36,7 +38,7 @@ class ProductRepository {
     assert(currentProduct != null && productToExtend != null);
 
     Price priceObj = productToExtend.prices
-        .firstWhere((p) => p.month == monthToExtend, orElse:()=> null);
+        .firstWhere((p) => p.month == monthToExtend, orElse: () => null);
 
     //хэрэглэгчийн оруулсан утга ахиулах багцын стандарт сарын утгатай ижил бол ахиулах багцын мэдээллээр бодож буцаах
     if (priceObj != null) return "${priceObj.month * priceObj.price}";
@@ -45,18 +47,35 @@ class ProductRepository {
         "upgradeProduct/${currentProduct.id}/$monthToExtend/${productToExtend.id}");
 
     //TODO үр дүнг амжилтгүй бол???
-    return response["priceInfo"]["price"];
+    return response["isSuccess"] ? response["priceInfo"]["price"] : "";
   }
 
-  ///Бүтээгдэхүүн сунгах
-  Future<ProductPaymentState> extendProduct(ProductPaymentState state)async{
+  //Сунгах, Нэмэлт суваг
+  Future<ProductPaymentState> chargeProduct(ProductPaymentState state) async {
+    assert(state.selectedProduct != null);
+
+    var _param = "chargeProduct/${state.selectedProduct.id}/${state.monthToExtend}";
+
+    var _resultState = await productPayment(state, _param);
+
+    return _resultState;
+  }
+
+  ///Багц ахиулах
+  Future<ProductPaymentState> extendProduct(ProductPaymentState state) async {
     Product current = state.selectedProduct;
     Product toExtend = state.productToExtend;
 
     assert(current != null || toExtend != null);
 
-    Map<String, dynamic> response =
-        await _requestJson("upgradeProduct/${current.id}/${state.monthToExtend}/${state.priceToExtend}/${toExtend.id}");
+    var _param = "upgradeProduct/${current.id}/${state.monthToExtend}/${state.priceToExtend}/${toExtend.id}";
+
+    var _resultState = await productPayment(state, _param);
+
+    return _resultState;
+  }
+  Future<ProductPaymentState> productPayment(state, param)async{
+    Map<String, dynamic> response = await _requestJson(param);
 
     state.isSuccess = response['isSuccess'];
     state.resultMessage = response['resultMessage'];
@@ -67,9 +86,11 @@ class ProductRepository {
   Future<List<Product>> getAdditionalProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
-    await _requestJson("productList/$productId");
-    return List<Product>.from(response["additionalProducts"]
-        .map((product) => Product.fromJson(product)));
+        await _requestJson("productList/$productId");
+
+    return response["isSuccess"]
+        ? List<Product>.from(response["additionalProducts"]
+            .map((product) => Product.fromJson(product))) : [];
   }
 
   Future<Map<String, dynamic>> _requestJson(param) async {
@@ -77,8 +98,9 @@ class ProductRepository {
       final _response = await client.read('${globals.serverEndpoint}/$param');
       var _productReponse = json.decode(_response) as Map;
 
-      print("result message: " + _productReponse["resultMessage"]);
-      return _productReponse["isSuccess"] ? _productReponse : [];
+      print(
+          "isSuccess: ${_productReponse["isSuccess"]},  result message: ${_productReponse["resultMessage"]}");
+      return _productReponse;
     } on http.ClientException catch (e) {
       // TODO catch SocketException
       throw (e);

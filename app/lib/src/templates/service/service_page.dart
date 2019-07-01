@@ -19,19 +19,21 @@ class ServicePage extends StatefulWidget {
   State<StatefulWidget> createState() => ServicePageState();
 }
 
-class ServicePageState extends State<ServicePage> {
+class ServicePageState extends State<ServicePage>
+    with TickerProviderStateMixin {
   ServiceBloc bloc;
 
-  var builder;
   Container tabContainer;
   var serviceTabs = Constants.serviceTabs;
   var servicePackTabState;
+  TabController _tabController;
 
   ///Үйлчилгээний үндсэн таб ууд
   TabBar get createTabBar => TabBar(
         labelPadding: EdgeInsets.symmetric(horizontal: 30.0),
         indicatorSize: TabBarIndicatorSize.label,
         isScrollable: true,
+        controller: _tabController,
         tabs: serviceTabs
             .map((tabItem) => Tab(
                   text: tabItem.title,
@@ -58,58 +60,60 @@ class ServicePageState extends State<ServicePage> {
   void initState() {
     bloc = ServiceBloc();
 
-    builder = BlocBuilder(bloc: bloc, builder: createBuilder);
     servicePackTabState =
         bloc.servicePackTabState; //үйлчилгээний багц ын дэд таб ын төлөв
     tabContainer = Container(); //Үйлчилгээ багцын дэд таб ын content container
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return builder;
+    _tabController = TabController(length: serviceTabs.length, vsync: this);
+    bloc.tabController = _tabController;
+    return BlocBuilder(bloc: bloc, builder: createBuilder);
   }
 
   Widget createBuilder(BuildContext context, ServiceState state) {
     this.servicePackTabState = state;
     final height = MediaQuery.of(context).size.height;
+
     return SingleChildScrollView(
       physics: NeverScrollableScrollPhysics(),
       child: Container(
         margin: EdgeInsets.fromLTRB(8, 10, 8, 4),
-        child: DefaultTabController(
-          length: serviceTabs.length,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: height * 0.07),
-                child: Text("Үйлчилгээ",
-                    style: const TextStyle(
-                        color: const Color(0xfff8f8f8),
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 17.0)),
-              ),
-              createTabBar,
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 10.0, right: 10.0, bottom: 70.0),
-                child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: new BorderRadius.circular(20.0),
-                  ),
-                  child: SizedBox(
-                    height: height * 0.7,
-                    child: TabBarView(
-                        children: [AccountPage(), ProductPage(), MoviePage()]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: height * 0.07),
+              child: Text("Үйлчилгээ",
+                  style: const TextStyle(
+                      color: const Color(0xfff8f8f8),
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 17.0)),
+            ),
+            createTabBar,
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 70.0),
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.circular(20.0),
+                ),
+                child: SizedBox(
+                  height: height * 0.7,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [AccountPage(), ProductPage(bloc), MoviePage()],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
