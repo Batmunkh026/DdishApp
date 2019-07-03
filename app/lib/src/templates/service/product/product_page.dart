@@ -4,6 +4,7 @@ import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/blocs/service/service_bloc.dart';
 import 'package:ddish/src/models/product.dart';
+import 'package:ddish/src/models/tab_menu.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/templates/service/product/custom_option_page.dart';
 import 'package:ddish/src/templates/service/product/payment_result_page.dart';
@@ -23,13 +24,17 @@ class ProductPage extends StatefulWidget {
   State<StatefulWidget> createState() => ProductPageState();
 }
 
-class ProductPageState extends State<ProductPage> {
+class ProductPageState extends State<ProductPage>
+    with TickerProviderStateMixin {
   ProductBloc bloc;
 
   var productTabs = Constants.productTabs;
 
+  TabController tabController;
+
   get createTabBar => TabBar(
         isScrollable: true,
+        controller: tabController,
         tabs: productTabs
             .map((tabItem) => Tab(
                 child: Text(tabItem.title,
@@ -45,6 +50,7 @@ class ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     bloc = ProductBloc();
+    tabController = TabController(length: productTabs.length, vsync: this);
     super.initState();
   }
 
@@ -53,17 +59,14 @@ class ProductPageState extends State<ProductPage> {
     return BlocBuilder(
         bloc: bloc,
         builder: (BuildContext context, ProductState state) {
-          return BlocProviderTree(
-              blocProviders: [
-                BlocProvider<ServiceBloc>(
-                  bloc: widget.serviceBloc,
-                ),
-                BlocProvider<ProductBloc>(
-                  bloc: bloc,
-                ),
-              ],
-              child: DefaultTabController(
-                  length: productTabs.length, child: buildBody()));
+          return BlocProviderTree(blocProviders: [
+            BlocProvider<ServiceBloc>(
+              bloc: widget.serviceBloc,
+            ),
+            BlocProvider<ProductBloc>(
+              bloc: bloc,
+            ),
+          ], child: buildBody());
         });
   }
 
@@ -217,11 +220,41 @@ class ProductPageState extends State<ProductPage> {
     if (bloc.currentState is Loading)
       return Center(child: CircularProgressIndicator());
 
-    if (bloc.currentState is SelectedProductPreview) return buildContents();
+    var content = buildContents();
+
+    var body = createTabBarBody(content);
+
+    if (bloc.currentState is SelectedProductPreview) return body;
 
     return Scaffold(
       appBar: buildAppBar(),
-      body: buildContents(),
+      body: body,
+    );
+  }
+
+  Widget createTabBarBody(Widget content) {
+    return Stack(
+      children: <Widget>[
+        content,
+        GestureDetector(onHorizontalDragEnd: (details) {
+          double delta = details.velocity.pixelsPerSecond.dx;
+          if (delta != 0.0) {
+            bool isRight = delta < 0;
+
+            ProductTabType selectedTab =
+                (bloc.currentState as ProductState).selectedProductTab;
+            int currentTabIndex = ProductTabType.values.indexOf(selectedTab);
+
+            int nextTabIndex = currentTabIndex + (isRight ? 1 : -1);
+
+            if (nextTabIndex >= 0 && nextTabIndex < productTabs.length) {
+              TabMenuItem nextTab = productTabs.elementAt(nextTabIndex);
+              tabController.animateTo(nextTabIndex);
+              bloc.dispatch(ProductTabChanged(nextTab.state));
+            }
+          }
+        })
+      ],
     );
   }
 }
