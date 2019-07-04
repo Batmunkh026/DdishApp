@@ -15,16 +15,29 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProductPaymentPreview extends StatelessWidget {
+class ProductPaymentPreview extends StatefulWidget {
   final ProductBloc _bloc;
   var state;
 
   ProductPaymentPreview(this._bloc, this.state);
 
   @override
+  State<StatefulWidget> createState() => ProductPaymentPreviewState();
+}
+
+class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => openResultDialog(context, widget.state as ProductPaymentState));
+  }
+
+  @override
   Widget build(BuildContext context) {
     var titles = ["Багц", "Хугацаа", "Дүн"];
     List<Widget> contentsForGrid = [];
+    var state = widget.state;
 
     var style = TextStyle(
         fontWeight: FontWeight.w500,
@@ -38,9 +51,6 @@ class ProductPaymentPreview extends StatelessWidget {
 
     contentsForGrid
         .addAll(titles.map((title) => Text("$title", style: style)).toList());
-
-//    var currentState = _bloc.currentState;
-//    var state = currentState is ProductPaymentState ? currentState as ProductPaymentState : currentState as SelectedProductPreview;
 
     var isUpgrade = state.selectedProductTab == ProductTabType.UPGRADE;
     var isUpgradeOrChannel =
@@ -70,8 +80,8 @@ class ProductPaymentPreview extends StatelessWidget {
         "₮${PriceFormatter.productPriceFormat(isUpgrade ? state.priceToExtend : state.monthToExtend * state.priceToExtend)}",
         style: boldStyle));
 
-    if (state is ProductPaymentState)
-      Future(()=>openResultDialog(context, state as ProductPaymentState));
+//    if (state is ProductPaymentState)
+//      openResultDialog(context, state as ProductPaymentState);
 
     return Scaffold(
       body: Column(
@@ -98,8 +108,8 @@ class ProductPaymentPreview extends StatelessWidget {
                 Divider(),
               ],
             ),
-            onPressed: () => _bloc.dispatch(
-                BackToPrevState(_bloc.currentState.selectedProductTab)),
+            onPressed: () => widget._bloc.dispatch(
+                BackToPrevState(widget._bloc.currentState.selectedProductTab)),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.25,
@@ -122,7 +132,7 @@ class ProductPaymentPreview extends StatelessWidget {
           SubmitButton(
               text: "Сунгах",
               padding: EdgeInsets.only(top: 50),
-              onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
+              onPressed: () => widget._bloc.dispatch(ExtendSelectedProduct(
                   state.selectedProductTab,
                   state.selectedProduct,
                   state.monthToExtend,
@@ -135,7 +145,7 @@ class ProductPaymentPreview extends StatelessWidget {
   }
 
   ///бүтээгдэхүүн сунгах төлбөр төлөлтийн үр дүн харуулах
-  void openResultDialog(BuildContext context, ProductPaymentState state) async {
+  openResultDialog(BuildContext context, ProductPaymentState state) {
     List<Widget> actions = new List();
 
     if (!state.isSuccess) {
@@ -159,7 +169,7 @@ class ProductPaymentPreview extends StatelessWidget {
       ),
     );
 
-    return showDialog(
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
