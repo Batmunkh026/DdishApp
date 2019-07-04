@@ -1,5 +1,4 @@
 import 'package:ddish/src/models/product.dart';
-import 'package:ddish/src/models/payment_state.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -52,7 +51,7 @@ class ProductTabState extends ProductState {
       : assert(selectedProductTab != null),
         assert(initialItems != null),
         super(selectedProductTab, initialItems, selectedProduct,
-            [selectedProductTab]);
+          [selectedProductTab]);
 
   @override
   String toString() => "PackTab state $selectedProductTab - $selectedProduct";
@@ -66,7 +65,7 @@ class AdditionalChannelState extends ProductState {
       {isReload = false})
       : assert(selectedProduct != null),
         super(selectedProductTab, null, selectedProduct,
-            [selectedProductTab, selectedProduct, isReload]);
+          [selectedProductTab, selectedProduct, isReload]);
 }
 
 ///Багц сонголтын төлөв
@@ -80,7 +79,7 @@ class ProductSelectionState extends ProductState {
   ProductSelectionState(
       this.selectedProductTab, this.products, @required this.selectedProduct)
       : super(selectedProductTab, products, selectedProduct,
-            [selectedProductTab, products, selectedProduct]);
+      [selectedProductTab, products, selectedProduct]);
 
   @override
   String toString() => "Pack selection state $selectedProduct";
@@ -98,7 +97,7 @@ class ProductItemState extends ProductState {
 
   ProductItemState(this.selectedProductTab, this.selectedProductItem)
       : super(selectedProductTab, null, selectedProductItem,
-            [selectedProductTab, selectedProductItem]);
+      [selectedProductTab, selectedProductItem]);
 }
 
 ///нэмэлт суваг эсвэл аль нэг  багц ын хугацаа&үнийн дүнгийн төрлөөс сонгосон төлөв
@@ -127,7 +126,7 @@ class CustomProductSelector extends ProductState {
   CustomProductSelector(
       selectedTab, this.selectedProduct, this.priceToExtend, products)
       : super(selectedTab, products, selectedProduct,
-            [selectedTab, products, selectedProduct]);
+      [selectedTab, products, selectedProduct]);
 
   @override
   String toString() =>
@@ -144,15 +143,18 @@ class CustomMonthState extends ProductState {
   CustomMonthState(ProductTabType selectedTab, this.currentProduct,
       this.productToExtend, this.monthToExtend, this.priceToExtend)
       : super(selectedTab, [], productToExtend,
-            [selectedTab, currentProduct, productToExtend, monthToExtend, priceToExtend]);
+      [selectedTab, currentProduct, productToExtend, monthToExtend, priceToExtend]);
 }
 
 ///Сонгогдсон багцын төлбөр төлөлтийн төлөв
 class ProductPaymentState extends ProductState {
-  PaymentState paymentState;
+  Product productToExtend;
+  var priceToExtend;
   int monthToExtend;
+  bool isSuccess;
+  String resultMessage;
 
   ProductPaymentState(ProductTabType selectedProductTab, selectedProduct,
-      this.monthToExtend, this.paymentState)
-      : super(selectedProductTab, null, selectedProduct);
+      this.productToExtend, this.priceToExtend, this.monthToExtend)
+      : super(selectedProductTab, [], selectedProduct);
 }
