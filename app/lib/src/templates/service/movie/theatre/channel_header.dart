@@ -74,15 +74,13 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
                 color: const Color(0xff071f49),
                 fontWeight: FontWeight.w400,
                 fontStyle: FontStyle.normal,
-                fontSize: 15.0,
+                fontSize: 13.0,
               ),
             ),
             IconButton(
                 color: Color(0xff3069b2),
                 disabledColor: Color(0xffe8e8e8),
-                icon: Icon(
-                  Icons.arrow_forward_ios,
-                ),
+                icon: Icon(Icons.arrow_forward_ios),
                 onPressed: date
                             .difference(DateTime.now().add(Duration(days: 7)))
                             .inDays ==
