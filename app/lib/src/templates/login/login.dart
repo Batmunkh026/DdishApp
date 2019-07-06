@@ -102,13 +102,15 @@ class LoginViewState extends State<LoginView> {
                           textController: _usernameController,
                           obscureText: false,
                           textInputType: TextInputType.number,
-                          validateFunction: InputValidations.validateNumberValue,
+                          validateFunction:
+                              InputValidations.validateNumberValue,
                         ),
                         InputField(
                           placeholder: 'НУУЦ ҮГ /****/',
                           textController: _passwordController,
                           obscureText: true,
-                          validateFunction: InputValidations.validateNotNullValue,
+                          validateFunction:
+                              InputValidations.validateNotNullValue,
                         ),
                         FlatButton(
                           onPressed: () => _showDialog(context),
@@ -126,8 +128,8 @@ class LoginViewState extends State<LoginView> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 50.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
                     child: Column(
                       children: <Widget>[
                         ToggleSwitch(
@@ -194,7 +196,7 @@ class LoginViewState extends State<LoginView> {
 
   _onLoginButtonPressed() {
     FocusScope.of(context).requestFocus(new FocusNode());
-    if(_formKey.currentState.validate()) {
+    if (_formKey.currentState.validate()) {
       _loginBloc.dispatch(LoginButtonPressed(
         username: _usernameController.text,
         password: _passwordController.text,
