@@ -94,7 +94,7 @@ class ProductPageState extends State<ProductPage>
                 ),
               ),
               new Text(
-                  "${DateUtil.formatProductDate(bloc.getDateOfUserSelectedProduct())}",
+                  "${DateUtil.formatProductDate(bloc.getExpireDateOfUserSelectedProduct())}",
                   style: TextStyle(
                       color: const Color(0xff071f49),
                       fontWeight: FontWeight.bold,
@@ -182,10 +182,11 @@ class ProductPageState extends State<ProductPage>
         _state is ProductPaymentState) {
       return ProductPaymentPreview(bloc, _state);
     } else if (_state is CustomProductSelector)
-      return CustomProductChooser(bloc, _state.priceToExtend);
+      return CustomProductChooser(bloc, _state.priceToExtend, 0);
     else if (_state is CustomMonthState)
-      return CustomProductChooser(bloc, _state.priceToExtend,
-          monthToExtend: "${_state.monthToExtend}", isPaymentComputed: true);
+      return CustomProductChooser(
+          bloc, _state.priceToExtend, _state.monthToExtend,
+          isPaymentComputed: true);
     else
       throw UnsupportedError("Тодорхойгүй state: $_state");
   }

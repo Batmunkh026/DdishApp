@@ -29,8 +29,10 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => openResultDialog(context, widget.state as ProductPaymentState));
+
+    if (widget.state is ProductPaymentState)
+      WidgetsBinding.instance.addPostFrameCallback((_) =>
+          openResultDialog(context, widget.state as ProductPaymentState));
   }
 
   @override
@@ -209,7 +211,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
     return [
       TextSpan(text: 'Та '),
       TextSpan(text: "${state.productToExtend.name} ", style: boldStyle),
-      TextSpan(text: isChannel ? 'сувгийг ' : 'багцыг'),
+      TextSpan(text: isChannel ? 'сувгийг ' : 'багцыг '),
       TextSpan(text: '${state.monthToExtend} ', style: boldStyle),
       TextSpan(text: 'сараар '),
       TextSpan(text: '${state.priceToExtend} ₮ ', style: boldStyle),
