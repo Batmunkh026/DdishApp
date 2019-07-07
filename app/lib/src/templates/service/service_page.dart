@@ -57,7 +57,8 @@ class ServicePageState extends State<ServicePage>
   @override
   void initState() {
     bloc = ServiceBloc();
-
+    _tabController = TabController(length: serviceTabs.length, vsync: this);
+    bloc.tabController = _tabController;
     tabContainer = Container(); //Үйлчилгээ багцын дэд таб ын content container
 
     super.initState();
@@ -65,8 +66,6 @@ class ServicePageState extends State<ServicePage>
 
   @override
   Widget build(BuildContext context) {
-    _tabController = TabController(length: serviceTabs.length, vsync: this);
-    bloc.tabController = _tabController;
     return BlocProvider(bloc: bloc, child: createBuilder(context));
   }
 
