@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 mixin WidgetMixin {
   openPermissionDialog(ProductBloc bloc, context, ProductEvent event,
       productName, monthToExtend, price) {
-    var totalPriceToExtend =
-        bloc.currentState.selectedProductTab == ProductTabType.UPGRADE
-            ? price
-            : price * monthToExtend;
+
+    var totalPriceToExtend = bloc.currentState.selectedProductTab == ProductTabType.UPGRADE
+        ? price
+        : price * monthToExtend;
 
 //Багц сунгах төлбөр төлөлтийн үр дүн
     CustomDialog paymentResultDialog = CustomDialog(
@@ -24,19 +24,13 @@ mixin WidgetMixin {
           productName,
           monthToExtend,
           totalPriceToExtend))
-      
-      content: Text(Constants.createPermissionContentStr(
-          bloc.currentState.selectedProductTab,
-          productName,
-          monthToExtend,
-          totalPriceToExtend)),
     );
 //    paymentResultDialog.
     var dialog = paymentResultDialog;
     showDialog(context: context, builder: (context) => dialog);
   }
 
-  _confirmed(bloc, context, ProductEvent event) {
+  _confirmed(ProductBloc bloc, context, ProductEvent event) {
     Navigator.pop(context);
     bloc.dispatch(event);
   }
