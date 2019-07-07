@@ -9,6 +9,7 @@ class CustomDialog extends StatelessWidget {
   final bool important;
   final String submitButtonText;
   final VoidCallback onSubmit;
+  final VoidCallback onClose;
   final String closeButtonText;
   final EdgeInsets padding;
 
@@ -18,6 +19,7 @@ class CustomDialog extends StatelessWidget {
       this.important = false,
       this.submitButtonText,
       this.onSubmit,
+      this.onClose,
       this.closeButtonText,
       this.padding =
           const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)});
@@ -25,6 +27,7 @@ class CustomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+
     return SimpleDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       contentPadding: const EdgeInsets.all(0.0),
@@ -89,7 +92,9 @@ class CustomDialog extends StatelessWidget {
                         ),
                         ActionButton(
                           title: closeButtonText,
-                          onTap: () => Navigator.pop(context),
+                          onTap: onClose != null
+                              ? onClose
+                              : () => Navigator.pop(context),
                         ),
                       ],
                     ))

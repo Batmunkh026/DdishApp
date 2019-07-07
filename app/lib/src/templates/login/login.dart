@@ -127,8 +127,8 @@ class LoginViewState extends State<LoginView> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 50.0),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
                     child: Column(
                       children: <Widget>[
                         ToggleSwitch(
