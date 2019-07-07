@@ -55,9 +55,12 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         bool alreadyRented =
 //            widget.selectedProgram.isRented ||
             state is RentRequestFinished && state.result.isSuccess == true;
-        if (state is RentRequestFinished)
+        if (state is RentRequestFinished && state.isNotOpened) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => showResultMessage(state.result));
+          state.isNotOpened = false;
+        }
+
         return Column(
           children: <Widget>[
             Row(

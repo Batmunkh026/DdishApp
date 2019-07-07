@@ -34,9 +34,11 @@ class RentRequestProcessing extends DescriptionState {
 
 class RentRequestFinished extends DescriptionState {
   final Result result;
+  bool isNotOpened = true;
 
   RentRequestFinished({this.result});
 
   @override
   String toString() => "rent request finished.";
+
 }
