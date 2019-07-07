@@ -99,8 +99,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
                 ],
               ),
               //TODO back to previous page
-              onPressed: () => widget._bloc.dispatch(BackToPrevState(
-                  widget._bloc.currentState.selectedProductTab)),
+              onPressed: widget._bloc.backToPrevState,
             ),
             Container(
               width: MediaQuery.of(context).size.width * 0.3,

@@ -110,8 +110,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                 Divider(),
               ],
             ),
-            onPressed: () => widget._bloc.dispatch(
-                BackToPrevState(widget._bloc.currentState.selectedProductTab)),
+            onPressed: widget._bloc.backToPrevState,
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.25,
@@ -148,42 +147,13 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 
   ///бүтээгдэхүүн сунгах төлбөр төлөлтийн үр дүн харуулах
   openResultDialog(BuildContext context, ProductPaymentState state) {
-    List<Widget> actions = new List();
-
-    if (!state.isSuccess) {
-      actions.add(
-        ActionButton(
-          title: 'Цэнэглэх',
-          onTap: () {
-            //close dialog
-            Navigator.pop(context);
-            //TODO navigate to Account Tab
-            var serviceBloc = BlocProvider.of<ServiceBloc>(context);
-            serviceBloc.chargeAccount();
-          },
-        ),
-      );
-    }
-    actions.add(
-      ActionButton(
-        title: state.isSuccess ? 'Хаах' : 'Болих',
-        onTap: () => Navigator.pop(context),
-      ),
-    );
-
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
             important: true,
             //TODO title руу String утга дамжуулаад style ыг нь Dialog дотор хийх
-            title: Text(state.isSuccess ? 'Мэдэгдэл' : 'Анхааруулга',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: const Color(0xfffcfdfe),
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 15.0)),
+            title: state.isSuccess ? 'Мэдэгдэл' : 'Анхааруулга',
             content: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -195,7 +165,21 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                 children: createContent(state),
               ),
             ),
-            actions: actions,
+            closeButtonText: state.isSuccess ? 'Хаах' : 'Болих',
+            submitButtonText: state.isSuccess ? null : 'Цэнэглэх',
+            onSubmit: () {
+              //close dialog
+              Navigator.pop(context);
+              //TODO navigate to Account Tab
+              var serviceBloc = BlocProvider.of<ServiceBloc>(context);
+              serviceBloc.chargeAccount();
+            },
+            onClose: state.isSuccess
+                ? null
+                : () {
+                    Navigator.pop(context);
+                    widget._bloc.backToPrevState();
+                  },
           );
         });
   }

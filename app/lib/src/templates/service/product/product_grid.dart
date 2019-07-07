@@ -256,8 +256,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
         ],
       ),
       //TODO back to previous page
-      onPressed: () => _bloc
-          .dispatch(BackToPrevState(_bloc.currentState.selectedProductTab)),
+      onPressed: _bloc.backToPrevState,
     );
   }
 }

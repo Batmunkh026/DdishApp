@@ -4,14 +4,13 @@ import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'package:ddish/src/blocs/login/login_event.dart';
 import 'package:ddish/src/blocs/login/login_state.dart';
+import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/toggle_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ddish/src/utils/input_validations.dart';
 
 import 'style.dart' as style;
 
@@ -171,25 +170,13 @@ class LoginViewState extends State<LoginView> {
   }
 
   Future _showDialog(BuildContext context) async {
-    List<Widget> actions = new List();
-    ActionButton closeDialog = ActionButton(
-      title: 'Хаах',
-      onTap: () => Navigator.pop(context),
-    );
-    actions.add(closeDialog);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
-            title: Text('Санамж',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: const Color(0xfffcfdfe),
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 15.0)),
+            title: 'Санамж',
             content: style.forgotPasswordHint,
-            actions: actions,
+            closeButtonText: 'Хаах',
           );
         });
   }

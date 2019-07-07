@@ -127,11 +127,16 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           beforeState.selectedProductTab == currentState.selectedProductTab) {
         if (backState.prevStates.isNotEmpty)
           currentState.prevStates.addAll(backState.prevStates);
-        currentState.prevStates.add(backState);
+
+        if (!(backState is ProductPaymentState ||
+            backState is SelectedProductPreview))
+          currentState.prevStates.add(backState);
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
     }
-    if (!(event is Loading)) {
+    if (!(event is Loading ||
+        event is ExtendSelectedProduct ||
+        event is PreviewSelectedProduct)) {
       beforeState = currentState;
       beforeEvent = event;
     }
@@ -167,4 +172,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     fetchUserSelectedProduct();
   }
+
+  backToPrevState() =>
+      dispatch(BackToPrevState(currentState.selectedProductTab));
 }

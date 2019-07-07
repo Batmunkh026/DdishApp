@@ -22,6 +22,7 @@ void main() {
     theme: ThemeData(
       primaryColor: Color(0xFF2a68b8),
       accentColor: Color(0xFF2a68b8),
+      dividerColor: Color(0xffffffff),
       fontFamily: 'Montserrat',
     ),
     home: LoginWidget(),
