@@ -30,17 +30,13 @@ class ProductPageState extends State<ProductPage>
   get createTabBar => TabBar(
         isScrollable: true,
         controller: _tabController,
-        tabs: _productTabs
-            .map((tabItem) => Tab(
-                child: Text(tabItem.title,
-                    style: TextStyle(
-                        color: Color(0xff071f49),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600))))
-            .toList(),
+        tabs: _productTabs.map((tabItem) => Tab(text: tabItem.title)).toList(),
         onTap: (tabIndex) =>
             _bloc.dispatch(ProductTabChanged(_productTabs[tabIndex].state)),
-        indicatorColor: Color.fromRGBO(48, 105, 178, 1),
+        labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        labelColor: const Color(0xff071f49),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
+        indicatorColor: Color(0xFF3069b2),
       );
   @override
   void initState() {
@@ -68,7 +64,8 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildAppBarHeader(BuildContext context, ProductState state) {
-    var fontStyle = TextStyle(color: const Color(0xff071f49) ,fontWeight: FontWeight.w500);
+    var fontStyle =
+        TextStyle(color: const Color(0xff071f49), fontWeight: FontWeight.w500);
 
     var productContentContainer = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,9 +89,10 @@ class ProductPageState extends State<ProductPage>
               new Text(
                   "${DateUtil.formatProductDate(_bloc.getExpireDateOfUserSelectedProduct())}",
                   style: TextStyle(
-                      color: const Color(0xff071f49),
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.normal,)),
+                    color: const Color(0xff071f49),
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                  )),
             ],
           ),
         ),
@@ -136,8 +134,9 @@ class ProductPageState extends State<ProductPage>
                   )))
               .toList(),
           //TODO Багц сунгах таб биш бол яах?
-          value:
-              _bloc.selectedProduct == null ? items.first : _bloc.selectedProduct,
+          value: _bloc.selectedProduct == null
+              ? items.first
+              : _bloc.selectedProduct,
           onChanged: (value) {
             if (state.selectedProductTab ==
                 ProductTabType
@@ -194,21 +193,22 @@ class ProductPageState extends State<ProductPage>
       );
 
     return PreferredSize(
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          flexibleSpace: _buildAppBarHeader(context, _state),
-          titleSpacing: 10,
-          elevation: 0,
-          bottom: PreferredSize(
-              child: Container(
-                child: createTabBar,
-              ),
-              preferredSize:
-                  Size.fromHeight(MediaQuery.of(context).size.height * 0.03)),
-          backgroundColor: Colors.white,
+      child: AppBar(
+        automaticallyImplyLeading: false,
+        flexibleSpace: _buildAppBarHeader(context, _state),
+        titleSpacing: 10,
+        elevation: 0,
+        bottom: PreferredSize(
+          child: Flexible(
+            child: createTabBar,
+          ),
+//          preferredSize:
+//              Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
         ),
-        preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.12));
+        backgroundColor: Colors.white,
+      ),
+      preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.11),
+    );
   }
 
   Widget _buildBody() {
