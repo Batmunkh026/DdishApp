@@ -1,7 +1,6 @@
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:ddish/src/blocs/service/service_bloc.dart';
 import 'package:ddish/src/blocs/service/service_event.dart';
-import 'package:ddish/src/blocs/service/service_state.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,7 +24,6 @@ class ServicePageState extends State<ServicePage>
 
   Container tabContainer;
   var serviceTabs = Constants.serviceTabs;
-  var servicePackTabState;
   TabController _tabController;
 
   ///Үйлчилгээний үндсэн таб ууд
@@ -60,8 +58,6 @@ class ServicePageState extends State<ServicePage>
   void initState() {
     bloc = ServiceBloc();
 
-    servicePackTabState =
-        bloc.servicePackTabState; //үйлчилгээний багц ын дэд таб ын төлөв
     tabContainer = Container(); //Үйлчилгээ багцын дэд таб ын content container
 
     super.initState();
@@ -71,11 +67,10 @@ class ServicePageState extends State<ServicePage>
   Widget build(BuildContext context) {
     _tabController = TabController(length: serviceTabs.length, vsync: this);
     bloc.tabController = _tabController;
-    return BlocBuilder(bloc: bloc, builder: createBuilder);
+    return BlocProvider(bloc: bloc, child: createBuilder(context));
   }
 
-  Widget createBuilder(BuildContext context, ServiceState state) {
-    this.servicePackTabState = state;
+  Widget createBuilder(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
     return SingleChildScrollView(
@@ -108,7 +103,7 @@ class ServicePageState extends State<ServicePage>
                   height: height * 0.7,
                   child: TabBarView(
                     controller: _tabController,
-                    children: [AccountPage(), ProductPage(bloc), MoviePage()],
+                    children: [AccountPage(), ProductPage(), MoviePage()],
                   ),
                 ),
               ),

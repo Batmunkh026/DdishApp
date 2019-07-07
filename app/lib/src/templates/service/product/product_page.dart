@@ -11,31 +11,26 @@ import 'package:ddish/src/templates/service/product/payment_result_page.dart';
 import 'package:ddish/src/templates/service/product/product_grid.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/date_util.dart';
-import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductPage extends StatefulWidget {
-  ServiceBloc serviceBloc;
-  ProductPage(this.serviceBloc);
-
   @override
   State<StatefulWidget> createState() => ProductPageState();
 }
 
 class ProductPageState extends State<ProductPage>
     with TickerProviderStateMixin {
-  ProductBloc bloc;
+  ProductBloc _bloc;
 
-  var productTabs = Constants.productTabs;
+  var _productTabs = Constants.productTabs;
 
-  TabController tabController;
+  TabController _tabController;
 
   get createTabBar => TabBar(
         isScrollable: true,
-        controller: tabController,
-        tabs: productTabs
+        controller: _tabController,
+        tabs: _productTabs
             .map((tabItem) => Tab(
                 child: Text(tabItem.title,
                     style: TextStyle(
@@ -44,33 +39,35 @@ class ProductPageState extends State<ProductPage>
                         fontWeight: FontWeight.w600))))
             .toList(),
         onTap: (tabIndex) =>
-            bloc.dispatch(ProductTabChanged(productTabs[tabIndex].state)),
+            _bloc.dispatch(ProductTabChanged(_productTabs[tabIndex].state)),
         indicatorColor: Color.fromRGBO(48, 105, 178, 1),
       );
   @override
   void initState() {
-    bloc = ProductBloc();
-    tabController = TabController(length: productTabs.length, vsync: this);
+    _bloc = ProductBloc();
+    _tabController = TabController(length: _productTabs.length, vsync: this);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    var _serviceBloc = BlocProvider.of<ServiceBloc>(context);
+
     return BlocBuilder(
-        bloc: bloc,
+        bloc: _bloc,
         builder: (BuildContext context, ProductState state) {
           return BlocProviderTree(blocProviders: [
             BlocProvider<ServiceBloc>(
-              bloc: widget.serviceBloc,
+              bloc: _serviceBloc,
             ),
             BlocProvider<ProductBloc>(
-              bloc: bloc,
+              bloc: _bloc,
             ),
-          ], child: buildBody());
+          ], child: _buildBody());
         });
   }
 
-  Widget buildAppBarHeader(BuildContext context, ProductState state) {
+  Widget _buildAppBarHeader(BuildContext context, ProductState state) {
     var fontStyle = TextStyle(color: const Color(0xff071f49), fontSize: 11.0);
 
     var productContentContainer = Row(
@@ -94,7 +91,7 @@ class ProductPageState extends State<ProductPage>
                 ),
               ),
               new Text(
-                  "${DateUtil.formatProductDate(bloc.getExpireDateOfUserSelectedProduct())}",
+                  "${DateUtil.formatProductDate(_bloc.getExpireDateOfUserSelectedProduct())}",
                   style: TextStyle(
                       color: const Color(0xff071f49),
                       fontWeight: FontWeight.bold,
@@ -110,7 +107,7 @@ class ProductPageState extends State<ProductPage>
     else if (state is ProductTabState ||
         state is CustomProductSelector ||
         state is ProductSelectionState)
-      productContentContainer.children.add(createProductPicker(state));
+      productContentContainer.children.add(_createProductPicker(state));
 
     return Container(
       padding: EdgeInsets.all(8),
@@ -118,8 +115,8 @@ class ProductPageState extends State<ProductPage>
     );
   }
 
-  Widget createProductPicker(ProductState state) {
-    List<Product> items = bloc.products;
+  Widget _createProductPicker(ProductState state) {
+    List<Product> items = _bloc.products;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,13 +138,14 @@ class ProductPageState extends State<ProductPage>
                   )))
               .toList(),
           //TODO Багц сунгах таб биш бол яах?
-          value:
-              bloc.selectedProduct == null ? items.first : bloc.selectedProduct,
+          value: _bloc.selectedProduct == null
+              ? items.first
+              : _bloc.selectedProduct,
           onChanged: (value) {
             if (state.selectedProductTab ==
                 ProductTabType
                     .EXTEND) //TODO сонгосон таб нь [НЭМЭЛТ СУВАГ || АХИУЛАХ] бол яах ёстой ??
-              bloc.dispatch(
+              _bloc.dispatch(
                   ProductTypeSelectorClicked(state.selectedProductTab, value));
           },
         ),
@@ -161,48 +159,47 @@ class ProductPageState extends State<ProductPage>
 
   @override
   void dispose() {
-    bloc.dispose();
+    _bloc.dispose();
     super.dispose();
   }
 
-  Widget buildContents() {
-    var _state = bloc.currentState;
+  Widget _buildContents() {
+    var _state = _bloc.currentState;
 
     if (_state is ProductTabState || _state is ProductSelectionState) {
       //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
       var itemsForGrid = _state.selectedProductTab == ProductTabType.EXTEND
           ? _state.selectedProduct
           : _state.initialItems;
-      var productPicker = ProductGridPicker(bloc, itemsForGrid);
+      var productPicker = ProductGridPicker(itemsForGrid);
       return productPicker;
     } else if (_state is AdditionalChannelState) {
       //нэмэлт суваг сонгосон төлөв
-      return ProductGridPicker(bloc, _state.selectedProduct);
+      return ProductGridPicker(_state.selectedProduct);
     } else if (_state is SelectedProductPreview ||
         _state is ProductPaymentState) {
-      return ProductPaymentPreview(bloc, _state);
+      return ProductPaymentPreview();
     } else if (_state is CustomProductSelector)
-      return CustomProductChooser(bloc, _state.priceToExtend, 0);
+      return CustomProductChooser(_state.priceToExtend, 0);
     else if (_state is CustomMonthState)
-      return CustomProductChooser(
-          bloc, _state.priceToExtend, _state.monthToExtend,
+      return CustomProductChooser(_state.priceToExtend, _state.monthToExtend,
           isPaymentComputed: true);
     else
       throw UnsupportedError("Тодорхойгүй state: $_state");
   }
 
-  Widget buildAppBar() {
-    var _state = bloc.currentState;
+  Widget _buildAppBar() {
+    var _state = _bloc.currentState;
     if (_state is SelectedProductPreview)
       return AppBar(
         backgroundColor: Colors.white,
-        title: buildAppBarHeader(context, _state),
+        title: _buildAppBarHeader(context, _state),
       );
 
     return PreferredSize(
         child: AppBar(
           automaticallyImplyLeading: false,
-          flexibleSpace: buildAppBarHeader(context, _state),
+          flexibleSpace: _buildAppBarHeader(context, _state),
           titleSpacing: 10,
           elevation: 0,
           bottom: PreferredSize(
@@ -217,23 +214,23 @@ class ProductPageState extends State<ProductPage>
             Size.fromHeight(MediaQuery.of(context).size.height * 0.12));
   }
 
-  Widget buildBody() {
-    if (bloc.currentState is Loading)
+  Widget _buildBody() {
+    if (_bloc.currentState is Loading)
       return Center(child: CircularProgressIndicator());
 
-    var content = buildContents();
+    var _content = _buildContents();
 
-    var body = createTabBarBody(content);
+    var _body = _createTabBarBody(_content);
 
-    if (bloc.currentState is SelectedProductPreview) return body;
+    if (_bloc.currentState is SelectedProductPreview) return _body;
 
     return Scaffold(
-      appBar: buildAppBar(),
-      body: body,
+      appBar: _buildAppBar(),
+      body: _body,
     );
   }
 
-  Widget createTabBarBody(Widget content) {
+  Widget _createTabBarBody(Widget content) {
     return Stack(
       children: <Widget>[
         content,
@@ -243,15 +240,15 @@ class ProductPageState extends State<ProductPage>
             bool isRight = delta < 0;
 
             ProductTabType selectedTab =
-                (bloc.currentState as ProductState).selectedProductTab;
+                (_bloc.currentState as ProductState).selectedProductTab;
             int currentTabIndex = ProductTabType.values.indexOf(selectedTab);
 
             int nextTabIndex = currentTabIndex + (isRight ? 1 : -1);
 
-            if (nextTabIndex >= 0 && nextTabIndex < productTabs.length) {
-              TabMenuItem nextTab = productTabs.elementAt(nextTabIndex);
-              tabController.animateTo(nextTabIndex);
-              bloc.dispatch(ProductTabChanged(nextTab.state));
+            if (nextTabIndex >= 0 && nextTabIndex < _productTabs.length) {
+              TabMenuItem nextTab = _productTabs.elementAt(nextTabIndex);
+              _tabController.animateTo(nextTabIndex);
+              _bloc.dispatch(ProductTabChanged(nextTab.state));
             }
           }
         })

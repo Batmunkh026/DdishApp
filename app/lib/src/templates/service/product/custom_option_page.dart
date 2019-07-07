@@ -13,14 +13,14 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomProductChooser extends StatefulWidget {
-  ProductBloc _bloc;
   int priceToExtend;
   int monthToExtend;
   bool isPaymentComputed;
 
-  CustomProductChooser(this._bloc, this.priceToExtend, this.monthToExtend,
+  CustomProductChooser(this.priceToExtend, this.monthToExtend,
       {this.isPaymentComputed = false});
 
   @override
@@ -29,6 +29,7 @@ class CustomProductChooser extends StatefulWidget {
 
 class CustomProductChooserState extends State<CustomProductChooser>
     with WidgetMixin {
+  ProductBloc _bloc;
   String paymentPreview = '0';
   int month;
   StreamController<int> monthStreamController = StreamController();
@@ -36,16 +37,19 @@ class CustomProductChooserState extends State<CustomProductChooser>
   CustomProductChooserState() {
     monthStreamController.stream.listen((month) {
       this.month = month;
-      if (widget._bloc.currentState.selectedProductTab ==
+      if (_bloc.currentState.selectedProductTab ==
           ProductTabType.UPGRADE) //server ээс авах
-        widget._bloc.dispatch(CustomMonthChanged(
-            widget._bloc.currentState.selectedProductTab,
-            widget._bloc.selectedProduct,
-            widget._bloc.currentState.selectedProduct,
-            month));
+        _bloc.dispatch(CustomMonthChanged(_bloc.currentState.selectedProductTab,
+            _bloc.selectedProduct, _bloc.currentState.selectedProduct, month));
       else
         paymentPreview = "${(month * widget.priceToExtend)}";
     });
+  }
+
+  @override
+  void initState() {
+    _bloc = BlocProvider.of<ProductBloc>(context);
+    super.initState();
   }
 
   @override
@@ -55,7 +59,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
       month = widget.monthToExtend;
     }
 
-    var state = widget._bloc.currentState;
+    var state = _bloc.currentState;
     var isUpgradeOrChannel =
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             state.selectedProductTab == ProductTabType.UPGRADE;
@@ -99,7 +103,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
                 ],
               ),
               //TODO back to previous page
-              onPressed: widget._bloc.backToPrevState,
+              onPressed: _bloc.backToPrevState,
             ),
             Container(
               width: MediaQuery.of(context).size.width * 0.3,
@@ -129,7 +133,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
             ),
             SubmitButton(
                 text: "Сунгах",
-                onPressed: () => toExtend(state),
+                onPressed: () => _toExtend(state),
                 verticalMargin: 0,
                 horizontalMargin: 0)
           ],
@@ -138,14 +142,14 @@ class CustomProductChooserState extends State<CustomProductChooser>
     );
   }
 
-  toExtend(state) {
+  _toExtend(state) {
     if (widget.isPaymentComputed) month = widget.monthToExtend;
 
     var event = PreviewSelectedProduct(state.selectedProductTab,
         state.selectedProduct, month, widget.priceToExtend);
 
-    openPermissionDialog(widget._bloc, context, event,
-        widget._bloc.selectedProduct.name, month, widget.priceToExtend);
+    openPermissionDialog(_bloc, context, event, _bloc.selectedProduct.name,
+        month, widget.priceToExtend);
   }
 
   @override

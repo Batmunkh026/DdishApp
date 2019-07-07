@@ -8,6 +8,7 @@ import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/price_format.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductGridPicker extends StatelessWidget with WidgetMixin {
   ProductBloc _bloc;
@@ -16,27 +17,28 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
   BuildContext _context;
   dynamic _productContent; //products or product
 
-  double pickerWidth;
-  double pickerHeight;
+  double _pickerWidth;
+  double _pickerHeight;
 
-  ProductGridPicker(this._bloc, this._productContent) : assert(_bloc != null) {
-    _state = _bloc.currentState;
-    _stateTab = _state.selectedProductTab;
-  }
+  ProductGridPicker(this._productContent);
 
   @override
   Widget build(BuildContext context) {
+    _bloc = BlocProvider.of<ProductBloc>(context);
+    _state = _bloc.currentState;
+    _stateTab = _state.selectedProductTab;
+
     _context = context;
 
-    pickerWidth = MediaQuery.of(_context).size.width * 0.25;
-    pickerHeight = pickerWidth * 0.63;
+    _pickerWidth = MediaQuery.of(_context).size.width * 0.25;
+    _pickerHeight = _pickerWidth * 0.63;
 
     assert(_productContent != null);
 
-    return buildContentContainer(context);
+    return _buildContentContainer(context);
   }
 
-  Widget buildContentContainer(context) {
+  Widget _buildContentContainer(context) {
     //аль табаас хамаарч түүний GridView д харуулах content уудыг бэлдэх
     var contentsForGrid = _buildContents();
 
@@ -124,8 +126,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
 //    багцын лого бүхий component ыг эхлээд нэмэх, түүний араас тухайн багцад хамаар үнэ&хугацааны багцуудыг нэмэх
       children.add(Flexible(
         child: Container(
-          width: pickerWidth,
-          height: pickerHeight,
+          width: _pickerWidth,
+          height: _pickerHeight,
           child: CachedNetworkImage(
             imageUrl: product.image,
             placeholder: (context, url) => Text(product.name),
@@ -206,8 +208,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
         child: Center(
 //          padding: pickerPadding,
           child: Container(
-            width: pickerWidth,
-            height: pickerHeight,
+            width: _pickerWidth,
+            height: _pickerHeight,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
                 color: isChannelPicker
