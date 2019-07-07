@@ -68,14 +68,13 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildAppBarHeader(BuildContext context, ProductState state) {
-    var fontStyle = TextStyle(color: const Color(0xff071f49), fontSize: 11.0);
+    var fontStyle = TextStyle(color: const Color(0xff071f49) ,fontWeight: FontWeight.w500);
 
     var productContentContainer = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: MediaQuery.of(context).size.width * 0.45,
+        Flexible(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
@@ -95,8 +94,7 @@ class ProductPageState extends State<ProductPage>
                   style: TextStyle(
                       color: const Color(0xff071f49),
                       fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 12.0)),
+                      fontStyle: FontStyle.normal,)),
             ],
           ),
         ),
@@ -138,9 +136,8 @@ class ProductPageState extends State<ProductPage>
                   )))
               .toList(),
           //TODO Багц сунгах таб биш бол яах?
-          value: _bloc.selectedProduct == null
-              ? items.first
-              : _bloc.selectedProduct,
+          value:
+              _bloc.selectedProduct == null ? items.first : _bloc.selectedProduct,
           onChanged: (value) {
             if (state.selectedProductTab ==
                 ProductTabType
