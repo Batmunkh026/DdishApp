@@ -2,7 +2,6 @@ import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 
 mixin WidgetMixin {
@@ -26,7 +25,7 @@ mixin WidgetMixin {
     showDialog(context: context, builder: (context) => dialog);
   }
 
-  _confirmed(bloc, context, ProductEvent event) {
+  _confirmed(ProductBloc bloc, context, ProductEvent event) {
     Navigator.pop(context);
     bloc.dispatch(event);
   }
