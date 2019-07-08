@@ -1,3 +1,4 @@
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/line.dart';
@@ -50,7 +51,7 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
                   iconSize: 40.0,
                   color: Color(0xff3069b2),
                   disabledColor: Color(0xffe8e8e8),
-                  icon: Icon(Icons.arrow_back_ios),
+                  icon: Icon(DdishAppIcons.before),
                   onPressed: widget.onReturnTap,
                 ),
               ),
@@ -63,7 +64,7 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
             IconButton(
               color: Color(0xff3069b2),
               disabledColor: Color(0xffe8e8e8),
-              icon: Icon(Icons.arrow_back_ios),
+              icon: Icon(DdishAppIcons.before),
               onPressed:
                   DateUtil.today(date) ? null : () => onDateChange(false),
             ),
@@ -80,7 +81,7 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
             IconButton(
                 color: Color(0xff3069b2),
                 disabledColor: Color(0xffe8e8e8),
-                icon: Icon(Icons.arrow_forward_ios),
+                icon: Icon(DdishAppIcons.next),
                 onPressed: date
                             .difference(DateTime.now().add(Duration(days: 7)))
                             .inDays ==

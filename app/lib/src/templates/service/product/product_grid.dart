@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/models/design.dart';
@@ -249,7 +250,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Constants.appIcons[AppIcons.Back],
+          Icon(DdishAppIcons.before, color: Color.fromRGBO(57, 110, 170, 1)),
           CachedNetworkImage(
             imageUrl: selectedChannel.image,
             placeholder: (context, text) => Text(selectedChannel.name),

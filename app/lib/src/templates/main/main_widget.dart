@@ -60,13 +60,13 @@ class MainViewState extends State<MainView> {
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(
-                  DdishFlutterApp.satellite,
+                  DdishAppIcons.satellite,
                 ),
                 title: SizedBox.shrink(),
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  DdishFlutterApp.notifications,
+                  DdishAppIcons.notifications,
                 ),
                 title: SizedBox.shrink(),
               ),

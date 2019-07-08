@@ -19,8 +19,8 @@
 ///
 import 'package:flutter/widgets.dart';
 
-class DdishFlutterApp {
-  DdishFlutterApp._();
+class DdishAppIcons {
+  DdishAppIcons._();
 
   static const _kFontFam = 'DdishFlutterApp';
 
