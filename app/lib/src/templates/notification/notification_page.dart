@@ -29,7 +29,7 @@ class NotificationPageState extends State<NotificationPage> {
           if (state is Loading)
             return Center(child: CircularProgressIndicator());
           else if (state is Loaded)
-            return buildNotifications(state.notifications);
+            return buildNotification(state.notifications);
         },
       ),
     );
@@ -41,51 +41,59 @@ class NotificationPageState extends State<NotificationPage> {
     super.dispose();
   }
 
-  Widget buildNotifications(List<ddish.Notification> notifications) {
+  Widget buildNotification(List<ddish.Notification> notifications) {
     return Center(
       child: Container(
         height: MediaQuery.of(context).size.height * 0.8,
         width: MediaQuery.of(context).size.width * 0.8,
-//        color: Colors.white,
         decoration: new BoxDecoration(
             color: Colors.white,
             borderRadius: new BorderRadius.all(Radius.circular(20))),
-        child: ListView(
-          children: notifications.map((notification) {
-            return Material(
-              child: InkWell(
-                highlightColor: Color.fromRGBO(154, 199, 255, 1),
-                onTap: () => {},
-                child: Container(
-                  padding:
-                      EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: Text(
-                              notification.name,
-                              softWrap: true,
-                            ),
-                          ),
-                          Text(DateUtil.formatDateTime(notification.date)),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 15),
-                        child: Text(notification.text),
-                      )
-                    ],
-                  ),
+        child: notifications.isEmpty
+            ? Center(
+                child: Text(
+                  'Мэдэгдэл ирээгүй байна.',
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            );
-          }).toList(),
-        ),
+              )
+            : buildNotifications(notifications),
       ),
     );
+  }
+
+  Widget buildNotifications(notifications) {
+    return ListView(
+        children: notifications.map((notification) {
+      return Material(
+        child: InkWell(
+          highlightColor: Color.fromRGBO(154, 199, 255, 1),
+          onTap: () => {},
+          child: Container(
+            padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: Text(
+                        notification.name,
+                        softWrap: true,
+                      ),
+                    ),
+                    Text(DateUtil.formatDateTime(notification.date)),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 15),
+                  child: Text(notification.text),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }).toList());
   }
 }
