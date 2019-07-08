@@ -36,7 +36,8 @@ class InputField extends StatelessWidget {
       this.align = TextAlign.start,
       this.padding,
       this.inputFormatters,
-      this.onFieldSubmitted});
+      this.onFieldSubmitted,
+      this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -64,15 +65,17 @@ class InputField extends StatelessWidget {
         textAlign: align,
         inputFormatters: inputFormatters,
         decoration: new InputDecoration(
-          enabledBorder: hasBorder ? null : UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          ),
+          enabledBorder: hasBorder
+              ? null
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
           border: hasBorder
               ? OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 )
               : null,
-          contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0),
+          contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0, left: 10),
           hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),

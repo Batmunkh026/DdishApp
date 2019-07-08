@@ -56,6 +56,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
                     child: ProgramSearchWidget(
                       searchById: false,
                       onSearchTap: onSearchTap,
+                      fontSize: 12,
                     ),
                   )
                 : ChannelHeaderWidget(

@@ -6,8 +6,9 @@ class ProgramSearchWidget extends StatelessWidget {
   final VoidCallback onSearchTap;
   final bool searchById;
   final TextEditingController controller;
+  double fontSize;
 
-  ProgramSearchWidget({this.searchById, this.onSearchTap, this.controller});
+  ProgramSearchWidget({this.searchById, this.onSearchTap, this.controller, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +21,7 @@ class ProgramSearchWidget extends StatelessWidget {
             textInputType: searchById ? TextInputType.number : TextInputType.text ,
             placeholder:
                 searchById ? 'Кино ID оруулна уу' : 'Кино нэр оруулна уу',
+            fontSize: fontSize,
             textController: controller,
           ),
         ),
