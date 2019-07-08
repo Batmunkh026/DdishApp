@@ -21,16 +21,26 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: BlocBuilder(
-        bloc: _notificationBloc,
-        builder: (context, state) {
-          if (state is Loading)
-            return Center(child: CircularProgressIndicator());
-          else if (state is Loaded)
-            return buildNotification(state.notifications);
-        },
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('Notification',
+            style: TextStyle(fontSize: 14, color: Colors.white)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      backgroundColor: Colors.transparent,
+      body: Container(
+        padding: EdgeInsets.only(left: 18, right: 18, bottom: 20),
+        child: BlocBuilder(
+          bloc: _notificationBloc,
+          builder: (context, state) {
+            if (state is Loading)
+              return Center(child: CircularProgressIndicator());
+            else if (state is Loaded)
+              return buildNotification(state.notifications);
+          },
+        ),
       ),
     );
   }
@@ -42,22 +52,18 @@ class NotificationPageState extends State<NotificationPage> {
   }
 
   Widget buildNotification(List<ddish.Notification> notifications) {
-    return Center(
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        width: MediaQuery.of(context).size.width * 0.8,
-        decoration: new BoxDecoration(
-            color: Colors.white,
-            borderRadius: new BorderRadius.all(Radius.circular(20))),
-        child: notifications.isEmpty
-            ? Center(
-                child: Text(
-                  'Мэдэгдэл ирээгүй байна.',
-                  textAlign: TextAlign.center,
-                ),
-              )
-            : buildNotifications(notifications),
-      ),
+    return Container(
+      decoration: new BoxDecoration(
+          color: Colors.white,
+          borderRadius: new BorderRadius.all(Radius.circular(20))),
+      child: notifications.isEmpty
+          ? Center(
+              child: Text(
+                'Мэдэгдэл ирээгүй байна.',
+                textAlign: TextAlign.center,
+              ),
+            )
+          : buildNotifications(notifications),
     );
   }
 
