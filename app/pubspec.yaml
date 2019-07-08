@@ -29,7 +29,7 @@ dependencies:
   intl: ^0.15.8
   local_auth: ^0.5.2+2
   cached_network_image: ^0.8.0
-  google_maps_flutter: ^0.5.16
+  google_maps_flutter: ^0.5.19+2
   url_launcher: ^5.0.3
   youtube_player_flutter: ^2.0.0
   bubble_tab_indicator: ^0.1.4
@@ -59,6 +59,8 @@ flutter:
     - assets/satellite_background.jpg
     - assets/logo.png
     - assets/program/poster_placeholder.png
+    - assets/location_closed.png
+    - assets/location_open.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -67,6 +69,9 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
 
   fonts:
+    - family: DdishFlutterApp
+      fonts:
+        - asset: fonts/DdishFlutterApp.ttf
     - family: Montserrat
       fonts:
         - asset: fonts/Montserrat/Montserrat-Black.ttf
