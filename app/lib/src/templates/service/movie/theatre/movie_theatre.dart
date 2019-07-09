@@ -29,6 +29,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
   VodChannel selectedChannel;
   Program selectedProgram;
 
+  double _height = 0;
+  double _width = 0;
+
   @override
   void initState() {
     vodRepository = VodRepository();
@@ -44,8 +47,8 @@ class TheatreWidgetState extends State<TheatreWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    initializeConfig(context);
+
     return Column(
       children: <Widget>[
         Container(
@@ -84,8 +87,8 @@ class TheatreWidgetState extends State<TheatreWidget> {
                 return GridView.count(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  crossAxisSpacing: width * 0.1,
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                  crossAxisSpacing: _width * 0.1,
+                  padding: EdgeInsets.symmetric(horizontal: _width * 0.08),
                   crossAxisCount: 2,
                   children: List.generate(channels.length, (index) {
                     return ChannelThumbnail(
@@ -99,56 +102,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
                   child: CircularProgressIndicator(),
                 );
               }
-              if (state is ProgramListLoaded) {
-                List<Program> programList = state.programList;
-                return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: programList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Program program = programList[index];
-                    return Container(
-                      height: height * 0.15,
-                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                      child: GestureDetector(
-                        onTap: () => onProgramTap(programList[index]),
-                        child: ListTile(
-                          title: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 15.0),
-                                child: PosterImage(
-                                  url: program.posterUrl,
-                                ),
-                              ),
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(program.contentNameMon,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: style.programTitleStyle),
-                                    Visibility(
-                                      visible: program.contentGenres != null &&
-                                          program.contentGenres.isNotEmpty,
-                                      child: Text(program.contentGenres,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: style.programGenresStyle),
-                                    ),
-                                    Text(DateUtil.formatTime(program.beginDate),
-                                        style: style.programStartTimeStyle),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
+              if (state is ProgramListLoaded)
+                return buildPrograms(state.programList);
+
               if (state is ProgramDetailsLoading) {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -202,5 +158,65 @@ class TheatreWidgetState extends State<TheatreWidget> {
 
   onRentAgree() {
 //    _bloc.dispatch(RentTapped(channel: selectedChannel, rentProgram: selectedProgram));
+  }
+
+  Widget buildPrograms(List<Program> programs) {
+    if (programs.isEmpty) return Center(child: Text('Хөтөлбөр ороогүй байна'));
+
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: programs.length,
+      itemBuilder: (BuildContext context, int index) {
+        Program program = programs[index];
+        return Container(
+          height: _height * 0.15,
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: GestureDetector(
+            onTap: () => onProgramTap(programs[index]),
+            child: ListTile(
+              title: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15.0),
+                    child: PosterImage(
+                      url: program.posterUrl,
+                    ),
+                  ),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(program.contentNameMon,
+                            overflow: TextOverflow.ellipsis,
+                            style: style.programTitleStyle),
+                        Visibility(
+                          visible: program.contentGenres != null &&
+                              program.contentGenres.isNotEmpty,
+                          child: Text(program.contentGenres,
+                              overflow: TextOverflow.ellipsis,
+                              style: style.programGenresStyle),
+                        ),
+                        Text(DateUtil.formatTime(program.beginDate),
+                            style: style.programStartTimeStyle),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void initializeConfig(BuildContext context) {
+    if (_height == 0 || _width == 0) {
+      Size size = MediaQuery.of(context).size;
+      _height = size.height;
+      _width = size.width;
+    }
   }
 }
