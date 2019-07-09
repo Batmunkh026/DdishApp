@@ -1,5 +1,4 @@
 import 'package:ddish/src/repositiories/user_repository.dart';
-import 'package:ddish/src/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/blocs/service/account/account_bloc.dart';
 import 'package:ddish/src/blocs/service/account/account_event.dart';

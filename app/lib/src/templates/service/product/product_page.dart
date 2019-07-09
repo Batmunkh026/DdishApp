@@ -202,8 +202,6 @@ class ProductPageState extends State<ProductPage>
           child: Flexible(
             child: createTabBar,
           ),
-//          preferredSize:
-//              Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
         ),
         backgroundColor: Colors.white,
       ),

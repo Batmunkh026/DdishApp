@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
-import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
@@ -41,15 +40,12 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
 
   Widget _buildContentContainer(context) {
     //аль табаас хамаарч түүний GridView д харуулах content уудыг бэлдэх
-    var contentsForGrid = _buildContents();
+    var _contentsForGrid = _buildContents();
 
-    double width = MediaQuery.of(context).size.width;
-    double ratio = MediaQuery.of(context).devicePixelRatio;
-    EdgeInsets insets = MediaQuery.of(context).viewInsets;
     if (_stateTab == ProductTabType.UPGRADE) {
       return GridView.count(
         padding: EdgeInsets.only(top: 10),
-        children: contentsForGrid,
+        children: _contentsForGrid,
         childAspectRatio: 0.4,
         crossAxisCount: 2,
         scrollDirection: Axis.vertical,
@@ -64,7 +60,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
         scrollDirection: Axis.vertical,
         crossAxisCount: _isChannelDetailPicker ? 3 : 2,
         childAspectRatio: _isChannelDetailPicker ? 1.6 : 2,
-        children: contentsForGrid,
+        children: _contentsForGrid,
       );
 
       if (_isChannelDetailPicker) {
@@ -201,13 +197,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
               )
             ];
 
-//    var pickerPadding = isChannelDetail
-//        ? EdgeInsets.only(top: 2, bottom: 2, left: 6, right: 6)
-//        : EdgeInsets.only(top: 14, bottom: 14, left: 24, right: 24);
-
     return GestureDetector(
         child: Center(
-//          padding: pickerPadding,
           child: Container(
             width: _pickerWidth,
             height: _pickerHeight,
@@ -258,7 +249,6 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
           Divider()
         ],
       ),
-      //TODO back to previous page
       onPressed: _bloc.backToPrevState,
     );
   }

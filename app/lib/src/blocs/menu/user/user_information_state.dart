@@ -1,6 +1,5 @@
 import 'package:ddish/src/models/user.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 abstract class UserInformationState extends Equatable {
   UserInformationState([List props = const []]) : super(props);

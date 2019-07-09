@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class UnderlinedText extends StatelessWidget {
-  String title;
+  String _title;
   TextStyle textStyle;
   Color underlineColor;
   double underlineWidth;
 
-  UnderlinedText(this.title,
+  UnderlinedText(this._title,
       {this.textStyle = const TextStyle(fontSize: 13),
         this.underlineWidth = 2,
         this.underlineColor = const Color.fromRGBO(48, 105, 178, 1)});
@@ -15,7 +15,7 @@ class UnderlinedText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Text(
-        "$title",
+        "$_title",
         style: textStyle,
       ),
       padding: EdgeInsets.only(bottom: 8),

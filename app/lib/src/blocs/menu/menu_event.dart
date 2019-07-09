@@ -1,6 +1,5 @@
 import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:meta/meta.dart';
 import 'package:ddish/src/templates/menu/menu.dart';
 
