@@ -49,7 +49,10 @@ class MainViewState extends State<MainView> {
               fit: BoxFit.cover,
             ),
           ),
-          child: content[_currentTabIndex],
+          child: Container(
+            child: content[_currentTabIndex],
+            color: Color.fromRGBO(23, 43, 77, 0.8),
+          ),
         ),
         bottomNavigationBar: Container(
           height: height * 0.07,
