@@ -90,7 +90,9 @@ class BranchLocationState extends State<BranchLocationView> {
             height: height,
             child: Card(child: createGoogleMap()),
           ),
-          createInfoOfSelectedbranch(), //сонгосон салбарын цагийн хуваарь, байршлын мэдээллийн хэсэг
+          Flexible(
+            child: createInfoOfSelectedbranch(),
+          ), //сонгосон салбарын цагийн хуваарь, байршлын мэдээллийн хэсэг
         ],
       ),
     );
@@ -213,28 +215,34 @@ class BranchLocationState extends State<BranchLocationView> {
 
     return Padding(
       padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            selectedBranch.name,
-            style: TextStyle(color: textStyle.color, fontSize: 14),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: RichText(
-                  softWrap: true,
-                  text:
-                      TextSpan(text: selectedBranch.address, style: textStyle),
-                ),
+      child: SingleChildScrollView(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      selectedBranch.name,
+                      style:
+                      TextStyle(color: textStyle.color, fontSize: 14),
+                    ),
+                  ),
+                  RichText(
+                    softWrap: true,
+                    text: TextSpan(
+                        text: selectedBranch.address, style: textStyle),
+                  )
+                ],
               ),
-              Column(children: createTimeTableWidgets(selectedBranch))
-            ],
-          )
-        ],
+            ),
+            Column(children: createTimeTableWidgets(selectedBranch))
+          ],
+        ),
       ),
     );
   }
