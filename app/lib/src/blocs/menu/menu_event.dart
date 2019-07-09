@@ -1,3 +1,4 @@
+import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:meta/meta.dart';
@@ -14,7 +15,7 @@ class MenuHidden extends MenuEvent {
   String toString() => "menu navigation hidden";
 }
 
-class MenuNavigationClicked extends MenuEvent {
+class MenuNavigationClicked extends MenuEvent with NetworkAccessRequired {
   MenuNavigationClicked();
 
   @override
