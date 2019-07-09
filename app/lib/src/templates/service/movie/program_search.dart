@@ -1,3 +1,4 @@
+import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +9,8 @@ class ProgramSearchWidget extends StatelessWidget {
   final TextEditingController controller;
   double fontSize;
 
-  ProgramSearchWidget({this.searchById, this.onSearchTap, this.controller, this.fontSize});
+  ProgramSearchWidget(
+      {this.searchById, this.onSearchTap, this.controller, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,10 @@ class ProgramSearchWidget extends StatelessWidget {
           child: InputField(
             hasBorder: true,
             align: TextAlign.center,
-            textInputType: searchById ? TextInputType.number : TextInputType.text ,
+            textInputType: TextInputType.text,
+            inputFormatters: [
+              InputValidations.acceptedFormatters[InputType.NumberInt]
+            ],
             placeholder:
                 searchById ? 'Кино ID оруулна уу' : 'Кино нэр оруулна уу',
             fontSize: fontSize,
