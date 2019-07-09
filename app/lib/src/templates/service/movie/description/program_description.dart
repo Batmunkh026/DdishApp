@@ -95,7 +95,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Text('${_content.contentPrice} ₮',
+                        child: Text('${widget.selectedProgram.contentPrice} ₮',
                             style: style.priceStyle),
                       ),
                     ],
