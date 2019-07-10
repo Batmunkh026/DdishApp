@@ -6,12 +6,16 @@ import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class ChannelHeaderWidget extends StatefulWidget {
+  final DateTime date;
   final VodChannel selectedChannel;
   final VoidCallback onReturnTap;
   final ValueChanged<DateTime> onDateValueChanged;
 
   ChannelHeaderWidget(
-      {this.selectedChannel, this.onReturnTap, this.onDateValueChanged});
+      {this.date,
+      this.selectedChannel,
+      this.onReturnTap,
+      this.onDateValueChanged});
 
   @override
   State<StatefulWidget> createState() => ChannelHeaderState();
@@ -23,6 +27,7 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
 
   @override
   void initState() {
+    date = widget.date;
     selectedChannel = widget.selectedChannel;
     super.initState();
   }
@@ -51,7 +56,7 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
                   iconSize: 40.0,
                   color: Color(0xff3069b2),
                   disabledColor: Color(0xffe8e8e8),
-                  icon: Icon(DdishAppIcons.before),
+                  icon: Icon(Icons.arrow_back_ios),
                   onPressed: widget.onReturnTap,
                 ),
               ),
@@ -61,12 +66,18 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              color: Color(0xff3069b2),
-              disabledColor: Color(0xffe8e8e8),
-              icon: Icon(DdishAppIcons.before),
-              onPressed:
-                  DateUtil.today(date) ? null : () => onDateChange(false),
+            Visibility(
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              visible: widget.onDateValueChanged != null,
+              child: IconButton(
+                color: Color(0xff3069b2),
+                disabledColor: Color(0xffe8e8e8),
+                icon: Icon(DdishAppIcons.before),
+                onPressed:
+                    DateUtil.today(date) ? null : () => onDateChange(false),
+              ),
             ),
             Text(
               DateUtil.formatTheatreDate(date) +
@@ -75,19 +86,25 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
                 color: const Color(0xff071f49),
                 fontWeight: FontWeight.w400,
                 fontStyle: FontStyle.normal,
-                fontSize: 13.0,
+                fontSize: 15.0,
               ),
             ),
-            IconButton(
-                color: Color(0xff3069b2),
-                disabledColor: Color(0xffe8e8e8),
-                icon: Icon(DdishAppIcons.next),
-                onPressed: date
-                            .difference(DateTime.now().add(Duration(days: 7)))
-                            .inDays ==
-                        0
-                    ? null
-                    : () => onDateChange(true)),
+            Visibility(
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              visible: widget.onDateValueChanged != null,
+              child: IconButton(
+                  color: Color(0xff3069b2),
+                  disabledColor: Color(0xffe8e8e8),
+                  icon: Icon(DdishAppIcons.next),
+                  onPressed: date
+                              .difference(DateTime.now().add(Duration(days: 7)))
+                              .inDays ==
+                          0
+                      ? null
+                      : () => onDateChange(true)),
+            ),
           ],
         ),
         Line(
