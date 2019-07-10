@@ -13,6 +13,7 @@ class LoginButtonPressed extends LoginEvent with NetworkAccessRequired {
   final bool rememberUsername;
   final bool useFingerprint;
   final bool fingerPrintLogin;
+  final BuildContext context;
 
   LoginButtonPressed({
     @required this.username,
@@ -20,6 +21,7 @@ class LoginButtonPressed extends LoginEvent with NetworkAccessRequired {
     @required this.rememberUsername,
     @required this.useFingerprint,
     @required this.fingerPrintLogin,
+    @required this.context,
   }) : super([username, password]);
 
   @override
