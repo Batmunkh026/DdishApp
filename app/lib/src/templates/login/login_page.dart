@@ -65,19 +65,22 @@ class LoginWidgetState extends State<LoginWidget> {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: prefsLoaded
-                  ? (menuOpened
-                      ? MenuPage(
-                          onBackButtonTap: () => onMenuTap(),
-                        )
-                      : LoginView(
-                          authenticationBloc: authenticationBloc,
-                          loginBloc: loginBloc,
-                          username: username,
-                          useFingerprint: useFingerprint,
-                          canCheckBiometrics: canCheckBiometrics,
-                        ))
-                  : Container(),
+              child: Container(
+                child: prefsLoaded
+                    ? (menuOpened
+                        ? MenuPage(
+                            onBackButtonTap: () => onMenuTap(),
+                          )
+                        : LoginView(
+                            authenticationBloc: authenticationBloc,
+                            loginBloc: loginBloc,
+                            username: username,
+                            useFingerprint: useFingerprint,
+                            canCheckBiometrics: canCheckBiometrics,
+                          ))
+                    : Container(),
+                color: Color.fromRGBO(23, 43, 77, 0.8),
+              ),
             ),
             Align(
               alignment: Alignment.bottomLeft,

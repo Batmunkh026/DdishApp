@@ -1,3 +1,4 @@
+import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -6,7 +7,7 @@ abstract class LoginEvent extends Equatable {
   LoginEvent([List props = const []]) : super(props);
 }
 
-class LoginButtonPressed extends LoginEvent {
+class LoginButtonPressed extends LoginEvent with NetworkAccessRequired {
   final String username;
   final String password;
   final bool rememberUsername;

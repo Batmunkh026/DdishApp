@@ -22,6 +22,9 @@ class BranchLocationState extends State<BranchLocationView> {
   BranchType selectedType;
   BranchService selectedService;
 
+  BitmapDescriptor markerIconClosed;
+  BitmapDescriptor markerIconOpen;
+
   Completer<GoogleMapController> _mapController = Completer();
 
   final _branchFilterStreamController = StreamController<BranchFilter>();
@@ -45,6 +48,7 @@ class BranchLocationState extends State<BranchLocationView> {
     });
 
     _branchFilterStreamController.stream.listen((branchFilter) {
+      //branch location data load
       bloc
           .getBranches(branchFilter.cityCode, branchFilter.typeCode,
               branchFilter.serviceCode)
@@ -65,6 +69,8 @@ class BranchLocationState extends State<BranchLocationView> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height * 0.4;
 
+    loadMarkerImages(context);
+
     if (_loading)
       return Center(
         child: CircularProgressIndicator(),
@@ -84,7 +90,9 @@ class BranchLocationState extends State<BranchLocationView> {
             height: height,
             child: Card(child: createGoogleMap()),
           ),
-          createInfoOfSelectedbranch(), //сонгосон салбарын цагийн хуваарь, байршлын мэдээллийн хэсэг
+          Flexible(
+            child: createInfoOfSelectedbranch(),
+          ), //сонгосон салбарын цагийн хуваарь, байршлын мэдээллийн хэсэг
         ],
       ),
     );
@@ -132,7 +140,8 @@ class BranchLocationState extends State<BranchLocationView> {
                               child: Text(
                                 item.name,
                                 style: TextStyle(
-                                    fontSize: textStyle.fontSize, color: textStyle.color),
+                                    fontSize: textStyle.fontSize,
+                                    color: textStyle.color),
                               ),
                             ),
                             value: item),
@@ -206,28 +215,34 @@ class BranchLocationState extends State<BranchLocationView> {
 
     return Padding(
       padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            selectedBranch.name,
-            style: TextStyle(color: textStyle.color, fontSize: 14),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: RichText(
-                  softWrap: true,
-                  text:
-                      TextSpan(text: selectedBranch.address, style: textStyle),
-                ),
+      child: SingleChildScrollView(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      selectedBranch.name,
+                      style:
+                      TextStyle(color: textStyle.color, fontSize: 14),
+                    ),
+                  ),
+                  RichText(
+                    softWrap: true,
+                    text: TextSpan(
+                        text: selectedBranch.address, style: textStyle),
+                  )
+                ],
               ),
-              Column(children: createTimeTableWidgets(selectedBranch))
-            ],
-          )
-        ],
+            ),
+            Column(children: createTimeTableWidgets(selectedBranch))
+          ],
+        ),
       ),
     );
   }
@@ -248,13 +263,10 @@ class BranchLocationState extends State<BranchLocationView> {
     );
   }
 
-  Marker createMarker(double latitude, double longitude, Branch branch,
-      {double width = 180,
-      double height = 180,
-      IconData iconData,
-      Color color}) {
+  Marker createMarker(double latitude, double longitude, Branch branch) {
     var position = LatLng(latitude, longitude);
 
+    var icon = branch.state == 'Хаалттай' ? markerIconClosed : markerIconOpen;
     return Marker(
       markerId: MarkerId(position.toString()),
       position: position,
@@ -262,8 +274,7 @@ class BranchLocationState extends State<BranchLocationView> {
         title: branch.name,
         snippet: branch.address,
       ),
-      icon: BitmapDescriptor
-          .defaultMarker, //TODO хээлттэй хаалттайгаар ялгаатай icon өгөх
+      icon: icon,
       onTap: () => setState(() {
             this.selectedBranch = branch;
           }),
@@ -273,6 +284,7 @@ class BranchLocationState extends State<BranchLocationView> {
   @override
   void dispose() {
     _branchFilterStreamController.close();
+    bloc.dispose();
     super.dispose();
   }
 
@@ -283,6 +295,18 @@ class BranchLocationState extends State<BranchLocationView> {
       String time = dayTimes[1];
       return Text("${days.first} - ${days.last}: $time", style: textStyle);
     }).toList();
+  }
+
+  loadMarkerImages(BuildContext context) {
+    if (markerIconClosed == null) {
+      final ImageConfiguration config = createLocalImageConfiguration(context);
+
+      BitmapDescriptor.fromAssetImage(config, 'assets/location_closed.png')
+          .then((icon) => setState(() => markerIconClosed = icon));
+
+      BitmapDescriptor.fromAssetImage(config, 'assets/location_open.png')
+          .then((icon) => setState(() => markerIconOpen = icon));
+    }
   }
 
   void addToBranchFilterStream() {

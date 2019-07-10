@@ -1,15 +1,16 @@
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class ProgramSearchWidget extends StatelessWidget {
   final VoidCallback onSearchTap;
   final bool searchById;
   final TextEditingController controller;
   final VoidCallback onReturnTap;
+  double fontSize;
 
   ProgramSearchWidget(
-      {this.searchById, this.onSearchTap, this.controller, this.onReturnTap});
+      {this.searchById, this.onSearchTap, this.controller, this.onReturnTap, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,7 @@ class ProgramSearchWidget extends StatelessWidget {
                 placeholder:
                     searchById ? 'Кино ID оруулна уу' : 'Кино нэр оруулна уу',
                 textController: controller,
+                fontSize: fontSize,
                 hasClearButton: true,
               ),
             ),
