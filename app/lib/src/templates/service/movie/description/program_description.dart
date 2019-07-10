@@ -53,8 +53,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
       bloc: _bloc,
       builder: (BuildContext context, DescriptionState state) {
         bool alreadyRented =
-//            widget.selectedProgram.isRented ||
-            state is RentRequestFinished && state.result.isSuccess == true;
+            state is RentRequestFinished && state.result.isSuccess == true || _content.isOrdered;
         if (state is RentRequestFinished && state.isNotOpened) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => showResultMessage(state.result));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 class InputField extends StatelessWidget {
   String initialValue;
@@ -18,6 +19,8 @@ class InputField extends StatelessWidget {
   TextAlign align;
   EdgeInsets padding;
   List<TextInputFormatter> inputFormatters;
+  final bool hasClearButton;
+  final VoidCallback onClear;
 
   //passing props in the Constructor.
   //Java like style
@@ -30,6 +33,7 @@ class InputField extends StatelessWidget {
       this.textInputType,
       this.bottomMargin,
       this.validateFunction,
+      this.fontSize,
       this.onSaved,
       this.textController,
       this.hasBorder = false,
@@ -37,7 +41,8 @@ class InputField extends StatelessWidget {
       this.padding,
       this.inputFormatters,
       this.onFieldSubmitted,
-      this.fontSize});
+      this.hasClearButton = false,
+      this.onClear});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +80,7 @@ class InputField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 )
               : null,
-          contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0, left: 10),
+          contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0),
           hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),

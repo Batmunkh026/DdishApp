@@ -96,7 +96,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     } else if (event is ExtendSelectedProduct) {
       yield Loading(event.selectedTab);
 //      //TODO төлбөр төлөлт хийх
-      int monthToExtend = event.extendMonth; //сунгах сар
       Product productToExtend = event.selectedProduct;
       ProductPaymentState state = ProductPaymentState(
           event.selectedTab,
