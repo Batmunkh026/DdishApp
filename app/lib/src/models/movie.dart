@@ -7,7 +7,7 @@ class Movie {
   final String contentNameEng;
   final int contentPrice;
   final String contentDescr;
-  final int contentYear;
+//  final int contentYear;
   final String contentGenres;
   final String directors;
   final String actors;
@@ -21,7 +21,7 @@ class Movie {
         contentNameEng = json['contentNameEng'],
         contentPrice = int.parse(json['contentPrice']),
         contentDescr = json['contentDescr'],
-        contentYear = int.parse(json['contentYear']),
+//        contentYear = int.parse(json['contentYear']),
         contentGenres = json['contentGenres'],
         directors = json['directors'],
         actors = json['actors'],

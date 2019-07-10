@@ -28,6 +28,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
 
   VodChannel selectedChannel;
   Program selectedProgram;
+  TextEditingController textController = new TextEditingController();
 
   double _height = 0;
   double _width = 0;
@@ -60,6 +61,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
                       searchById: false,
                       onSearchTap: onSearchTap,
                       fontSize: 12,
+                      controller: textController,
                     ),
                   )
                 : ChannelHeaderWidget(
