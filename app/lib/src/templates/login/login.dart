@@ -55,8 +55,8 @@ class LoginViewState extends State<LoginView> {
 
   @override
   void dispose() {
-//    _usernameController.dispose();
-//    _passwordController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -64,14 +64,8 @@ class LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginEvent, LoginState>(
       bloc: _loginBloc,
-      builder: (
-        BuildContext context,
-        LoginState state,
-      ) {
-        if (state is LoginFailure) {
-          //TODO нэвтрэх оролдлого амжилтгүй болсон үед юу хийх ??
-        }
-
+      builder: (BuildContext context,
+          LoginState state,) {
         return Form(
           key: _formKey,
           child: Column(
@@ -102,14 +96,14 @@ class LoginViewState extends State<LoginView> {
                           obscureText: false,
                           textInputType: TextInputType.number,
                           validateFunction:
-                              InputValidations.validateNumberValue,
+                          InputValidations.validateNumberValue,
                         ),
                         InputField(
                           placeholder: 'НУУЦ ҮГ /****/',
                           textController: _passwordController,
                           obscureText: true,
                           validateFunction:
-                              InputValidations.validateNotNullValue,
+                          InputValidations.validateNotNullValue,
                         ),
                         FlatButton(
                           onPressed: () => _showDialog(context),
@@ -128,7 +122,10 @@ class LoginViewState extends State<LoginView> {
                     ),
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.8,
                     child: Column(
                       children: <Widget>[
                         ToggleSwitch(
@@ -156,11 +153,11 @@ class LoginViewState extends State<LoginView> {
                 verticalMargin: 10.0,
                 horizontalMargin: 70.0,
                 onPressed:
-                    state is! LoginLoading ? _onLoginButtonPressed : null,
+                state is! LoginLoading ? _onLoginButtonPressed : null,
               ),
               Container(
                 child:
-                    state is LoginLoading ? CircularProgressIndicator() : null,
+                state is LoginLoading ? CircularProgressIndicator() : null,
               ),
             ],
           ),
@@ -190,6 +187,7 @@ class LoginViewState extends State<LoginView> {
         rememberUsername: rememberUsername,
         useFingerprint: useFingerprint,
         fingerPrintLogin: false,
+        context: context,
       ));
     }
   }
