@@ -34,6 +34,8 @@ mixin WidgetMixin {
       monthToExtend, totalPriceToExtend) {
     var boldStyle = TextStyle(fontWeight: FontWeight.w600);
 
+    productName = productName.replaceAll('багц', '');
+
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
