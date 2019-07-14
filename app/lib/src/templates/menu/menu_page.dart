@@ -11,6 +11,7 @@ import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/header.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'menu.dart';
 import 'package:ddish/src/widgets/menu_expansion_tile.dart';
 
@@ -189,7 +190,24 @@ class MenuPageState extends State<MenuPage> {
                 closeButtonText: 'Cancel',
                 onSubmit: () {
                   Navigator.of(context).pop();
-                  Events().callEvent(menu.title);
+                  PermissionHandler()
+                      .checkPermissionStatus(PermissionGroup.phone)
+                      .then((permissionStatus) {
+                    if (permissionStatus == PermissionStatus.granted)
+                      platform.invokeMethod('call', [menu.title]);
+                    else if (permissionStatus == PermissionStatus.unknown ||
+                        permissionStatus == PermissionStatus.denied)
+                      PermissionHandler().requestPermissions(
+                          [PermissionGroup.phone]).then((permissions) {
+                        PermissionHandler()
+                            .checkPermissionStatus(PermissionGroup.phone)
+                            .then((status) => status == PermissionStatus.granted
+                                ? platform.invokeMethod('call', [menu.title])
+                                : Events().callEvent(menu.title));
+                      });
+                    else
+                      Events().callEvent(menu.title);
+                  });
                 },
               ));
   }
