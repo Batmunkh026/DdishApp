@@ -215,7 +215,8 @@ class ProductPageState extends State<ProductPage>
 
     var _content = _buildContents();
 
-    var _body = _createTabBarBody(_content);
+    var _body =
+        _createTabBarBody(_content, _bloc.currentState.selectedProductTab);
 
     if (_bloc.currentState is SelectedProductPreview) return _body;
 
@@ -225,7 +226,7 @@ class ProductPageState extends State<ProductPage>
     );
   }
 
-  Widget _createTabBarBody(Widget content) {
+  Widget _createTabBarBody(Widget content, productSelectedTab) {
     return Stack(
       children: <Widget>[
         content,
@@ -234,17 +235,21 @@ class ProductPageState extends State<ProductPage>
           if (delta != 0.0) {
             bool isRight = delta < 0;
 
-            ProductTabType selectedTab =
-                (_bloc.currentState as ProductState).selectedProductTab;
-            int currentTabIndex = ProductTabType.values.indexOf(selectedTab);
+            if (_bloc.beforeState is ProductTabState ||
+                _bloc.beforeState == null) {
+              ProductTabType selectedTab =
+                  (_bloc.currentState as ProductState).selectedProductTab;
+              int currentTabIndex = ProductTabType.values.indexOf(selectedTab);
 
-            int nextTabIndex = currentTabIndex + (isRight ? 1 : -1);
+              int nextTabIndex = currentTabIndex + (isRight ? 1 : -1);
 
-            if (nextTabIndex >= 0 && nextTabIndex < _productTabs.length) {
-              TabMenuItem nextTab = _productTabs.elementAt(nextTabIndex);
-              _tabController.animateTo(nextTabIndex);
-              _bloc.dispatch(ProductTabChanged(nextTab.state));
-            }
+              if (nextTabIndex >= 0 && nextTabIndex < _productTabs.length) {
+                TabMenuItem nextTab = _productTabs.elementAt(nextTabIndex);
+                _tabController.animateTo(nextTabIndex);
+                _bloc.dispatch(ProductTabChanged(nextTab.state));
+              }
+            } else
+              _bloc.backToPrevState();
           }
         })
       ],
