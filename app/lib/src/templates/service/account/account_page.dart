@@ -58,18 +58,17 @@ class AccountPageState extends State<AccountPage> {
                         : '-')
               ])),
               Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15.0),
-                  child: GestureDetector(
-                    onTap: showInstruction,
-                    child: Text(
-                      "Данс цэнэглэх заавар",
-                      style: const TextStyle(
-                          color: const Color(0xff071f49),
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 15.0),
-                    ),
-                  )),
+                padding: EdgeInsets.only(top: 10, bottom: 10),
+                child: Text(
+                  "Данс цэнэглэх заавар",
+                  style: const TextStyle(
+                      color: const Color(0xff071f49),
+                      fontWeight: FontWeight.w700,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 15.0),
+                ),
+              ),
+              showAccountChargeInstruction()
             ],
           ),
         );
@@ -77,7 +76,7 @@ class AccountPageState extends State<AccountPage> {
     );
   }
 
-  void showInstruction() {
+  Widget showAccountChargeInstruction() {
     Map<String, List<Widget>> instructions = {
       'Банкны салбарт багц сунгах, данс цэнэглэх:': [
         RichText(
@@ -219,28 +218,29 @@ class AccountPageState extends State<AccountPage> {
             border: TableBorder.all(),
             children: [
               TableRow(children: [
-                createTitle('Данс:'),
-                createTitle('Багцын код:'),
+                createPadding(createTitle('Данс:')),
+                createPadding(createTitle('Багцын код:')),
               ]),
               TableRow(children: [
-                createTitle('Хаан банк: 505 905 0128'),
-                createTitle('Энгийн: S'),
+                createPadding(createTitle('Хаан банк: 505 905 0128')),
+                createPadding(createTitle('Энгийн: S')),
               ]),
               TableRow(children: [
-                createTitle('Төрийн банк: 1066 0000 4668'),
-                createTitle('Илүү: M'),
+                createPadding(createTitle('Төрийн банк: 1066 0000 4668')),
+                createPadding(createTitle('Илүү: M')),
               ]),
               TableRow(children: [
-                createTitle('Хас банк: 5000 232 657'),
-                createTitle('Үлэмж: L'),
+                createPadding(createTitle('Хас банк: 5000 232 657')),
+                createPadding(createTitle('Үлэмж: L')),
               ]),
               TableRow(children: [
-                createTitle('Худалдаа Хөгжлийн банк: 499 135 803'),
-                createTitle('Бүрэн: XL'),
+                createPadding(
+                    createTitle('Худалдаа Хөгжлийн банк: 499 135 803')),
+                createPadding(createTitle('Бүрэн: XL')),
               ]),
               TableRow(children: [
-                createTitle('Голомт банк: 110 298 7935'),
-                createTitle('Данс цэнэглэх: Dans'),
+                createPadding(createTitle('Голомт банк: 110 298 7935')),
+                createPadding(createTitle('Данс цэнэглэх: Dans')),
               ]),
             ],
           )
@@ -251,22 +251,21 @@ class AccountPageState extends State<AccountPage> {
     instructionWidgetChildren.addAll(List<Widget>.from(
       instructions.keys.map(
         (instructionTitle) => ExpansionTile(
-              backgroundColor: Colors.grey[100],
-              title: createTitle(instructionTitle),
-              children: [
-                ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: instructions[instructionTitle],
-                  ),
-                )
-              ],
-            ),
+          backgroundColor: Colors.grey[100],
+          title: createTitle(instructionTitle),
+          children: [
+            ListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: instructions[instructionTitle],
+              ),
+            )
+          ],
+        ),
       ),
     ));
 
     ListView instructionWidgets = ListView(
-      padding: EdgeInsets.only(bottom: 100),
       children: instructionWidgetChildren
           .map((child) => Padding(
                 padding: EdgeInsets.only(bottom: 10),
@@ -274,47 +273,25 @@ class AccountPageState extends State<AccountPage> {
               ))
           .toList(),
     );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(
-            'ДАНС ЦЭНЭГЛЭХ ЗААВАР',
-            style: TextStyle(
-                color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          titlePadding: EdgeInsets.only(top: 10),
-          contentPadding: const EdgeInsets.all(10),
-          children: <Widget>[
-            SingleChildScrollView(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.7,
-                padding: EdgeInsets.only(bottom: 30),
-                child: instructionWidgets,
-              ),
-            )
-          ],
-        );
-      },
+    return Container(
+      padding: EdgeInsets.only(left: 20, right: 20),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.56,
+      child: instructionWidgets,
     );
   }
 
   Text createTitle(String title) {
     return Text(
       title,
-      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
     );
   }
 
   Text createText(String text) {
     return Text(
       text,
-      style: TextStyle(fontSize: 13),
+      style: TextStyle(fontSize: 15),
     );
   }
 
@@ -323,7 +300,7 @@ class AccountPageState extends State<AccountPage> {
         text: text,
         style: TextStyle(
             color: Colors.black,
-            fontSize: 13,
+            fontSize: 15,
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal));
   }
 
@@ -337,6 +314,13 @@ class AccountPageState extends State<AccountPage> {
                 child: child,
               ))
           .toList(),
+    );
+  }
+
+  Padding createPadding(child, {double paddingAll = 5}) {
+    return Padding(
+      padding: EdgeInsets.all(paddingAll),
+      child: child,
     );
   }
 }
