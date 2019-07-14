@@ -8,9 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:ddish/src/templates/menu/menu.dart';
 import 'package:ddish/src/templates/menu/order/order_widget.dart';
 import 'package:ddish/src/templates/menu/user_info/user_information.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Constants {
+  static const platform = const MethodChannel('mn.ddish.app');
+
   static const List<TabMenuItem> mainMenuItems = const <TabMenuItem>[
     TabMenuItem("", Icons.rss_feed, TabState.SERVICE),
     TabMenuItem("", Icons.access_alarms, TabState.NOTIFICATION),
