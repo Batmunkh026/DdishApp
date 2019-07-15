@@ -58,28 +58,31 @@ class LoginWidgetState extends State<LoginWidget> {
         resizeToAvoidBottomPadding: false,
         body: Stack(
           children: <Widget>[
-            Container(
-              decoration: new BoxDecoration(
-                image: new DecorationImage(
-                  image: new AssetImage("assets/satellite_background.jpg"),
-                  fit: BoxFit.cover,
-                ),
-              ),
+            GestureDetector(
+              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               child: Container(
-                child: prefsLoaded
-                    ? (menuOpened
-                        ? MenuPage(
-                            onBackButtonTap: () => onMenuTap(),
-                          )
-                        : LoginView(
-                            authenticationBloc: authenticationBloc,
-                            loginBloc: loginBloc,
-                            username: username,
-                            useFingerprint: useFingerprint,
-                            canCheckBiometrics: canCheckBiometrics,
-                          ))
-                    : Container(),
-                color: Color.fromRGBO(23, 43, 77, 0.8),
+                decoration: new BoxDecoration(
+                  image: new DecorationImage(
+                    image: new AssetImage("assets/satellite_background.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Container(
+                  child: prefsLoaded
+                      ? (menuOpened
+                          ? MenuPage(
+                              onBackButtonTap: () => onMenuTap(),
+                            )
+                          : LoginView(
+                              authenticationBloc: authenticationBloc,
+                              loginBloc: loginBloc,
+                              username: username,
+                              useFingerprint: useFingerprint,
+                              canCheckBiometrics: canCheckBiometrics,
+                            ))
+                      : Container(),
+                  color: Color.fromRGBO(23, 43, 77, 0.8),
+                ),
               ),
             ),
             Align(
