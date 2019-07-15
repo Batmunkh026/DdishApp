@@ -43,9 +43,7 @@ class OrderWidgetState extends State<OrderWidget> {
     Constants.districtItems
         .forEach((district) => dropDownItems.add(DropdownMenuItem(
               value: district,
-              child: Text(
-                district.name.toUpperCase(),
-              ),
+              child: Center(child: Text(district.name.toUpperCase())),
             )));
     _repository = MenuRepository();
     _bloc = OrderBloc(repository: _repository);
@@ -118,14 +116,16 @@ class OrderWidgetState extends State<OrderWidget> {
                             fontStyle: FontStyle.normal,
                             fontSize: 15.0,
                           ),
-                          hint: Text(
-                            'ДҮҮРЭГ СОНГОХ',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xffa4cafb),
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              fontSize: 15.0,
+                          hint: Center(
+                            child: Text(
+                              'ДҮҮРЭГ СОНГОХ',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Color(0xffa4cafb),
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 15.0,
+                              ),
                             ),
                           ),
                           onChanged: (value) =>
