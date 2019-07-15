@@ -45,6 +45,7 @@ class MainViewState extends State<MainView> {
         body: Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              alignment: Alignment(0.3, 0),
               image: new AssetImage("assets/satellite_background.jpg"),
               fit: BoxFit.cover,
             ),

@@ -63,8 +63,9 @@ class LoginWidgetState extends State<LoginWidget> {
               child: Container(
                 decoration: new BoxDecoration(
                   image: new DecorationImage(
+                    alignment: Alignment(0.3, 0),
                     image: new AssetImage("assets/satellite_background.jpg"),
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fitHeight,
                   ),
                 ),
                 child: Container(
