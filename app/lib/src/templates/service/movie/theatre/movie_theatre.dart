@@ -97,17 +97,21 @@ class TheatreWidgetState extends State<TheatreWidget> {
               }
               if (state is ChannelListLoaded) {
                 channelList = state.channelList;
-                return GridView.count(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  crossAxisSpacing: width * 0.1,
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.08),
-                  crossAxisCount: 2,
-                  children: List.generate(channelList.length, (index) {
-                    return ChannelThumbnail(
-                        onPressed: () => _onVodChannelTap(channelList[index]),
-                        channel: channelList[index]);
-                  }),
+                return Container(
+                  padding: EdgeInsets.only(top: 30),
+                  child: GridView.count(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    crossAxisSpacing: width * 0.1,
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                    childAspectRatio: 1.5,
+                    crossAxisCount: 2,
+                    children: List.generate(channelList.length, (index) {
+                      return ChannelThumbnail(
+                          onPressed: () => _onVodChannelTap(channelList[index]),
+                          channel: channelList[index]);
+                    }),
+                  ),
                 );
               }
               if (state is ProgramListLoading) {

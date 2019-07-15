@@ -43,7 +43,7 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
           child: Stack(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: width * 0.15),
+                padding: EdgeInsets.only(top: 10),
                 child: Center(
                   child: ChannelThumbnail(
                     channel: selectedChannel,
