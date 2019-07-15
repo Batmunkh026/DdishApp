@@ -53,10 +53,10 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
-                  iconSize: 40.0,
+                  iconSize: 25.0,
                   color: Color(0xff3069b2),
                   disabledColor: Color(0xffe8e8e8),
-                  icon: Icon(Icons.arrow_back_ios),
+                  icon: Icon(DdishAppIcons.before),
                   onPressed: widget.onReturnTap,
                 ),
               ),
