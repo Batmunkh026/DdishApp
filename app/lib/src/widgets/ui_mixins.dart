@@ -53,7 +53,9 @@ mixin WidgetMixin {
           TextSpan(text: '$monthToExtend ', style: boldStyle),
           TextSpan(text: 'сараар '),
           TextSpan(text: '$totalPriceToExtend ₮ ', style: boldStyle),
-          TextSpan(text: ' төлөн сунгах гэж байна.'),
+          TextSpan(
+              text:
+                  ' төлөн ${selectedProductTab == ProductTabType.UPGRADE ? 'ахиулах' : 'сунгах'} гэж байна.'),
         ],
       ),
     );
