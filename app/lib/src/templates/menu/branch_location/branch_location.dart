@@ -312,5 +312,6 @@ class BranchLocationState extends State<BranchLocationView> {
   void addToBranchFilterStream() {
     _branchFilterStreamController.sink.add(BranchFilter(
         selectedArea, selectedType, selectedState, selectedService));
+    setState(() => selectedBranch = null);
   }
 }
