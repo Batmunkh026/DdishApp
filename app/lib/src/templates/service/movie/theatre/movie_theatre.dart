@@ -7,6 +7,7 @@ import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/templates/service/movie/description/program_description.dart';
 import 'package:ddish/src/templates/service/movie/program_search.dart';
 import 'package:ddish/src/templates/service/movie/theatre/search_header.dart';
+import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,11 +52,12 @@ class TheatreWidgetState extends State<TheatreWidget> {
   Widget build(BuildContext context) {
 //    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return Column(
+    bool isTheatreChannelDetail = selectedChannel != null;
+    var contentContainer = Column(
       children: <Widget>[
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: selectedChannel == null
+            child: !isTheatreChannelDetail
                 ? Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ProgramSearchWidget(
@@ -184,12 +186,32 @@ class TheatreWidgetState extends State<TheatreWidget> {
         ),
       ],
     );
+
+    return isTheatreChannelDetail
+        ? GestureDetector(
+            onHorizontalDragEnd: (details) {
+              double _delta = details.velocity.pixelsPerSecond.dx;
+              bool _isIncrement = _delta < 0;
+              //date ыг өөрчлөх боломжтой эсэхийг шалгах, swipe range check
+              //today <= nextDay <= Date.now() + 7days
+              if ((!DateUtil.today(this.date) && !_isIncrement ||
+                      DateUtil.isValidProgramDate(this.date) && _isIncrement) &&
+                  _delta != 0.0) _onDateChange(date, _isIncrement);
+            },
+            child: contentContainer,
+          )
+        : contentContainer;
   }
 
-  _onDateChange(DateTime date) {
+  _onDateChange(DateTime date, bool isIncrement) {
+    var duration = Duration(days: 1);
+    date = isIncrement ? date.add(duration) : date.subtract(duration);
+
     this.date = date;
+
     if (selectedChannel != null)
       _bloc.dispatch(DateChanged(date: date, channel: selectedChannel));
+    setState(() => this.date = date);
   }
 
   _onSearchTap() {

@@ -37,6 +37,13 @@ class DateUtil {
     return productDateFormatter.format(dateTime);
   }
 
+  ///7 хоног дотор бол OK
+  ///
+  ///date.difference(7)
+  static bool isValidProgramDate(DateTime time) {
+    return time.difference(DateTime.now().add(Duration(days: 7))).inDays != 0;
+  }
+
   static bool today(DateTime time) {
     var now = DateTime.now();
     var d1 = DateTime.utc(now.year, now.month, now.day);
