@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class NewPromoMdl{
   String PromoName;
   String PromoDescText;
@@ -24,4 +26,11 @@ class AntennMdl{
 
   AntennMdl.fromJson(Map<String, dynamic> json):
         imageUrl = json["imgUrl"];
+}
+class AntennVideoMdl{
+  String videoId;
+  String videoName;
+  AntennVideoMdl.fromJson(Map<String, dynamic> json):
+        videoId = json["videoId"],
+        videoName = json["videoName"];
 }

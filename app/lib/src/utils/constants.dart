@@ -3,6 +3,7 @@ import 'package:ddish/src/models/district.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/tab_menu.dart';
 import 'package:ddish/src/templates/menu/branch_location/branch_location.dart';
+import 'package:ddish/src/templates/menu/promo/antennInstall_video.dart';
 import 'package:ddish/src/templates/menu/promo/antennInstallationManual.dart';
 import 'package:ddish/src/templates/menu/promo/newPromoInfo.dart';
 import 'package:ddish/src/utils/events.dart';
@@ -54,7 +55,7 @@ class Constants {
         ),
         Menu(
           title: 'Видео заавар',
-          screen: Container(),
+          screen: AntennaVideoWidget(),
         )
       ],
     ),

@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/menu/promo/antenn_bloc.dart';
 import 'package:ddish/src/blocs/menu/promo/antenn_event.dart';
 import 'package:ddish/src/blocs/menu/promo/antenn_state.dart';
+import 'package:ddish/src/models/promo.dart';
 import 'package:ddish/src/repositiories/promo_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,13 +17,13 @@ class AntennaWidget extends StatefulWidget{
 class AntennaWidgetState extends State<AntennaWidget>{
   AntennaBloc _bloc;
   AntennRepository _repository;
-  //List<AntennMdl> manuals;
-  List<String> manuals;
+  List<AntennMdl> manuals;
+  //List<String> manuals;
 
   @override
   void initState(){
-    //manuals = List<AntennMdl>();
-    manuals = List<String>();
+    manuals = List<AntennMdl>();
+    //manuals = List<String>();
     _repository = AntennRepository();
     _bloc = AntennaBloc(repository: _repository);
     super.initState();
@@ -61,13 +63,13 @@ class AntennaWidgetState extends State<AntennaWidget>{
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: GestureDetector(
                       child: Container(
-                        padding: const EdgeInsets.fromLTRB(150.0, 520.0, 0.0, 0.0),
+                        padding: const EdgeInsets.all(380.0),//(150.0, 520.0, 0.0, 0.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image:AssetImage(manuals[index]),
-                            //CachedNetworkImageProvider(manuals[index].imageUrl),
+                            //image:AssetImage(manuals[index].imageUrl),
+                            image: CachedNetworkImageProvider(manuals[index].imageUrl),
                           )
                         ),
                       ),

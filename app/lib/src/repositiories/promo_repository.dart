@@ -56,3 +56,28 @@ class AntennRepository{
     }
   }
 }
+
+class AntennVideoRepository{
+  Future<List> fetchAntennaVideo() async{
+    List<AntennVideoMdl> vimanuals = List<AntennVideoMdl>();
+    try{
+      var response;
+      response = await http.read('${globals.serverEndpoint}/newPromotion/0/0',
+          headers: {
+            HttpHeaders.authorizationHeader: globals.authorizationToken
+          });
+      var decoded = json.decode(response);
+      if(decoded['isSuccess']){
+        vimanuals = List<AntennVideoMdl>.from(
+            decoded['videoManuals'].map((antennVideoMdl) => AntennVideoMdl.fromJson(antennVideoMdl)));
+      }
+      else{
+        vimanuals = null;
+      }
+      return vimanuals;
+    }on Exception catch(e){
+      //debugPrint(e.toString());
+      throw(e);
+    }
+  }
+}
