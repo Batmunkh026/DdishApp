@@ -124,9 +124,9 @@ class PromoWidgetState extends State<PromoWidget>{
                     text: selectedPromo.PromoDescText,
                     style: const TextStyle(
                         color: const Color(0xffFFFFF0),
-                        fontWeight: FontWeight.normal,
+                        fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.normal,
-                        fontSize: 16.0,
+                        //fontSize: 16.0,
                         fontFamily: 'Montserrat',
                     )
                   ),

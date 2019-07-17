@@ -69,10 +69,10 @@ class AntennaVideoWidgetState extends State<AntennaVideoWidget>{
                             manuals[index].videoName,
                             style: const TextStyle(
                               decoration: TextDecoration.underline,
-                              color: const Color(0xFFe4f0ff),
-                              fontWeight: FontWeight.normal,
+                              color: const Color(0xFFFAEBD7),
+                              fontWeight: FontWeight.w600,
                               fontStyle: FontStyle.normal,
-                              fontSize: 16.0,
+                              //fontSize: 16.0,
                               fontFamily: 'Montserrat',
                             ),
                           )
