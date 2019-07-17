@@ -66,7 +66,7 @@ class PromoWidgetState extends State<PromoWidget>{
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: GestureDetector(
                       child: Container(
-                        padding: EdgeInsets.all(100.0),
+                        padding: EdgeInsets.all(80.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           image: DecorationImage(
@@ -94,7 +94,7 @@ class PromoWidgetState extends State<PromoWidget>{
                     padding: const EdgeInsets.only(bottom: 10.0),
                     child: GestureDetector(
                       child: Container(
-                        padding: const EdgeInsets.all(330.0),//(150.0, 480.0, 0.0, 0.0),
+                        padding: const EdgeInsets.all(300.0),//(150.0, 480.0, 0.0, 0.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           image: DecorationImage(

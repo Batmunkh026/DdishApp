@@ -104,7 +104,7 @@ class AntennaVideoWidgetState extends State<AntennaVideoWidget>{
         context: context,
         builder: (BuildContext context) {
           return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
               child: Stack(
                 children: <Widget>[
                   SimpleDialog(
