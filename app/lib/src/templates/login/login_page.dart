@@ -58,26 +58,33 @@ class LoginWidgetState extends State<LoginWidget> {
         resizeToAvoidBottomPadding: false,
         body: Stack(
           children: <Widget>[
-            Container(
-              decoration: new BoxDecoration(
-                image: new DecorationImage(
-                  image: new AssetImage("assets/satellite_background.jpg"),
-                  fit: BoxFit.cover,
+            GestureDetector(
+              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+              child: Container(
+                decoration: new BoxDecoration(
+                  image: new DecorationImage(
+                    alignment: Alignment(0.3, 0),
+                    image: new AssetImage("assets/satellite_background.jpg"),
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
+                child: Container(
+                  child: prefsLoaded
+                      ? (menuOpened
+                          ? MenuPage(
+                              onBackButtonTap: () => onMenuTap(),
+                            )
+                          : LoginView(
+                              authenticationBloc: authenticationBloc,
+                              loginBloc: loginBloc,
+                              username: username,
+                              useFingerprint: useFingerprint,
+                              canCheckBiometrics: canCheckBiometrics,
+                            ))
+                      : Container(),
+                  color: Color.fromRGBO(23, 43, 77, 0.8),
                 ),
               ),
-              child: prefsLoaded
-                  ? (menuOpened
-                      ? MenuPage(
-                          onBackButtonTap: () => onMenuTap(),
-                        )
-                      : LoginView(
-                          authenticationBloc: authenticationBloc,
-                          loginBloc: loginBloc,
-                          username: username,
-                          useFingerprint: useFingerprint,
-                          canCheckBiometrics: canCheckBiometrics,
-                        ))
-                  : Container(),
             ),
             Align(
               alignment: Alignment.bottomLeft,

@@ -1,13 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
-import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/price_format.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductGridPicker extends StatelessWidget with WidgetMixin {
   ProductBloc _bloc;
@@ -16,37 +17,35 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
   BuildContext _context;
   dynamic _productContent; //products or product
 
-  double pickerWidth;
-  double pickerHeight;
+  double _pickerWidth;
+  double _pickerHeight;
 
-  ProductGridPicker(this._bloc, this._productContent) : assert(_bloc != null) {
-    _state = _bloc.currentState;
-    _stateTab = _state.selectedProductTab;
-  }
+  ProductGridPicker(this._productContent);
 
   @override
   Widget build(BuildContext context) {
+    _bloc = BlocProvider.of<ProductBloc>(context);
+    _state = _bloc.currentState;
+    _stateTab = _state.selectedProductTab;
+
     _context = context;
 
-    pickerWidth = MediaQuery.of(_context).size.width * 0.25;
-    pickerHeight = pickerWidth * 0.63;
+    _pickerWidth = MediaQuery.of(_context).size.width * 0.25;
+    _pickerHeight = _pickerWidth * 0.63;
 
     assert(_productContent != null);
 
-    return buildContentContainer(context);
+    return _buildContentContainer(context);
   }
 
-  Widget buildContentContainer(context) {
+  Widget _buildContentContainer(context) {
     //аль табаас хамаарч түүний GridView д харуулах content уудыг бэлдэх
-    var contentsForGrid = _buildContents();
+    var _contentsForGrid = _buildContents();
 
-    double width = MediaQuery.of(context).size.width;
-    double ratio = MediaQuery.of(context).devicePixelRatio;
-    EdgeInsets insets = MediaQuery.of(context).viewInsets;
     if (_stateTab == ProductTabType.UPGRADE) {
       return GridView.count(
         padding: EdgeInsets.only(top: 10),
-        children: contentsForGrid,
+        children: _contentsForGrid,
         childAspectRatio: 0.4,
         crossAxisCount: 2,
         scrollDirection: Axis.vertical,
@@ -61,7 +60,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
         scrollDirection: Axis.vertical,
         crossAxisCount: _isChannelDetailPicker ? 3 : 2,
         childAspectRatio: _isChannelDetailPicker ? 1.6 : 2,
-        children: contentsForGrid,
+        children: _contentsForGrid,
       );
 
       if (_isChannelDetailPicker) {
@@ -124,8 +123,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
 //    багцын лого бүхий component ыг эхлээд нэмэх, түүний араас тухайн багцад хамаар үнэ&хугацааны багцуудыг нэмэх
       children.add(Flexible(
         child: Container(
-          width: pickerWidth,
-          height: pickerHeight,
+          width: _pickerWidth,
+          height: _pickerHeight,
           child: CachedNetworkImage(
             imageUrl: product.image,
             placeholder: (context, url) => Text(product.name),
@@ -191,23 +190,18 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
                 height: 5,
               ),
               Text(
-                "₮ ${PriceFormatter.productPriceFormat(month * (price))}",
+                "₮ ${selectedProduct is UpProduct ? price : PriceFormatter.productPriceFormat(month * (price))}",
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: pickerTextStyle.fontSize),
               )
             ];
 
-//    var pickerPadding = isChannelDetail
-//        ? EdgeInsets.only(top: 2, bottom: 2, left: 6, right: 6)
-//        : EdgeInsets.only(top: 14, bottom: 14, left: 24, right: 24);
-
     return GestureDetector(
         child: Center(
-//          padding: pickerPadding,
           child: Container(
-            width: pickerWidth,
-            height: pickerHeight,
+            width: _pickerWidth,
+            height: _pickerHeight,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
                 color: isChannelPicker
@@ -247,7 +241,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Constants.appIcons[AppIcons.Back],
+          Icon(DdishAppIcons.before, color: Color.fromRGBO(57, 110, 170, 1)),
           CachedNetworkImage(
             imageUrl: selectedChannel.image,
             placeholder: (context, text) => Text(selectedChannel.name),
@@ -255,9 +249,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
           Divider()
         ],
       ),
-      //TODO back to previous page
-      onPressed: () => _bloc
-          .dispatch(BackToPrevState(_bloc.currentState.selectedProductTab)),
+      onPressed: _bloc.backToPrevState,
     );
   }
 }

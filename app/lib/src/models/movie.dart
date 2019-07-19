@@ -7,12 +7,13 @@ class Movie {
   final String contentNameEng;
   final int contentPrice;
   final String contentDescr;
-  final int contentYear;
+//  final int contentYear;
   final String contentGenres;
   final String directors;
   final String actors;
   final String trailerUrl;
   final String posterUrl;
+  final bool isOrdered;
 
   Movie.fromJson(Map<String, dynamic> json)
       : result = Result.fromJson(json),
@@ -21,10 +22,11 @@ class Movie {
         contentNameEng = json['contentNameEng'],
         contentPrice = int.parse(json['contentPrice']),
         contentDescr = json['contentDescr'],
-        contentYear = int.parse(json['contentYear']),
+//        contentYear = int.parse(json['contentYear']),
         contentGenres = json['contentGenres'],
         directors = json['directors'],
         actors = json['actors'],
         trailerUrl = json['trailerUrl'],
-        posterUrl = json['posterUrl'];
+        posterUrl = json['posterUrl'],
+        isOrdered = json['isOrdered'];
 }

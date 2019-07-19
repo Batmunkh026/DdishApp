@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
@@ -12,15 +13,15 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomProductChooser extends StatefulWidget {
-  ProductBloc _bloc;
   int priceToExtend;
-  String monthToExtend;
+  int monthToExtend;
   bool isPaymentComputed;
 
-  CustomProductChooser(this._bloc, this.priceToExtend,
-      {this.monthToExtend = "", this.isPaymentComputed = false});
+  CustomProductChooser(this.priceToExtend, this.monthToExtend,
+      {this.isPaymentComputed = false});
 
   @override
   State<StatefulWidget> createState() => CustomProductChooserState();
@@ -28,15 +29,37 @@ class CustomProductChooser extends StatefulWidget {
 
 class CustomProductChooserState extends State<CustomProductChooser>
     with WidgetMixin {
+  ProductBloc _bloc;
   String paymentPreview = '0';
+  int month;
+  StreamController<int> monthStreamController = StreamController();
+
+  CustomProductChooserState() {
+    monthStreamController.stream.listen((month) {
+      this.month = month;
+      if (_bloc.currentState.selectedProductTab ==
+          ProductTabType.UPGRADE) //server ээс авах
+        _bloc.dispatch(CustomMonthChanged(_bloc.currentState.selectedProductTab,
+            _bloc.selectedProduct, _bloc.currentState.selectedProduct, month));
+      else
+        paymentPreview = "${(month * widget.priceToExtend)}";
+    });
+  }
+
+  @override
+  void initState() {
+    _bloc = BlocProvider.of<ProductBloc>(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isPaymentComputed) paymentPreview = "${widget.priceToExtend}";
+    if (widget.isPaymentComputed) {
+      paymentPreview = "${widget.priceToExtend}";
+      month = widget.monthToExtend;
+    }
 
-    var state = widget._bloc.currentState;
-    TextEditingController inputController =
-    TextEditingController(text: '${widget.monthToExtend}');
+    var state = _bloc.currentState;
     var isUpgradeOrChannel =
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             state.selectedProductTab == ProductTabType.UPGRADE;
@@ -47,21 +70,21 @@ class CustomProductChooserState extends State<CustomProductChooser>
     );
     Widget backComponent = isUpgradeOrChannel
         ? Column(children: <Widget>[
-      Container(
-        height: MediaQuery.of(context).size.height * 0.08,
-        padding: EdgeInsets.only(top: 10),
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: CachedNetworkImage(
-            imageUrl: state.selectedProduct.image,
-            placeholder: (context, url) =>
-                Text(state.selectedProduct.name),
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
-      Container(width: MediaQuery.of(context).size.width, child: label)
-    ])
+            Container(
+              height: MediaQuery.of(context).size.height * 0.08,
+              padding: EdgeInsets.only(top: 10),
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: CachedNetworkImage(
+                  imageUrl: state.selectedProduct.image,
+                  placeholder: (context, url) =>
+                      Text(state.selectedProduct.name),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            Container(width: MediaQuery.of(context).size.width, child: label)
+          ])
         : label;
     return ListView(
       children: [
@@ -80,36 +103,22 @@ class CustomProductChooserState extends State<CustomProductChooser>
                 ],
               ),
               //TODO back to previous page
-              onPressed: () => widget._bloc.dispatch(BackToPrevState(
-                  widget._bloc.currentState.selectedProductTab)),
+              onPressed: _bloc.backToPrevState,
             ),
             Container(
               width: MediaQuery.of(context).size.width * 0.3,
               height: MediaQuery.of(context).size.height * 0.055,
               margin: EdgeInsets.only(top: 15, bottom: 15),
-              //TODO widgets/text_field.dart ыг ашиглах
               child: InputField(
-                textController: inputController,
                 hasBorder: true,
                 align: TextAlign.center,
+                initialValue: '${month == null ? '' : month}',
                 textInputType: TextInputType.text,
                 inputFormatters: [
                   InputValidations.acceptedFormatters[InputType.NumberInt]
                 ],
-                onFieldSubmitted: (value) => setState(() {
-                  widget.monthToExtend = inputController.text;
-
-                  if (state.selectedProductTab ==
-                      ProductTabType.UPGRADE) //server ээс авах
-                    widget._bloc.dispatch(CustomMonthChanged(
-                        state.selectedProductTab,
-                        widget._bloc.selectedProduct,
-                        state.selectedProduct,
-                        Converter.toInt(widget.monthToExtend)));
-                  else
-                    paymentPreview =
-                    "${(inputController.text.isEmpty ? 0 : Converter.toDouble(inputController.text)) * widget.priceToExtend}";
-                }),
+                onFieldSubmitted: (value) =>
+                    monthStreamController.add(Converter.toInt(value)),
               ),
             ),
             Text(
@@ -124,7 +133,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
             ),
             SubmitButton(
                 text: "Сунгах",
-                onPressed: () => toExtend(state),
+                onPressed: () => _toExtend(state),
                 verticalMargin: 0,
                 horizontalMargin: 0)
           ],
@@ -133,13 +142,19 @@ class CustomProductChooserState extends State<CustomProductChooser>
     );
   }
 
-  toExtend(state) {
-    var month = Converter.toInt(widget.monthToExtend);
+  _toExtend(state) {
+    if (widget.isPaymentComputed) month = widget.monthToExtend;
+
     var event = PreviewSelectedProduct(state.selectedProductTab,
         state.selectedProduct, month, widget.priceToExtend);
 
-    //TODO сарыг өөр дүнгээр оруулсан үед үнийг тооцох
-    openPermissionDialog(widget._bloc, context, event,
-        widget._bloc.selectedProduct.name, month, widget.priceToExtend);
+    openPermissionDialog(_bloc, context, event, _bloc.selectedProduct.name,
+        month, widget.priceToExtend);
+  }
+
+  @override
+  void dispose() {
+    monthStreamController.close();
+    super.dispose();
   }
 }

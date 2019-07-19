@@ -1,6 +1,8 @@
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:ddish/src/templates/notification/notification_page.dart';
 import 'package:ddish/src/templates/service/service_page.dart';
+import 'package:ddish/src/utils/connectivity.dart';
 import 'package:flutter/material.dart';
 
 class MainView extends StatefulWidget {
@@ -43,11 +45,15 @@ class MainViewState extends State<MainView> {
         body: Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              alignment: Alignment(0.3, 0),
               image: new AssetImage("assets/satellite_background.jpg"),
               fit: BoxFit.cover,
             ),
           ),
-          child: content[_currentTabIndex],
+          child: Container(
+            child: content[_currentTabIndex],
+            color: Color.fromRGBO(23, 43, 77, 0.8),
+          ),
         ),
         bottomNavigationBar: Container(
           height: height * 0.07,
@@ -59,18 +65,19 @@ class MainViewState extends State<MainView> {
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.settings_input_antenna,
+                  DdishAppIcons.satellite,
                 ),
                 title: SizedBox.shrink(),
               ),
               BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.notifications,
+                  DdishAppIcons.notifications,
                 ),
                 title: SizedBox.shrink(),
               ),
               BottomNavigationBarItem(
                 icon: Icon(
+                  //TODO more icon сонгох
                   Icons.more_horiz,
                 ),
                 title: SizedBox.shrink(),
@@ -83,6 +90,7 @@ class MainViewState extends State<MainView> {
   onNavigationTap(int index) {
     setState(() {
       _currentTabIndex = index;
+      NetworkConnectivity().checkNetworkConnectivity();
     });
   }
 }

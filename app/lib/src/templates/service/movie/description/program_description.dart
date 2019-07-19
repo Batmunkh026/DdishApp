@@ -10,12 +10,11 @@ import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
+import 'package:ddish/src/widgets/movie/poster_image.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:ddish/src/widgets/movie/poster_image.dart';
 
 import 'detail_button.dart';
 import 'dialog_close.dart';
@@ -54,11 +53,13 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
       bloc: _bloc,
       builder: (BuildContext context, DescriptionState state) {
         bool alreadyRented =
-//            widget.selectedProgram.isRented ||
-            state is RentRequestFinished && state.result.isSuccess == true;
-        if (state is RentRequestFinished)
+            state is RentRequestFinished && state.result.isSuccess == true || _content.isOrdered;
+        if (state is RentRequestFinished && state.isNotOpened) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => showResultMessage(state.result));
+          state.isNotOpened = false;
+        }
+
         return Column(
           children: <Widget>[
             Row(
@@ -93,7 +94,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Text('${_content.contentPrice} ₮',
+                        child: Text('${widget.selectedProgram.contentPrice} ₮',
                             style: style.priceStyle),
                       ),
                     ],
@@ -148,23 +149,12 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
   }
 
   Future showResultMessage(Result result) async {
-    List<Widget> actions = new List();
-    ActionButton closeDialog = ActionButton(
-      title: 'Хаах',
-      onTap: () => Navigator.pop(context),
-    );
-    actions.add(closeDialog);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
-            title: Text('Санамж',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: const Color(0xfffcfdfe),
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 17.0)),
+            title: 'Санамж',
+            closeButtonText: 'Хаах',
             content: result.isSuccess
                 ? RichText(
                     text: TextSpan(style: style.dialogTextStyle, children: [
@@ -187,7 +177,6 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                     'Таны дансны үлдэгдэгдэл хүрэлцэхгүй байна. Та дансаа цэнэглээд дахин оролдоно уу.',
                     style: style.dialogTextStyle,
                   ),
-            actions: actions,
           );
         });
   }
@@ -198,13 +187,14 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
-              hasDivider: false,
-              title: Container(
+              content: Column(
+            children: <Widget>[
+              Container(
                 height: height * 0.2,
                 child: Row(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
+                      padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
                       child: PosterImage(
                         url: content.posterUrl,
                       ),
@@ -238,45 +228,28 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   ],
                 ),
               ),
-              content: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text(
-                      content.contentDescr,
-                      style: style.contentDescriptionStyle,
-                    ),
-                  ),
-                  DialogCloseButton(onTap: () => Navigator.pop(context)),
-                ],
-              ));
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  content.contentDescr,
+                  style: style.contentDescriptionStyle,
+                ),
+              ),
+            ],
+          ));
         });
   }
 
   onRentButtonTap() {
-    List<Widget> actions = new List();
-    ActionButton rentMovie = ActionButton(
-      title: 'Түрээслэх',
-      onTap: () => _onRentAgreeTap(),
-    );
-    ActionButton closeDialog = ActionButton(
-      title: 'Болих',
-      onTap: () => Navigator.pop(context),
-    );
-    actions.add(rentMovie);
-    actions.add(closeDialog);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
             important: true,
-            title: Text('Санамж',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: const Color(0xfffcfdfe),
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 15.0)),
+            title: 'Санамж',
+            submitButtonText: 'Түрээслэх',
+            closeButtonText: 'Болих',
+            onSubmit: _onRentAgreeTap,
             content: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -293,7 +266,6 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                 ],
               ),
             ),
-            actions: actions,
           );
         });
   }

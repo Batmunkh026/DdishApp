@@ -3,42 +3,42 @@ import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/blocs/service/service_bloc.dart';
-import 'package:ddish/src/blocs/service/service_event.dart';
 import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/templates/service/product/underlined_text.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/price_format.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductPaymentPreview extends StatefulWidget {
-  final ProductBloc _bloc;
-  var state;
-
-  ProductPaymentPreview(this._bloc, this.state);
-
   @override
   State<StatefulWidget> createState() => ProductPaymentPreviewState();
 }
 
 class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
+  ProductBloc _bloc;
+  ServiceBloc _serviceBloc;
+  var _state;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => openResultDialog(context, widget.state as ProductPaymentState));
+    _bloc = BlocProvider.of<ProductBloc>(context);
+    _serviceBloc = BlocProvider.of<ServiceBloc>(context);
+    _state = _bloc.currentState;
+
+    if (_state is ProductPaymentState)
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => openResultDialog(context, _state as ProductPaymentState));
   }
 
   @override
   Widget build(BuildContext context) {
     var titles = ["Багц", "Хугацаа", "Дүн"];
     List<Widget> contentsForGrid = [];
-    var state = widget.state;
-
     var style = TextStyle(
         fontWeight: FontWeight.w500,
         color: Color(0xff071f49),
@@ -52,32 +52,32 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
     contentsForGrid
         .addAll(titles.map((title) => Text("$title", style: style)).toList());
 
-    var isUpgrade = state.selectedProductTab == ProductTabType.UPGRADE;
+    var isUpgrade = _state.selectedProductTab == ProductTabType.UPGRADE;
     var isUpgradeOrChannel =
-        state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
+        _state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             isUpgrade;
 
     contentsForGrid.add(isUpgradeOrChannel
         ? Padding(
             padding: EdgeInsets.only(right: 40),
             child: CachedNetworkImage(
-              imageUrl: state.selectedProduct.image,
+              imageUrl: _state.selectedProduct.image,
               placeholder: (context, url) => Text(
-                    state.selectedProduct.name,
+                    _state.selectedProduct.name,
                     style: style,
                   ),
               fit: BoxFit.contain,
             ))
         : Text(
-            state.selectedProduct.name,
+            _state.selectedProduct.name,
             style: boldStyle,
             softWrap: true,
           ));
-    contentsForGrid.add(Text("${state.monthToExtend} сар", style: boldStyle));
+    contentsForGrid.add(Text("${_state.monthToExtend} сар", style: boldStyle));
 
 //      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
     contentsForGrid.add(Text(
-        "₮${PriceFormatter.productPriceFormat(isUpgrade ? state.priceToExtend : state.monthToExtend * state.priceToExtend)}",
+        "₮${PriceFormatter.productPriceFormat(isUpgrade ? _state.priceToExtend : _state.monthToExtend * _state.priceToExtend)}",
         style: boldStyle));
 
 //    if (state is ProductPaymentState)
@@ -108,8 +108,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                 Divider(),
               ],
             ),
-            onPressed: () => widget._bloc.dispatch(
-                BackToPrevState(widget._bloc.currentState.selectedProductTab)),
+            onPressed: _bloc.backToPrevState,
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.25,
@@ -132,11 +131,11 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
           SubmitButton(
               text: "Сунгах",
               padding: EdgeInsets.only(top: 50),
-              onPressed: () => widget._bloc.dispatch(ExtendSelectedProduct(
-                  state.selectedProductTab,
-                  state.selectedProduct,
-                  state.monthToExtend,
-                  state.priceToExtend)),
+              onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
+                  _state.selectedProductTab,
+                  _state.selectedProduct,
+                  _state.monthToExtend,
+                  _state.priceToExtend)),
               verticalMargin: 0,
               horizontalMargin: 0)
         ],
@@ -146,42 +145,13 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 
   ///бүтээгдэхүүн сунгах төлбөр төлөлтийн үр дүн харуулах
   openResultDialog(BuildContext context, ProductPaymentState state) {
-    List<Widget> actions = new List();
-
-    if (!state.isSuccess) {
-      actions.add(
-        ActionButton(
-          title: 'Цэнэглэх',
-          onTap: () {
-            //close dialog
-            Navigator.pop(context);
-            //TODO navigate to Account Tab
-            var serviceBloc = BlocProvider.of<ServiceBloc>(context);
-            serviceBloc.chargeAccount();
-          },
-        ),
-      );
-    }
-    actions.add(
-      ActionButton(
-        title: state.isSuccess ? 'Хаах' : 'Болих',
-        onTap: () => Navigator.pop(context),
-      ),
-    );
-
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
             important: true,
             //TODO title руу String утга дамжуулаад style ыг нь Dialog дотор хийх
-            title: Text(state.isSuccess ? 'Мэдэгдэл' : 'Анхааруулга',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: const Color(0xfffcfdfe),
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 15.0)),
+            title: state.isSuccess ? 'Мэдэгдэл' : 'Анхааруулга',
             content: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -193,7 +163,20 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                 children: createContent(state),
               ),
             ),
-            actions: actions,
+            closeButtonText: state.isSuccess ? 'Хаах' : 'Болих',
+            submitButtonText: state.isSuccess ? null : 'Цэнэглэх',
+            onSubmit: () {
+              //close dialog
+              Navigator.pop(context);
+              //navigate to Account Tab
+              _serviceBloc.chargeAccount();
+            },
+            onClose: state.isSuccess
+                ? () {
+                    Navigator.pop(context);
+                    _bloc.backToPrevState();
+                  }
+                : null,
           );
         });
   }
@@ -209,7 +192,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
     return [
       TextSpan(text: 'Та '),
       TextSpan(text: "${state.productToExtend.name} ", style: boldStyle),
-      TextSpan(text: isChannel ? 'сувгийг ' : 'багцыг'),
+      TextSpan(text: isChannel ? 'сувгийг ' : 'багцыг '),
       TextSpan(text: '${state.monthToExtend} ', style: boldStyle),
       TextSpan(text: 'сараар '),
       TextSpan(text: '${state.priceToExtend} ₮ ', style: boldStyle),

@@ -6,27 +6,37 @@ class ProgramSearchWidget extends StatelessWidget {
   final VoidCallback onSearchTap;
   final bool searchById;
   final TextEditingController controller;
+  final VoidCallback onReturnTap;
+  double fontSize;
 
-  ProgramSearchWidget({this.searchById, this.onSearchTap, this.controller});
+  ProgramSearchWidget(
+      {this.searchById, this.onSearchTap, this.controller, this.onReturnTap, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: <Widget>[
-        Flexible(
-          child: InputField(
-            hasBorder: true,
-            align: TextAlign.center,
-            textInputType: searchById ? TextInputType.number : TextInputType.text ,
-            placeholder:
-                searchById ? 'Кино ID оруулна уу' : 'Кино нэр оруулна уу',
-            textController: controller,
-          ),
-        ),
-        SubmitButton(
-          text: searchById ? 'Түрээслэх' : 'Хайх',
-          padding: const EdgeInsets.all(5.0),
-          onPressed: onSearchTap,
+        Row(
+          children: <Widget>[
+            Flexible(
+              child: InputField(
+                hasBorder: true,
+                align: TextAlign.center,
+                textInputType:
+                    searchById ? TextInputType.number : TextInputType.text,
+                placeholder:
+                    searchById ? 'Кино ID оруулна уу' : 'Кино нэр оруулна уу',
+                textController: controller,
+                fontSize: fontSize,
+                hasClearButton: true,
+              ),
+            ),
+            SubmitButton(
+              text: searchById ? 'Түрээслэх' : 'Хайх',
+              padding: const EdgeInsets.all(5.0),
+              onPressed: onSearchTap,
+            ),
+          ],
         ),
       ],
     );

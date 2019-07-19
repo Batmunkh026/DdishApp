@@ -156,5 +156,5 @@ class ProductPaymentState extends ProductState {
 
   ProductPaymentState(ProductTabType selectedProductTab, selectedProduct,
       this.productToExtend, this.priceToExtend, this.monthToExtend)
-      : super(selectedProductTab, [], selectedProduct);
+      : super(selectedProductTab, [], productToExtend);
 }

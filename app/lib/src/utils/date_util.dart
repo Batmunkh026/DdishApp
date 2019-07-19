@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 class DateUtil {
@@ -36,6 +35,13 @@ class DateUtil {
   static String formatProductDate(DateTime dateTime) {
     if (dateTime == null) return "_";
     return productDateFormatter.format(dateTime);
+  }
+
+  ///7 хоног дотор бол OK
+  ///
+  ///date.difference(7)
+  static bool isValidProgramDate(DateTime time) {
+    return time.difference(DateTime.now().add(Duration(days: 7))).inDays != 0;
   }
 
   static bool today(DateTime time) {

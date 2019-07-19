@@ -1,59 +1,103 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'dialog_action.dart';
 
 class CustomDialog extends StatelessWidget {
-  final Widget title;
+  final String title;
   final Widget content;
-  final List<Widget> actions;
   final bool important;
-  final bool hasDivider;
+  final String submitButtonText;
+  final VoidCallback onSubmit;
+  final VoidCallback onClose;
+  final String closeButtonText;
   final EdgeInsets padding;
 
   CustomDialog(
       {this.title,
       this.content,
-      this.actions,
       this.important = false,
-      this.hasDivider = true,
+      this.submitButtonText,
+      this.onSubmit,
+      this.onClose,
+      this.closeButtonText,
       this.padding =
           const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)});
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return SimpleDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       contentPadding: const EdgeInsets.all(0.0),
       backgroundColor: Color.fromRGBO(103, 170, 255, 0.5),
       children: <Widget>[
-        ClipRect(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
             child: Column(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: title,
+                  child: title != null
+                      ? Text(title,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: const Color(0xfffcfdfe),
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 15.0))
+                      : SizedBox.shrink(),
                 ),
                 Container(
                   child: content,
                   padding: padding,
                 ),
                 Visibility(
+                  visible: closeButtonText != null,
                   child: Divider(
                     height: 1.0,
-                    color: Color(0xFFFFFFFF),
                   ),
-                  visible: hasDivider,
                 ),
-                actions == null
-                    ? Container()
-                    : Container(
-                        padding: const EdgeInsets.only(bottom: 0.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: actions,
-                        ))
+                Container(
+                    height: height * 0.06,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Visibility(
+                          maintainState: false,
+                          maintainAnimation: false,
+                          maintainSize: false,
+                          visible: submitButtonText != null,
+                          child: ActionButton(
+                            title: submitButtonText,
+                            onTap: onSubmit,
+                          ),
+                        ),
+                        Visibility(
+                          maintainState: false,
+                          maintainAnimation: false,
+                          maintainSize: false,
+                          visible: submitButtonText != null,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              child: VerticalDivider(
+                                width: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        ActionButton(
+                          title: closeButtonText,
+                          onTap: onClose != null
+                              ? onClose
+                              : () => Navigator.pop(context),
+                        ),
+                      ],
+                    ))
               ],
             ),
           ),

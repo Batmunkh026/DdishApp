@@ -28,29 +28,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductState get initialState {
     productStream = productRepository.getProducts();
 
-    ///fetch хийж дууссан бол
-    loadInitialData().listen((f) => print("initial data loaded."));
+    loadInitialData()
+        .listen((f) => print("products.length: ${products.length}"));
 
     return Loading(ProductTabType.EXTEND);
   }
 
   loadInitialData() async* {
     user = await _userRepository.getUserInformation();
-
     products = await productStream;
 
-    if (!products.isEmpty) {
-      //хэрэглэгчийн идэвхтэй бүтээгдэхүүнийг авах
-      selectedProduct = products.firstWhere(
-          (p) =>
-              user.activeProducts.singleWhere(
-                  (up) => up.isMain && p.id == up.id,
-                  orElse: () => null) !=
-              null,
-          orElse: () => products.first);
-
-      dispatch(ProductTabChanged(ProductTabType.EXTEND));
-    }
+    fetchUserSelectedProduct();
+    if (!products.isEmpty) dispatch(ProductTabChanged(ProductTabType.EXTEND));
   }
 
   @override
@@ -107,7 +96,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     } else if (event is ExtendSelectedProduct) {
       yield Loading(event.selectedTab);
 //      //TODO төлбөр төлөлт хийх
-      int monthToExtend = event.extendMonth; //сунгах сар
       Product productToExtend = event.selectedProduct;
       ProductPaymentState state = ProductPaymentState(
           event.selectedTab,
@@ -121,9 +109,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               ? productRepository.extendProduct(state)
               : productRepository.chargeProduct(state));
 
-      if (resultState.isSuccess) {
-        //TODO бүтээгдэхүүн сунгалт амжилттай болсон тохиолдолд user data шинэчлэх
-      }
+      if (resultState.isSuccess) await updateUserData(event);
 
       yield resultState;
     } else if (event is BackToPrevState) {
@@ -140,20 +126,52 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           beforeState.selectedProductTab == currentState.selectedProductTab) {
         if (backState.prevStates.isNotEmpty)
           currentState.prevStates.addAll(backState.prevStates);
-        currentState.prevStates.add(backState);
+
+        if (!(backState is ProductPaymentState ||
+            backState is SelectedProductPreview))
+          currentState.prevStates.add(backState);
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
     }
-    if (!(event is Loading)) {
+    if (!(event is Loading ||
+        event is ExtendSelectedProduct ||
+        event is PreviewSelectedProduct)) {
       beforeState = currentState;
       beforeEvent = event;
     }
   }
 
   ///буцаах утга нь null байж болно [хэрэглэгчид сонгосон багц байхгүй бол? ]
-  DateTime getDateOfUserSelectedProduct() {
+  DateTime getExpireDateOfUserSelectedProduct() {
     var activeProduct =
-        user.activeProducts.firstWhere((p) => p.isMain, orElse: () => null);
+        user.activeProducts.lastWhere((p) => p.isMain && selectedProduct.id == p.id, orElse: () => null);
     return activeProduct == null ? null : activeProduct.expireDate;
   }
+
+  void fetchUserSelectedProduct() {
+    if (products.isEmpty) return;
+    //хэрэглэгчийн идэвхтэй бүтээгдэхүүнийг авах
+    selectedProduct = products.lastWhere(
+        (p) =>
+            user.activeProducts.singleWhere((up) => up.isMain && p.id == up.id,
+                orElse: () => null) !=
+            null,
+        orElse: () => products.first);
+  }
+
+  void updateUserData(event) async {
+    user = await _userRepository.getUserInformation();
+
+    if (event.selectedTab == ProductTabType.ADDITIONAL_CHANNEL)
+      additionalProducts =
+          await productRepository.getAdditionalProducts(selectedProduct.id);
+    else
+      upProducts =
+          await productRepository.getUpgradableProducts(selectedProduct.id);
+
+    fetchUserSelectedProduct();
+  }
+
+  backToPrevState() =>
+      dispatch(BackToPrevState(currentState.selectedProductTab));
 }

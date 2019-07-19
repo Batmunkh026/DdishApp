@@ -1,9 +1,7 @@
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/models/tab_models.dart';
-import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:flutter/material.dart';
 
 mixin WidgetMixin {
@@ -14,30 +12,20 @@ mixin WidgetMixin {
             ? price
             : price * monthToExtend;
 
-//Багц сунгах төлбөр төлөлтийн үр дүн
-    ActionButton chargeAccountBtn = ActionButton(
-        title: 'Тийм', onTap: () => _confirmed(bloc, context, event));
-    ActionButton closeDialog =
-        ActionButton(title: 'Үгүй', onTap: () => Navigator.pop(context));
-
     CustomDialog paymentResultDialog = CustomDialog(
-      title: Text('Анхааруулга',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: const Color(0xfffcfdfe),
-              fontWeight: FontWeight.w600,
-              fontStyle: FontStyle.normal,
-              fontSize: 15.0)),
+      title: 'Анхааруулга',
       content: createContent(bloc.currentState.selectedProductTab, productName,
           monthToExtend, totalPriceToExtend),
-      actions: [chargeAccountBtn, closeDialog],
+      closeButtonText: 'Үгүй',
+      submitButtonText: 'Тийм',
+      onSubmit: () => _confirmed(bloc, context, event),
     );
 //    paymentResultDialog.
     var dialog = paymentResultDialog;
     showDialog(context: context, builder: (context) => dialog);
   }
 
-  _confirmed(bloc, context, ProductEvent event) {
+  _confirmed(ProductBloc bloc, context, ProductEvent event) {
     Navigator.pop(context);
     bloc.dispatch(event);
   }
@@ -45,6 +33,8 @@ mixin WidgetMixin {
   RichText createContent(ProductTabType selectedProductTab, productName,
       monthToExtend, totalPriceToExtend) {
     var boldStyle = TextStyle(fontWeight: FontWeight.w600);
+
+    productName = productName.replaceAll('багц', '');
 
     return RichText(
       textAlign: TextAlign.center,
@@ -63,7 +53,9 @@ mixin WidgetMixin {
           TextSpan(text: '$monthToExtend ', style: boldStyle),
           TextSpan(text: 'сараар '),
           TextSpan(text: '$totalPriceToExtend ₮ ', style: boldStyle),
-          TextSpan(text: ' төлөн сунгах гэж байна.'),
+          TextSpan(
+              text:
+                  ' төлөн ${selectedProductTab == ProductTabType.UPGRADE ? 'ахиулах' : 'сунгах'} гэж байна.'),
         ],
       ),
     );
