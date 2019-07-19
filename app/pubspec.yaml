@@ -64,6 +64,9 @@ flutter:
     - assets/program/poster_placeholder.png
     - assets/location_closed.png
     - assets/location_open.png
+    - assets/antenna/app_stb_01.jpg
+    - assets/antenna/app_stb_02.jpg
+    - assets/antenna/app_stb_03.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

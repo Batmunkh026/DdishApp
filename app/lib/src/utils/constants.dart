@@ -3,6 +3,9 @@ import 'package:ddish/src/models/district.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/tab_menu.dart';
 import 'package:ddish/src/templates/menu/branch_location/branch_location.dart';
+import 'package:ddish/src/templates/menu/promo/antennInstall_video.dart';
+import 'package:ddish/src/templates/menu/promo/antennInstallationManual.dart';
+import 'package:ddish/src/templates/menu/promo/newPromoInfo.dart';
 import 'package:ddish/src/utils/events.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/templates/menu/menu.dart';
@@ -52,11 +55,11 @@ class Constants {
       children: <Menu>[
         Menu(
           title: 'Зурган заавар',
-          screen: Container(),
+          screen: AntennaWidget(),
         ),
         Menu(
           title: 'Видео заавар',
-          screen: Container(),
+          screen: AntennaVideoWidget(),
         )
       ],
     ),
@@ -73,7 +76,7 @@ class Constants {
     ),
     Menu(
       title: 'Мэдээ урамшуулал',
-      screen: Container(),
+      screen: PromoWidget(),
     ),
     Menu(
       title: 'Салбарын мэдээлэл',
