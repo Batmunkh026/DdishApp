@@ -54,8 +54,10 @@ class NotificationPageState extends State<NotificationPage> {
   Widget buildNotification(List<ddish.Notification> notifications) {
     return Container(
       decoration: new BoxDecoration(
-          color: Colors.white,
-          borderRadius: new BorderRadius.all(Radius.circular(20))),
+        color: Colors.white,
+        borderRadius: new BorderRadius.all(Radius.circular(20)),
+      ),
+      padding: EdgeInsets.only(top: 10),
       child: notifications.isEmpty
           ? Center(
               child: Text(
@@ -69,37 +71,40 @@ class NotificationPageState extends State<NotificationPage> {
 
   Widget buildNotifications(notifications) {
     return ListView(
-        children: notifications.map((notification) {
-      return Material(
-        child: InkWell(
-          highlightColor: Color.fromRGBO(154, 199, 255, 1),
-          onTap: () => {},
-          child: Container(
-            padding: EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      child: Text(
-                        notification.name,
-                        softWrap: true,
+      children: List<Widget>.from(notifications.map((notification) {
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            highlightColor: Color.fromRGBO(154, 199, 255, 1),
+            onTap: () => {},
+            child: Container(
+              padding:
+                  EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: Text(
+                          notification.name,
+                          softWrap: true,
+                        ),
                       ),
-                    ),
-                    Text(DateUtil.formatDateTime(notification.date)),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Text(notification.text),
-                )
-              ],
+                      Text(DateUtil.formatDateTime(notification.date)),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15),
+                    child: Text(notification.text),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    }).toList());
+        );
+      })),
+    );
   }
 }
