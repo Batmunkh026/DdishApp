@@ -63,8 +63,9 @@ class LoginWidgetState extends State<LoginWidget> {
               child: Container(
                 decoration: new BoxDecoration(
                   image: new DecorationImage(
+                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.27), BlendMode.darken),
                     alignment: Alignment(0.3, 0),
-                    image: new AssetImage("assets/satellite_background.jpg"),
+                    image: new AssetImage("assets/background.png"),
                     fit: BoxFit.fitHeight,
                   ),
                 ),
@@ -82,7 +83,7 @@ class LoginWidgetState extends State<LoginWidget> {
                               canCheckBiometrics: canCheckBiometrics,
                             ))
                       : Container(),
-                  color: Color.fromRGBO(23, 43, 77, 0.8),
+//                  color: Color.fromRGBO(23, 43, 77, 0.8),
                 ),
               ),
             ),
