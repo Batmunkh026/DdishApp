@@ -63,7 +63,7 @@ class AntennaWidgetState extends State<AntennaWidget>{
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: GestureDetector(
                       child: Container(
-                        padding: const EdgeInsets.all(380.0),//(150.0, 520.0, 0.0, 0.0),
+                        padding: const EdgeInsets.all(300.0),//(150.0, 520.0, 0.0, 0.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           image: DecorationImage(
