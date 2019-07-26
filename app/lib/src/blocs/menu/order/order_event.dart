@@ -14,3 +14,12 @@ class OrderTapped extends OrderEvent with NetworkAccessRequired {
   @override
   String toString() => 'order tapped.';
 }
+
+class OrderEdit extends OrderEvent {
+  final Order order;
+
+  OrderEdit(this.order);
+
+  @override
+  String toString() => 'order edit.';
+}

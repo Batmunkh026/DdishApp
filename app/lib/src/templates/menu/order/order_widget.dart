@@ -58,7 +58,7 @@ class OrderWidgetState extends State<OrderWidget> {
       builder: (BuildContext context, OrderState state) {
         if (state is OrderRequestFinished) {
           SchedulerBinding.instance
-              .addPostFrameCallback((_) => showMessage(state.result));
+              .addPostFrameCallback((_) => showMessage(state));
         }
         return Container(
           height: height * 0.7,
@@ -162,15 +162,19 @@ class OrderWidgetState extends State<OrderWidget> {
     );
   }
 
-  showMessage(Result result) {
+  showMessage(OrderRequestFinished state) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
             title: 'Санамж',
             closeButtonText: 'Хаах',
+            onClose: (){
+              Navigator.pop(context);
+              _bloc.dispatch(OrderEdit(state.order));
+            },
             content: Text(
-              result.resultMessage,
+              state.result.resultMessage,
               style: style.messageStyle,
             ),
           );
