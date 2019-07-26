@@ -28,6 +28,12 @@ class InputValidations {
     if (!usernameRegex.hasMatch(value)) return 'Тоон утга оруулна уу.';
     return null;
   }
+  static String validatePhoneNumber(String value) {
+    if (value.isEmpty) return 'Утга оруулна уу!';
+    final RegExp usernameRegex = new RegExp(r'^[\d+]{8}$');
+    if (!usernameRegex.hasMatch(value)) return 'Утасны дугаараа зөв оруулна уу.';
+    return null;
+  }
 
   static String validateNotNullValue(String value) {
     if (value.isEmpty) return 'Утга оруулна уу.';

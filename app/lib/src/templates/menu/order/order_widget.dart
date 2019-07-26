@@ -92,7 +92,7 @@ class OrderWidgetState extends State<OrderWidget> {
                         textInputType: TextInputType.number,
                         padding: const EdgeInsets.only(bottom: 10.0),
                         textController: _phoneController,
-                        validateFunction: InputValidations.validateNumberValue,
+                        validateFunction: InputValidations.validatePhoneNumber,
                       ),
                       Theme(
                         data: ThemeData(
