@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class BranchLocationView extends StatefulWidget {
+  List<Branch> filteredBranch = [];
   @override
   State<StatefulWidget> createState() => BranchLocationState();
 }
@@ -17,7 +18,7 @@ class BranchLocationState extends State<BranchLocationView> {
   BranchParam _params;
   bool _loading = true;
 
-  var selectedState;
+  String selectedState;
   BranchArea selectedArea;
   BranchType selectedType;
   BranchService selectedService;
@@ -30,6 +31,8 @@ class BranchLocationState extends State<BranchLocationView> {
   final _branchFilterStreamController = StreamController<BranchFilter>();
 
   Branch selectedBranch = null;
+
+  bool isStateFilter=false;
 
   var textStyle =
       TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 13.0);
@@ -68,6 +71,10 @@ class BranchLocationState extends State<BranchLocationView> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height * 0.4;
+
+    //state filter нь service учир static зааж өглөө
+    //TODO тодруулах
+    isStateFilter = selectedState != null && selectedState.isNotEmpty && selectedState != "Бүгд";
 
     loadMarkerImages(context);
 
@@ -138,7 +145,7 @@ class BranchLocationState extends State<BranchLocationView> {
                         (item) => DropdownMenuItem(
                             child: Center(
                               child: Text(
-                                item.name,
+                                item is String ? item : item.name,
                                 style: TextStyle(
                                     fontSize: textStyle.fontSize,
                                     color: textStyle.color),
@@ -190,10 +197,10 @@ class BranchLocationState extends State<BranchLocationView> {
         children: <Widget>[
           createSelector(
               "Салбарын төлөв",
-              [],
+              ["Бүгд", "Нээлттэй", "Хаалттай"],
               (branchState) => setState(() {
                     this.selectedState = branchState;
-                    addToBranchFilterStream();
+                    filterByBranchState();
                   }),
               selectedState),
           createSelector(
@@ -253,7 +260,7 @@ class BranchLocationState extends State<BranchLocationView> {
       zoom: 10.4746,
     );
     return GoogleMap(
-      markers: branches
+      markers: (isStateFilter ? widget.filteredBranch : branches)
           .map((branch) => createMarker(branch.lat, branch.lon, branch))
           .toSet(),
       initialCameraPosition: defaultPosition,
@@ -313,5 +320,15 @@ class BranchLocationState extends State<BranchLocationView> {
     _branchFilterStreamController.sink.add(BranchFilter(
         selectedArea, selectedType, selectedState, selectedService));
     setState(() => selectedBranch = null);
+  }
+
+  void filterByBranchState() {
+    setState(() {
+      selectedBranch = null;
+      if(selectedState == "Бүгд")
+        widget.filteredBranch.clear();
+      else
+        widget.filteredBranch = branches.where((b)=> b.state == selectedState).toList();
+    });
   }
 }
