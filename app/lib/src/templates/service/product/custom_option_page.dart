@@ -13,6 +13,7 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomProductChooser extends StatefulWidget {
@@ -115,7 +116,8 @@ class CustomProductChooserState extends State<CustomProductChooser>
                 initialValue: '${month == null ? '' : month}',
                 textInputType: TextInputType.text,
                 inputFormatters: [
-                  InputValidations.acceptedFormatters[InputType.NumberInt]
+                  InputValidations.acceptedFormatters[InputType.NumberInt],
+                  WhitelistingTextInputFormatter(RegExp(r'(^1[0-2]$)|(^[0-9]$)'))
                 ],
                 onFieldSubmitted: (value) =>
                     monthStreamController.add(Converter.toInt(value)),
