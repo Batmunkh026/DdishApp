@@ -45,14 +45,14 @@ class MainViewState extends State<MainView> {
         body: Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.23), BlendMode.darken),
               alignment: Alignment(0.3, 0),
-              image: new AssetImage("assets/satellite_background.jpg"),
+              image: new AssetImage("assets/background.jpg"),
               fit: BoxFit.cover,
             ),
           ),
           child: Container(
             child: content[_currentTabIndex],
-            color: Color.fromRGBO(23, 43, 77, 0.8),
           ),
         ),
         bottomNavigationBar: Container(
