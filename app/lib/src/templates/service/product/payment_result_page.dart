@@ -63,9 +63,9 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
             child: CachedNetworkImage(
               imageUrl: _state.selectedProduct.image,
               placeholder: (context, url) => Text(
-                    _state.selectedProduct.name,
-                    style: style,
-                  ),
+                _state.selectedProduct.name,
+                style: style,
+              ),
               fit: BoxFit.contain,
             ))
         : Text(
@@ -187,6 +187,12 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
     bool isChannel =
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL;
 
+    var resultText = isChannel
+        ? 'түрээслэлээ'
+        : (state.selectedProductTab == ProductTabType.UPGRADE
+            ? 'ахиуллаа'
+            : 'сунгалаа');
+
     var boldStyle = TextStyle(fontWeight: FontWeight.w600);
 
     return [
@@ -197,7 +203,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
       TextSpan(text: 'сараар '),
       TextSpan(text: '${state.priceToExtend} ₮ ', style: boldStyle),
       TextSpan(
-          text: ' төлөн амжилттай ${isChannel ? 'түрээслэлээ' : 'сунгалаа'}.')
+          text: ' төлөн амжилттай $resultText.')
     ];
   }
 }
