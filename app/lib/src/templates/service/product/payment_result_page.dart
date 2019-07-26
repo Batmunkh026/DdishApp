@@ -198,7 +198,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
     return [
       TextSpan(text: 'Та '),
       TextSpan(text: "${state.productToExtend.name} ", style: boldStyle),
-      TextSpan(text: isChannel ? 'сувгийг ' : 'багцыг '),
+      TextSpan(text: isChannel ? 'сувгийг ' : ''),
       TextSpan(text: '${state.monthToExtend} ', style: boldStyle),
       TextSpan(text: 'сараар '),
       TextSpan(text: '${state.priceToExtend} ₮ ', style: boldStyle),
