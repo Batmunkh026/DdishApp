@@ -27,6 +27,9 @@ class ProductPageState extends State<ProductPage>
 
   TabController _tabController;
 
+  bool updateAppBar = true;
+  var defaultAppBar;
+
   get createTabBar => TabBar(
         isScrollable: true,
         controller: _tabController,
@@ -48,7 +51,6 @@ class ProductPageState extends State<ProductPage>
   @override
   Widget build(BuildContext context) {
     var _serviceBloc = BlocProvider.of<ServiceBloc>(context);
-
     return BlocBuilder(
         bloc: _bloc,
         builder: (BuildContext context, ProductState state) {
@@ -67,7 +69,15 @@ class ProductPageState extends State<ProductPage>
     var fontStyle =
         TextStyle(color: const Color(0xff071f49), fontWeight: FontWeight.w500);
 
-    var productContentContainer = Row(
+    var productExpireDate = _bloc.getExpireDateOfUserSelectedProduct();
+    if (_bloc.currentState is Loading && productExpireDate == null)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    else
+      updateAppBar = false;
+
+    var productAppBarContent = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,8 +96,7 @@ class ProductPageState extends State<ProductPage>
                   ],
                 ),
               ),
-              new Text(
-                  "${DateUtil.formatProductDate(_bloc.getExpireDateOfUserSelectedProduct())}",
+              new Text("${DateUtil.formatProductDate(productExpireDate)}",
                   style: TextStyle(
                     color: const Color(0xff071f49),
                     fontWeight: FontWeight.bold,
@@ -103,11 +112,11 @@ class ProductPageState extends State<ProductPage>
     else if (state is ProductTabState ||
         state is CustomProductSelector ||
         state is ProductSelectionState)
-      productContentContainer.children.add(_createProductPicker(state));
+      productAppBarContent.children.add(_createProductPicker(state));
 
     return Container(
       padding: EdgeInsets.all(8),
-      child: productContentContainer,
+      child: productAppBarContent,
     );
   }
 
@@ -128,7 +137,9 @@ class ProductPageState extends State<ProductPage>
                     width: MediaQuery.of(context).size.width * 0.23,
                     child: CachedNetworkImage(
                       imageUrl: product.image,
-                      placeholder: (context, url) => Text(product.name),
+                      placeholder: (context, url) => Flexible(
+                        child: CircularProgressIndicator(),
+                      ),
                       fit: BoxFit.contain,
                     ),
                   )))
@@ -162,7 +173,12 @@ class ProductPageState extends State<ProductPage>
   Widget _buildContents() {
     var _state = _bloc.currentState;
 
+    if (_state is Loading) return Center(child: CircularProgressIndicator());
+
     if (_state is ProductTabState || _state is ProductSelectionState) {
+      if(_bloc.backState is SelectedProductPreview)
+        createDefaultAppBar();
+
       //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
       var itemsForGrid = _state.selectedProductTab == ProductTabType.EXTEND
           ? _state.selectedProduct
@@ -174,6 +190,7 @@ class ProductPageState extends State<ProductPage>
       return ProductGridPicker(_state.selectedProduct);
     } else if (_state is SelectedProductPreview ||
         _state is ProductPaymentState) {
+      updateAppBar = true;
       return ProductPaymentPreview();
     } else if (_state is CustomProductSelector)
       return CustomProductChooser(_state.priceToExtend, 0);
@@ -186,32 +203,18 @@ class ProductPageState extends State<ProductPage>
 
   Widget _buildAppBar() {
     var _state = _bloc.currentState;
+
     if (_state is SelectedProductPreview)
       return AppBar(
         backgroundColor: Colors.white,
         title: _buildAppBarHeader(context, _state),
       );
 
-    return PreferredSize(
-      child: AppBar(
-        automaticallyImplyLeading: false,
-        flexibleSpace: _buildAppBarHeader(context, _state),
-        titleSpacing: 10,
-        elevation: 0,
-        bottom: PreferredSize(
-          child: Flexible(
-            child: createTabBar,
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),
-      preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.11),
-    );
+    return defaultAppBar;
   }
 
   Widget _buildBody() {
-    if (_bloc.currentState is Loading)
-      return Center(child: CircularProgressIndicator());
+    if (updateAppBar) createDefaultAppBar();
 
     var _content = _buildContents();
 
@@ -253,6 +256,24 @@ class ProductPageState extends State<ProductPage>
           }
         })
       ],
+    );
+  }
+
+  void createDefaultAppBar() {
+    defaultAppBar = PreferredSize(
+      child: AppBar(
+        automaticallyImplyLeading: false,
+        flexibleSpace: _buildAppBarHeader(context, _bloc.currentState),
+        titleSpacing: 10,
+        elevation: 0,
+        bottom: PreferredSize(
+          child: Flexible(
+            child: createTabBar,
+          ),
+        ),
+        backgroundColor: Colors.white,
+      ),
+      preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.11),
     );
   }
 }

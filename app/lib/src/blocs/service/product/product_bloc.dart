@@ -143,8 +143,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   ///буцаах утга нь null байж болно [хэрэглэгчид сонгосон багц байхгүй бол? ]
   DateTime getExpireDateOfUserSelectedProduct() {
-    var activeProduct =
-        user.activeProducts.lastWhere((p) => p.isMain && selectedProduct.id == p.id, orElse: () => null);
+    if (user == null) return null;
+    var activeProduct = user.activeProducts.lastWhere(
+        (p) => p.isMain && selectedProduct.id == p.id,
+        orElse: () => null);
     return activeProduct == null ? null : activeProduct.expireDate;
   }
 
