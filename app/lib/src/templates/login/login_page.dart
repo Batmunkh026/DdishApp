@@ -66,7 +66,7 @@ class LoginWidgetState extends State<LoginWidget> {
                     colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.27), BlendMode.darken),
                     alignment: Alignment(0.3, 0),
                     image: new AssetImage("assets/background.jpg"),
-                    fit: BoxFit.fitHeight,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 child: Container(
