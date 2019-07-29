@@ -66,8 +66,15 @@ class PromoWidgetState extends State<PromoWidget> {
                               child: Container(
                                 child: CachedNetworkImage(
                                   imageUrl: promotions[index].PromoPosterUrl,
-                                  placeholder: (context, url) =>
-                                      new LinearProgressIndicator(),
+                                  placeholder: (context, url) => Container(
+                                    color: Colors.black12,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    height: 100,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
                                   errorWidget: (context, url, error) =>
                                       new Icon(Icons.error),
                                 ),

@@ -63,8 +63,14 @@ class AntennaWidgetState extends State<AntennaWidget> {
                             child: Container(
                               child: CachedNetworkImage(
                                 imageUrl: manuals[index].imageUrl,
-                                placeholder: (context, url) =>
-                                    new LinearProgressIndicator(),
+                                placeholder: (context, url) => Container(
+                                  color: Colors.black12,
+                                  width: MediaQuery.of(context).size.width * 0.9,
+                                  height: 100,
+                                  child: Center(
+                                    child: new CircularProgressIndicator(),
+                                  ),
+                                ),
                                 errorWidget: (context, url, error) =>
                                     new Icon(Icons.error),
                               ),
