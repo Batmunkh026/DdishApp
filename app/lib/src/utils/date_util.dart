@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 
 class DateUtil {
   static var formatter = new DateFormat("yyyy-MM-dd");
+  static var formatterWithDot = new DateFormat("yyyy.MM.dd");
   static var timeFormatter = new DateFormat('HH:mm');
   static var parameterFormatter = new DateFormat("yyyyMMdd");
   static var theatreDateFormatter = new DateFormat("dd | MM | yyyy");
@@ -14,6 +15,10 @@ class DateUtil {
   ///yyyy-MM-dd
   static String formatDateTime(DateTime dateTime) {
     return formatter.format(dateTime);
+  }
+  ///yyyy.MM.dd
+  static String formatDateTimeWithDot(DateTime dateTime) {
+    return formatterWithDot.format(dateTime);
   }
 
   ///yyyyMMdd
