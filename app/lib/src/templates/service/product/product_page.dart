@@ -137,8 +137,12 @@ class ProductPageState extends State<ProductPage>
                     width: MediaQuery.of(context).size.width * 0.23,
                     child: CachedNetworkImage(
                       imageUrl: product.image,
-                      placeholder: (context, url) => Flexible(
-                        child: CircularProgressIndicator(),
+                      placeholder: (context, url) => Center(
+                        child: SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
                       fit: BoxFit.contain,
                     ),
