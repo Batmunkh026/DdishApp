@@ -61,25 +61,26 @@ class PromoWidgetState extends State<PromoWidget> {
                         itemCount: promotions.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
+                            padding: const EdgeInsets.all(10),
                             child: GestureDetector(
                               child: Container(
-                                child: CachedNetworkImage(
-                                  imageUrl: promotions[index].PromoPosterUrl,
-                                  placeholder: (context, url) => Container(
-                                    color: Colors.black12,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.9,
-                                    height: 100,
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  child: CachedNetworkImage(
+                                    imageUrl: promotions[index].PromoPosterUrl,
+                                    placeholder: (context, url) => Container(
+                                      color: Colors.black12,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      height: 100,
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
                                     ),
+                                    errorWidget: (context, url, error) =>
+                                        new Icon(Icons.error),
                                   ),
-                                  errorWidget: (context, url, error) =>
-                                      new Icon(Icons.error),
                                 ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0)),
                               ),
                               onTap: () => onPromotionTap(promotions[index]),
                             ),
