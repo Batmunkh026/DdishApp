@@ -110,10 +110,7 @@ class MainViewState extends State<MainView> {
               style: TextStyle(color: Colors.white),
             ),
             submitButtonText: "Тийм",
-            onSubmit: () {
-              Navigator.pop(context);
-              Navigator.pushReplacementNamed(context, "/Login");
-            },
+            onSubmit: () => Navigator.of(context).pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false),
             closeButtonText: "Үгүй",
           );
         });

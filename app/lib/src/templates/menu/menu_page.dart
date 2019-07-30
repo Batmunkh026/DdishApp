@@ -146,7 +146,7 @@ class MenuPageState extends State<MenuPage> {
     if (menu.screen == null && menu.event != null)
       eventExecutionPermission(menu);
     else if (menu.title == 'Гарах') {
-      Navigator.of(context).pop();
+      Navigator.of(context).pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false);
     } else
       _menuBloc.dispatch(MenuClicked(selectedMenu: menu));
   }
