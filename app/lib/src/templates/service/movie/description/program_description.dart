@@ -34,15 +34,13 @@ class ProgramDescription extends StatefulWidget {
 class ProgramDescriptionStatus extends State<ProgramDescription> {
   Movie _content;
   DateTime _beginDate;
-  VodRepository _repository;
   ProgramDescriptionBloc _bloc;
 
   @override
   initState() {
     _content = widget.content;
     _beginDate = widget.selectedProgram.beginDate;
-    _repository = VodRepository();
-    _bloc = ProgramDescriptionBloc(vodRepository: _repository);
+    _bloc = ProgramDescriptionBloc(this);
     super.initState();
   }
 

@@ -24,7 +24,6 @@ class TheatreWidget extends StatefulWidget {
 class TheatreWidgetState extends State<TheatreWidget> {
   final _searchFieldController = TextEditingController();
   final _scrollController = ScrollController();
-  VodRepository vodRepository;
   MovieTheatreBloc _bloc;
   DateTime date = DateTime.now();
   List<VodChannel> channelList;
@@ -36,8 +35,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
 
   @override
   void initState() {
-    vodRepository = VodRepository();
-    _bloc = MovieTheatreBloc(vodRepository: vodRepository);
+    _bloc = MovieTheatreBloc(this);
     super.initState();
   }
 

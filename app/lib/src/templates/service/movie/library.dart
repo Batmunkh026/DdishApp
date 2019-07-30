@@ -21,13 +21,11 @@ class Library extends StatefulWidget {
 class LibraryState extends State<Library> {
   final movieIdFieldController = TextEditingController();
   MovieLibraryBloc _bloc;
-  VodRepository _repository;
   List<String> posters = List();
 
   @override
   void initState() {
-    _repository = VodRepository();
-    _bloc = MovieLibraryBloc(repository: _repository);
+    _bloc = MovieLibraryBloc(this);
     super.initState();
   }
 

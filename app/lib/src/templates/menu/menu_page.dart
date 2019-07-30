@@ -5,7 +5,6 @@ import 'package:ddish/src/utils/events.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/utils/constants.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';

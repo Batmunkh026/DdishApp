@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
 import 'package:ddish/src/models/movie.dart';
@@ -6,13 +7,17 @@ import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 
-class MovieTheatreBloc extends Bloc<MovieTheatreEvent, MovieTheatreState> {
-  final VodRepository vodRepository;
+class MovieTheatreBloc
+    extends AbstractBloc<MovieTheatreEvent, MovieTheatreState> {
+  VodRepository vodRepository;
 
-  MovieTheatreBloc({this.vodRepository});
+  MovieTheatreBloc(pageState) : super(pageState);
 
   @override
-  MovieTheatreState get initialState => TheatreStateInitial();
+  MovieTheatreState get initialState {
+    vodRepository = VodRepository(this);
+    return TheatreStateInitial();
+  }
 
   @override
   Stream<MovieTheatreState> mapEventToState(MovieTheatreEvent event) async* {
@@ -69,8 +74,9 @@ class MovieTheatreBloc extends Bloc<MovieTheatreEvent, MovieTheatreState> {
     }
 
     if (event is ReturnTapped) {
-      if(event.search)
-        yield SearchResultLoaded(hasReachedMax: false, programList: event.programList);
+      if (event.search)
+        yield SearchResultLoaded(
+            hasReachedMax: false, programList: event.programList);
       else
         yield ProgramListLoaded();
     }

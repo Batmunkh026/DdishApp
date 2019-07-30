@@ -43,7 +43,7 @@ class ProductPageState extends State<ProductPage>
       );
   @override
   void initState() {
-    _bloc = ProductBloc();
+    _bloc = ProductBloc(this);
     _tabController = TabController(length: _productTabs.length, vsync: this);
     super.initState();
   }
