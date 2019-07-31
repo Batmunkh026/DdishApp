@@ -61,7 +61,7 @@ class MainViewState extends State<MainView> {
               ),
             ),
             bottomNavigationBar: Container(
-              height: height * 0.07,
+              height: height * 0.08,
               child: BottomNavigationBar(
                 currentIndex: _currentTabIndex,
                 backgroundColor: Color(0xFF2a68b8),
