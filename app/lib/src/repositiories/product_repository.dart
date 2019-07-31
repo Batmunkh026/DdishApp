@@ -1,18 +1,17 @@
-import 'dart:convert';
-
+import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/models/product.dart';
-import 'package:http/http.dart' as http;
-import 'package:ddish/src/repositiories/globals.dart' as globals;
+import 'abstract_repository.dart';
 
-class ProductRepository {
-  final client = globals.client;
+class ProductRepository extends AbstractRepository<ProductBloc> {
+  ProductRepository(ProductBloc bloc) : super(bloc);
 
   Future<List<Product>> getProducts() async {
     Map<String, dynamic> response = await _requestJson("productList");
     return response["isSuccess"]
-        ? List<Product>.from(response["productList"]
-            .map((product) => Product.fromJson(product))) : [];
+        ? List<Product>.from(
+            response["productList"].map((product) => Product.fromJson(product)))
+        : [];
   }
 
   Future<List<Product>> getUpgradableProducts(String productId) async {
@@ -22,7 +21,8 @@ class ProductRepository {
 
     return response["isSuccess"]
         ? List<UpProduct>.from(response["upProducts"]
-            .map((product) => UpProduct.fromJson(product))) : [];
+            .map((product) => UpProduct.fromJson(product)))
+        : [];
   }
 
   ///хэрэв хэрэглэгч дурын сонголтоор сараа оруулсан бол
@@ -54,7 +54,8 @@ class ProductRepository {
   Future<ProductPaymentState> chargeProduct(ProductPaymentState state) async {
     assert(state.selectedProduct != null);
 
-    var _param = "chargeProduct/${state.selectedProduct.id}/${state.monthToExtend}";
+    var _param =
+        "chargeProduct/${state.selectedProduct.id}/${state.monthToExtend}";
 
     var _resultState = await productPayment(state, _param);
 
@@ -68,13 +69,15 @@ class ProductRepository {
 
     assert(current != null || toExtend != null);
 
-    var _param = "upgradeProduct/${current.id}/${state.monthToExtend}/${state.priceToExtend}/${toExtend.id}";
+    var _param =
+        "upgradeProduct/${current.id}/${state.monthToExtend}/${state.priceToExtend}/${toExtend.id}";
 
     var _resultState = await productPayment(state, _param);
 
     return _resultState;
   }
-  Future<ProductPaymentState> productPayment(state, param)async{
+
+  Future<ProductPaymentState> productPayment(state, param) async {
     Map<String, dynamic> response = await _requestJson(param);
 
     state.isSuccess = response['isSuccess'];
@@ -90,20 +93,11 @@ class ProductRepository {
 
     return response["isSuccess"]
         ? List<Product>.from(response["additionalProducts"]
-            .map((product) => Product.fromJson(product))) : [];
+            .map((product) => Product.fromJson(product)))
+        : [];
   }
 
   Future<Map<String, dynamic>> _requestJson(param) async {
-    try {
-      final _response = await client.read('${globals.serverEndpoint}/$param');
-      var _productReponse = json.decode(_response) as Map;
-
-      print(
-          "isSuccess: ${_productReponse["isSuccess"]},  result message: ${_productReponse["resultMessage"]}");
-      return _productReponse;
-    } on http.ClientException catch (e) {
-      // TODO catch SocketException
-      throw (e);
-    }
+    return await getResponse(param) as Map;
   }
 }

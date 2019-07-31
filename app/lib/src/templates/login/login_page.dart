@@ -34,9 +34,9 @@ class LoginWidgetState extends State<LoginWidget> {
 
   @override
   void initState() {
-    userRepository = UserRepository();
+    userRepository = UserRepository(loginBloc);
     authenticationBloc = AuthenticationBloc(userRepository: userRepository);
-    loginBloc = LoginBloc(
+    loginBloc = LoginBloc(this,
         userRepository: userRepository, authenticationBloc: authenticationBloc);
     servicePage = ServicePage();
     notificationText = Text("NOTIFICATION");

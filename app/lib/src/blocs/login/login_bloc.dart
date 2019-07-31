@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:oauth2/oauth2.dart' as oauth;
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/authentication/authentication_event.dart';
@@ -10,14 +11,14 @@ import 'package:ddish/src/widgets/message.dart' as message;
 import 'login_event.dart';
 import 'login_state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState>{
+class LoginBloc extends AbstractBloc<LoginEvent, LoginState>{
   final UserRepository userRepository;
   final AuthenticationBloc authenticationBloc;
 
-  LoginBloc({
+  LoginBloc(pageState, {
     @required this.userRepository,
     @required this.authenticationBloc
-  })  : assert(authenticationBloc != null);
+  }): assert(authenticationBloc != null), super(pageState);
 
   @override
   LoginState get initialState => LoginInitial();

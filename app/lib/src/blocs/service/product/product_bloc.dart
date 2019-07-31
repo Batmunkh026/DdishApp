@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/models/product.dart';
@@ -8,9 +9,11 @@ import 'package:ddish/src/repositiories/product_repository.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:ddish/src/utils/converter.dart';
 
-class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  var productRepository = ProductRepository();
-  var _userRepository = UserRepository();
+class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
+  var _productRepository;
+  var _userRepository;
+
+  ProductBloc(pageState) : super(pageState);
 
   ProductEvent beforeEvent = null;
   ProductState beforeState = null;
@@ -26,7 +29,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   @override
   ProductState get initialState {
-    productStream = productRepository.getProducts();
+    _productRepository  = ProductRepository(this);
+    _userRepository  = UserRepository(this);
+
+    productStream = _productRepository.getProducts();
 
     loadInitialData()
         .listen((f) => print("products.length: ${products.length}"));
@@ -51,20 +57,20 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         assert(selectedProduct != null);
 
         additionalProducts =
-            await productRepository.getAdditionalProducts(selectedProduct.id);
+            await _productRepository.getAdditionalProducts(selectedProduct.id);
 
         yield ProductTabState(
             event.selectedProductTabType, selectedProduct, additionalProducts);
       } else if (event.selectedProductTabType == ProductTabType.UPGRADE) {
         assert(selectedProduct != null);
         upProducts =
-            await productRepository.getUpgradableProducts(selectedProduct.id);
+            await _productRepository.getUpgradableProducts(selectedProduct.id);
         yield ProductTabState(
             event.selectedProductTabType, selectedProduct, upProducts);
       }
       //TODO
       else {
-        this.products = await productRepository.getProducts();
+        this.products = await _productRepository.getProducts();
         yield ProductTabState(
             event.selectedProductTabType, selectedProduct, products);
       }
@@ -86,7 +92,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           event.priceToExtend, products);
     } else if (event is CustomMonthChanged) {
       yield Loading(event.selectedTab);
-      String result = await productRepository.getUpgradePrice(
+      String result = await _productRepository.getUpgradePrice(
           event.currentProduct, event.productToExtend, event.monthToExtend);
       yield CustomMonthState(event.selectedTab, selectedProduct,
           event.productToExtend, event.monthToExtend, Converter.toInt(result));
@@ -106,8 +112,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
       ProductPaymentState resultState =
           await (event.selectedTab == ProductTabType.UPGRADE
-              ? productRepository.extendProduct(state)
-              : productRepository.chargeProduct(state));
+              ? _productRepository.extendProduct(state)
+              : _productRepository.chargeProduct(state));
 
       if (resultState.isSuccess) await updateUserData(event);
 
@@ -166,10 +172,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     if (event.selectedTab == ProductTabType.ADDITIONAL_CHANNEL)
       additionalProducts =
-          await productRepository.getAdditionalProducts(selectedProduct.id);
+          await _productRepository.getAdditionalProducts(selectedProduct.id);
     else
       upProducts =
-          await productRepository.getUpgradableProducts(selectedProduct.id);
+          await _productRepository.getUpgradableProducts(selectedProduct.id);
 
     fetchUserSelectedProduct();
   }

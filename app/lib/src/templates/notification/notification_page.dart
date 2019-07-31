@@ -15,7 +15,7 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   void initState() {
-    _notificationBloc = NotificationBloc();
+    _notificationBloc = NotificationBloc(this);
     super.initState();
   }
 

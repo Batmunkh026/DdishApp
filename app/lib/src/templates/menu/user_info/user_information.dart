@@ -16,15 +16,13 @@ class UserInformationWidget extends StatefulWidget {
 
 class UserInformationWidgetState extends State<UserInformationWidget> {
   UserInformationBloc _bloc;
-  UserRepository _userRepository;
 
   double width = 0;
   double height = 0;
 
   @override
   void initState() {
-    _userRepository = UserRepository();
-    _bloc = UserInformationBloc(userRepository: _userRepository);
+    _bloc = UserInformationBloc(this);
     super.initState();
   }
 

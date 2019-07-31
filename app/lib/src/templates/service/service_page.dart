@@ -56,7 +56,7 @@ class ServicePageState extends State<ServicePage>
 
   @override
   void initState() {
-    bloc = ServiceBloc();
+    bloc = ServiceBloc(this);
     _tabController = TabController(length: serviceTabs.length, vsync: this);
     bloc.tabController = _tabController;
     tabContainer = Container(); //Үйлчилгээ багцын дэд таб ын content container

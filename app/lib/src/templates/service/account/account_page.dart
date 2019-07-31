@@ -13,12 +13,10 @@ class AccountPage extends StatefulWidget {
 
 class AccountPageState extends State<AccountPage> {
   AccountBloc _bloc;
-  UserRepository _userRepository;
 
   @override
   void initState() {
-    _userRepository = UserRepository();
-    _bloc = AccountBloc(userRepository: _userRepository);
+    _bloc = AccountBloc(this);
     super.initState();
   }
 
