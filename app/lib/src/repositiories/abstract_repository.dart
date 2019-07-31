@@ -25,12 +25,13 @@ abstract class AbstractRepository<B extends AbstractBloc>{
   ///returns decoded json
   Future<dynamic> getResponse(String param, {hasDecoded = true}) async{
     debugPrint("http request param : $param");
+
+    if(client.credentials.isExpired)
+      bloc.connectionExpired();
     Response _response;
     try {
       _response = await client.get('$serverEndPoint/$param');
     } on Exception catch (e) {
-      if(e is ExpirationException)
-        bloc.connectionExpired();
       throw (e);
     }
 
