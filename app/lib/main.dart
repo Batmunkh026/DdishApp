@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
+import 'package:ddish/src/integration/integration.dart';
 import 'package:ddish/src/utils/connectivity.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,9 @@ void main() async {
 }
 
 Future<Widget> initializeApp(routes) async {
+
+  FirebaseNotifications().setUpFirebase();
+
   Connectivity connectivity = Connectivity();
 
   //холболтын төлвийг чагнах

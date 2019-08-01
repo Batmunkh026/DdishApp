@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "787604822649",
+    "firebase_url": "https://app-ddish.firebaseio.com",
+    "project_id": "app-ddish",
+    "storage_bucket": "app-ddish.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787604822649:android:5bfe71687188adbc",
+        "android_client_info": {
+          "package_name": "mn.ddishtv.ddish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787604822649-29n4qg4n6khqi65e0d44i1lcdfv8i75v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWj6XoDMYKZNfE9clNXBYOHqqW1JSrnMQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787604822649-29n4qg4n6khqi65e0d44i1lcdfv8i75v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "787604822649-rbf7182r6t96vhrgb0kpc3e6418j3p5i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "mn.ddishtv.iosapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
