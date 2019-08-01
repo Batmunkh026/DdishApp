@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:ddish/src/blocs/menu/menu_bloc.dart';
+import 'package:ddish/src/utils/events.dart';
+import 'package:ddish/src/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +10,7 @@ import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/header.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'menu.dart';
 import 'package:ddish/src/widgets/menu_expansion_tile.dart';
 
@@ -78,8 +83,10 @@ class MenuPageState extends State<MenuPage> {
                           return Column(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                                child: menuItem != null ? menuItem : Container(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25.0),
+                                child:
+                                    menuItem != null ? menuItem : Container(),
                               ),
                               Visibility(
                                 visible: menuItem != null,
@@ -114,7 +121,7 @@ class MenuPageState extends State<MenuPage> {
         ),
         contentPadding: root ? null : const EdgeInsets.only(left: 30.0),
         title: _buildTitle(menu.title),
-        onTap: () => menu.screen == null && menu.event != null ? Future(menu.event) : onMenuTap(menu),
+        onTap: () => onMenuTap(menu),
       );
     }
     GlobalKey<MenuExpansionTileState> _key = new GlobalKey();
@@ -125,16 +132,20 @@ class MenuPageState extends State<MenuPage> {
       title: _buildTitle(menu.title),
       children: menu.children.map((m) => _buildMenuItem(m, false)).toList(),
       onExpansionChanged: (expanded) {
-        if(expanded) {
-          expansionTileKeys.where((key) => key != _key).forEach((key) => key.currentState.collapse());
+        if (expanded) {
+          expansionTileKeys
+              .where((key) => key != _key)
+              .forEach((key) => key.currentState.collapse());
         }
       },
     );
   }
 
   onMenuTap(Menu menu) {
-    if (menu.title == 'Гарах') {
-      Navigator.of(context).pop();
+    if (menu.screen == null && menu.event != null)
+      eventExecutionPermission(menu);
+    else if (menu.title == 'Гарах') {
+      Navigator.of(context).pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false);
     } else
       _menuBloc.dispatch(MenuClicked(selectedMenu: menu));
   }
@@ -150,5 +161,53 @@ class MenuPageState extends State<MenuPage> {
             fontSize: 15.0),
       ),
     );
+  }
+
+  ///menu event дээр хэрэглэгчийн зөвшөөрөл авдаг event тэй контентуудыг харуулах
+  ///dialog дээр
+  eventExecutionPermission(Menu menu) {
+    const platform = Constants.platform;
+
+    if (Platform.isIOS)
+      platform.invokeMethod('call', [menu.title]);
+    else
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => CustomDialog(
+                content: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    menu.title,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                  ),
+                ),
+                //TODO menu бүтэц өөрчлөгдвөл, event төрөл илэрхийлэх бүтэц гаргаж ялгаж өгөөд, түүнээс dialog д харуулах мэдээллийг авах
+                submitButtonText: 'Call',
+                closeButtonText: 'Cancel',
+                onSubmit: () {
+                  Navigator.of(context).pop();
+                  PermissionHandler()
+                      .checkPermissionStatus(PermissionGroup.phone)
+                      .then((permissionStatus) {
+                    if (permissionStatus == PermissionStatus.granted)
+                      platform.invokeMethod('call', [menu.title]);
+                    else if (permissionStatus == PermissionStatus.unknown ||
+                        permissionStatus == PermissionStatus.denied)
+                      PermissionHandler().requestPermissions(
+                          [PermissionGroup.phone]).then((permissions) {
+                        PermissionHandler()
+                            .checkPermissionStatus(PermissionGroup.phone)
+                            .then((status) => status == PermissionStatus.granted
+                                ? platform.invokeMethod('call', [menu.title])
+                                : Events().callEvent(menu.title));
+                      });
+                    else
+                      Events().callEvent(menu.title);
+                  });
+                },
+              ));
   }
 }

@@ -15,10 +15,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   @override
   Stream<OrderState> mapEventToState(OrderEvent event) async* {
-    if (event is OrderTapped) {
+    if(event is OrderEdit){
+      //TODO edit
+      yield OrderWidgetStarted();
+    }else if (event is OrderTapped) {
       yield OrderRequestProcessing();
       Result result = await repository.postOrder(event.order);
-      yield OrderRequestFinished(result: result);
+      yield OrderRequestFinished(result: result, order: event.order);
     }
   }
 }

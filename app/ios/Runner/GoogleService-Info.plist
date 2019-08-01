@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>787604822649-rbf7182r6t96vhrgb0kpc3e6418j3p5i.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.787604822649-rbf7182r6t96vhrgb0kpc3e6418j3p5i</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAPkmo1BInq3lWBPnWlZmCLO7bBBB0DK0g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>787604822649</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>mn.ddishtv.iosapp</string>
+	<key>PROJECT_ID</key>
+	<string>app-ddish</string>
+	<key>STORAGE_BUCKET</key>
+	<string>app-ddish.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:787604822649:ios:49ec786ee5e43a9e</string>
+	<key>DATABASE_URL</key>
+	<string>https://app-ddish.firebaseio.com</string>
+</dict>
+</plist>

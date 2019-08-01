@@ -6,7 +6,6 @@ import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dialog_action.dart';
 import 'package:ddish/src/widgets/message.dart' as message;
 import 'package:ddish/src/widgets/movie/poster_image.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +21,11 @@ class Library extends StatefulWidget {
 class LibraryState extends State<Library> {
   final movieIdFieldController = TextEditingController();
   MovieLibraryBloc _bloc;
-  VodRepository _repository;
   List<String> posters = List();
 
   @override
   void initState() {
-    _repository = VodRepository();
-    _bloc = MovieLibraryBloc(repository: _repository);
+    _bloc = MovieLibraryBloc(this);
     super.initState();
   }
 
@@ -52,6 +49,7 @@ class LibraryState extends State<Library> {
                   searchById: true,
                   onSearchTap: onRentButtonTap,
                   controller: movieIdFieldController,
+                  fontSize: 12,
                 ),
               ),
               Container(
@@ -62,7 +60,7 @@ class LibraryState extends State<Library> {
                       color: const Color(0xff071f49),
                       fontWeight: FontWeight.w500,
                       fontStyle: FontStyle.normal,
-                      fontSize: 15.0),
+                      fontSize: 13.0),
                 ),
               ),
             ],
@@ -110,33 +108,15 @@ class LibraryState extends State<Library> {
   }
 
   onRentButtonTap() {
-    List<Widget> actions = new List();
-    ActionButton rentMovie = ActionButton(
-      title: 'Түрээслэх',
-      onTap: () {
-        Navigator.pop(context);
-        _bloc.dispatch(ContentOrderClicked(
-            contentId: int.parse(movieIdFieldController.text)));
-      },
-    );
-    ActionButton closeDialog = ActionButton(
-      title: 'Болих',
-      onTap: () => Navigator.pop(context),
-    );
-    actions.add(rentMovie);
-    actions.add(closeDialog);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
             important: true,
-            title: Text('Санамж',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: const Color(0xfffcfdfe),
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 15.0)),
+            title: 'Санамж',
+            submitButtonText: 'Түрээслэх',
+            closeButtonText: 'Болих',
+            onSubmit: _onRentAgreeTap,
             content: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -153,9 +133,14 @@ class LibraryState extends State<Library> {
                 ],
               ),
             ),
-            actions: actions,
           );
         });
+  }
+
+  _onRentAgreeTap() {
+    Navigator.pop(context);
+    _bloc.dispatch(
+        ContentOrderClicked(contentId: int.parse(movieIdFieldController.text)));
   }
 
   _showResultMessage(Result result) {

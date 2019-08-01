@@ -1,16 +1,17 @@
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
+import 'abstract_repository.dart';
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/models/counter.dart';
 
-class UserRepository {
+class UserRepository extends AbstractRepository {
   final authorizationEndpoint = Uri.parse(globals.serverEndpoint + "/login");
-  oauth2.Client client;
+
+  UserRepository(AbstractBloc bloc) : super(bloc);
 
   Future<String> authenticate({
     @required String username,
@@ -30,6 +31,8 @@ class UserRepository {
     }
 
     globals.client = client;
+    super.client = client;
+
     var sharedPref = await SharedPreferences.getInstance();
     if (rememberUsername)
       sharedPref.setString('username', username);
@@ -42,30 +45,13 @@ class UserRepository {
   }
 
   Future<User> getUserInformation() async {
-    Response response;
-    try {
-      response =
-          await globals.client.get(globals.serverEndpoint + '/getUserInfo');
-    } on Exception catch (e) {
-      throw e;
-    }
-
-    debugPrint(response.body);
-    var decoded = json.decode(response.body);
+    var decoded = await getResponse('getUserInfo');
     User userInformation = User.fromJson(decoded);
     return userInformation;
   }
 
   Future<Counter> getMainCounter() async {
-    var response;
-    try {
-      response = await globals.client
-          .read(globals.serverEndpoint + '/getUserInfo/main');
-    } on Exception catch (e) {
-      throw (e);
-    }
-
-    var decoded = json.decode(response);
+    var decoded = await getResponse('getUserInfo/main');
     Counter counter = Counter.fromJson(decoded['mainCounter']);
     return counter;
   }

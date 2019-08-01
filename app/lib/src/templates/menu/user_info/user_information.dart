@@ -16,12 +16,13 @@ class UserInformationWidget extends StatefulWidget {
 
 class UserInformationWidgetState extends State<UserInformationWidget> {
   UserInformationBloc _bloc;
-  UserRepository _userRepository;
+
+  double width = 0;
+  double height = 0;
 
   @override
   void initState() {
-    _userRepository = UserRepository();
-    _bloc = UserInformationBloc(userRepository: _userRepository);
+    _bloc = UserInformationBloc(this);
     super.initState();
   }
 
@@ -33,9 +34,10 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    if (height == 0) height = MediaQuery.of(context).size.height;
+    if (width == 0) width = MediaQuery.of(context).size.width;
     return Container(
-      padding: const EdgeInsets.all(30.0),
+      padding: const EdgeInsets.all(20.0),
       child: BlocBuilder<UserInformationEvent, UserInformationState>(
         bloc: _bloc,
         builder: (BuildContext context, UserInformationState state) {
@@ -45,13 +47,11 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
           }
           if (state is UserInformationLoaded) {
             User user = state.user;
-            List<Widget> layoutWidgets = populateUserInformation(user);
+            Stack layoutWidgets = populateUserInformation(user);
             return Container(
-              height: height * 0.6,
-              child: Stack(
-                overflow: Overflow.visible,
-                children: layoutWidgets,
-              ),
+              height: height * 0.65,
+              width: width * 0.9,
+              child: layoutWidgets,
             );
           }
           return Container();
@@ -63,146 +63,111 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
   populateUserInformation(User user) {
     bool hasActiveCounters =
         user.activeCounters != null && user.activeCounters.isNotEmpty;
-    int counterSize = hasActiveCounters ? user.activeCounters.length : 0;
-    double counterPosition = 90.0;
     bool hasActiveProducts =
         user.activeProducts != null && user.activeProducts.isNotEmpty;
-    double productPosition = hasActiveCounters
-        ? counterPosition + 30.0 * (counterSize + 1)
-        : counterPosition;
     bool hasAdditionalProducts =
         user.additionalProducts != null && user.additionalProducts.isNotEmpty;
-    double additionalProductPosition = hasAdditionalProducts
-        ? productPosition + 30.0 * (user.activeProducts.length + 1)
-        : productPosition;
-    List<Widget> activeProductWidgets = [
-      Positioned(
-        left: 10.0,
-        child:
-            Text('Смарт картын дугаар:', style: style.userInfoIndicatorStyle),
-      ),
-      Positioned(
-        left: 200.0,
-        child: Text(user.cardNo.toString(), style: style.userInfoValueStyle),
-      ),
-      Positioned(
-        top: 30.0,
-        left: 10.0,
-        child: Text('Хэрэглэгчийн овог, нэр:',
+
+    List<Widget> userInformationKeys = [
+      Text('Смарт картын дугаар:', style: style.userInfoIndicatorStyle),
+      Text('Хэрэглэгчийн овог, нэр:', style: style.userInfoIndicatorStyle),
+      Text('Админ утасны дугаар:', style: style.userInfoIndicatorStyle),
+      Visibility(
+        visible: hasActiveCounters,
+        child: Text("Урамшууллын данс болон эрх:",
             style: style.userInfoIndicatorStyle),
       ),
-      Positioned(
-        top: 30.0,
-        left: 200.0,
-        child: Text(
-            user.userLastName.substring(0, 1) + '. ${user.userFirstName}',
-            style: style.userInfoValueStyle),
-      ),
-      Positioned(
-        top: 60.0,
-        left: 10.0,
-        child:
-            Text('Админ утасны дугаар:', style: style.userInfoIndicatorStyle),
-      ),
-      Positioned(
-        top: 60.0,
-        left: 200.0,
-        child: Text('${user.adminNumber}', style: style.userInfoValueStyle),
-      ),
-      Positioned(
-        top: counterPosition,
-        left: 10.0,
-        child: Visibility(
-          visible: hasActiveCounters,
-          child: Text("Урамшууллын данс болон эрх:",
-              style: style.userInfoIndicatorStyle),
-        ),
-      ),
-      Positioned(
-        top: productPosition,
-        left: 10.0,
-        child: Visibility(
-          visible: hasActiveProducts,
-          child: Text("Идэвхтэй багцууд:", style: style.userInfoIndicatorStyle),
-        ),
-      ),
-      Positioned(
-        top: additionalProductPosition,
-        left: 10.0,
-        child: Visibility(
-          visible: hasAdditionalProducts,
-          child: Text("Идэвхтэй нэмэлт сувгууд:",
-              style: style.userInfoIndicatorStyle),
-        ),
-      ),
     ];
+
+    List<Widget> userInformationValues = [];
+    userInformationValues.addAll([
+      Text(user.cardNo.toString(), style: style.userInfoValueStyle),
+      Text(user.userLastName.substring(0, 1) + '. ${user.userFirstName}',
+          style: style.userInfoValueStyle),
+      Text('${user.adminNumber}', style: style.userInfoValueStyle),
+    ]);
+
     user.activeCounters
-        .map((counter) => activeProductWidgets.addAll([
-              Positioned(
-                top: counterPosition +
-                    30.0 * (user.activeCounters.indexOf(counter) + 1),
-                left: 10.0,
-                child: Text(
+        .map((counter) => userInformationKeys.add(Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
                   counter.counterName,
                   style: style.activeProductsStyle,
                 ),
-              ),
-              Positioned(
-                top: counterPosition +
-                    30.0 * (user.activeCounters.indexOf(counter) + 1),
-//        left: 150.0,
-                right: 0.0,
-                child: Text(
+                Text(
                   '${counter.counterBalance} ₮',
                   style: style.activeProductsStyle,
                 ),
-              )
-            ]))
+              ],
+            )))
         .toList();
+    userInformationKeys.add(
+      Visibility(
+        visible: hasActiveProducts,
+        child: Text("Идэвхтэй багцууд:", style: style.userInfoIndicatorStyle),
+      ),
+    );
     user.activeProducts
-        .map((product) => activeProductWidgets.addAll([
-              Positioned(
-                top: productPosition +
-                    30.0 * (user.activeProducts.indexOf(product) + 1),
-                left: 10.0,
-                child: Text(
-                  product.name,
-                  style: style.activeProductsStyle,
-                ),
-              ),
-              Positioned(
-                top: productPosition +
-                    30.0 * (user.activeProducts.indexOf(product) + 1),
-                left: 150.0,
-                child: Text(
-                  'Дуусах хугацаа: ${DateUtil.formatDateTime(product.expireDate)}',
-                  style: style.activeProductsStyle,
-                ),
-              )
-            ]))
+        .map((product) => userInformationKeys.add(Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    product.name,
+                    style: style.activeProductsStyle,
+                  ),
+                  Text(
+                    '${DateUtil.formatDateTimeWithDot(product.expireDate)}-нд дуусна',
+                    style: style.activeProductsStyle,
+                  ),
+                ])))
         .toList();
+    userInformationKeys.add(
+      Visibility(
+        visible: hasAdditionalProducts,
+        child: Text("Идэвхтэй нэмэлт сувгууд:",
+            style: style.userInfoIndicatorStyle),
+      ),
+    );
     user.additionalProducts
-        .map((product) => activeProductWidgets.addAll([
-              Positioned(
-                top: additionalProductPosition +
-                    30.0 * (user.additionalProducts.indexOf(product) + 1),
-                left: 10.0,
-                child: Text(
-                  product.name,
-                  style: style.activeProductsStyle,
-                ),
-              ),
-              Positioned(
-                top: additionalProductPosition +
-                    30.0 * (user.additionalProducts.indexOf(product) + 1),
-                left: 150.0,
-                child: Text(
-                  'Дуусах хугацаа: ${DateUtil.formatDateTime(product.expireDate)}',
-                  style: style.activeProductsStyle,
-                ),
-              )
-            ]))
+        .map((product) => userInformationKeys.add(Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    product.name,
+                    style: style.activeProductsStyle,
+                  ),
+                  Text(
+                    '${DateUtil.formatDateTimeWithDot(product.expireDate)}-нд дуусна',
+                    style: style.activeProductsStyle,
+                  ),
+                ])))
         .toList();
-    return activeProductWidgets;
+    return Stack(
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: userInformationKeys
+              .map((child) => Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: child,
+                  ))
+              .toList(),
+        ),
+        Container(
+          width: width * 0.9,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: userInformationValues
+                .map((child) => Padding(
+                      padding: EdgeInsets.only(bottom: 12),
+                      child: child,
+                    ))
+                .toList(),
+          ),
+        )
+      ],
+    );
   }
 }

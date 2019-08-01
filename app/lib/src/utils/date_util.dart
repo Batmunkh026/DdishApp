@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 class DateUtil {
   static var formatter = new DateFormat("yyyy-MM-dd");
+  static var formatterWithDot = new DateFormat("yyyy.MM.dd");
   static var timeFormatter = new DateFormat('HH:mm');
   static var parameterFormatter = new DateFormat("yyyyMMdd");
   static var theatreDateFormatter = new DateFormat("dd | MM | yyyy");
@@ -15,6 +15,10 @@ class DateUtil {
   ///yyyy-MM-dd
   static String formatDateTime(DateTime dateTime) {
     return formatter.format(dateTime);
+  }
+  ///yyyy.MM.dd
+  static String formatDateTimeWithDot(DateTime dateTime) {
+    return formatterWithDot.format(dateTime);
   }
 
   ///yyyyMMdd
@@ -36,6 +40,13 @@ class DateUtil {
   static String formatProductDate(DateTime dateTime) {
     if (dateTime == null) return "_";
     return productDateFormatter.format(dateTime);
+  }
+
+  ///7 хоног дотор бол OK
+  ///
+  ///date.difference(7)
+  static bool isValidProgramDate(DateTime time) {
+    return time.difference(DateTime.now().add(Duration(days: 7))).inDays != 0;
   }
 
   static bool today(DateTime time) {

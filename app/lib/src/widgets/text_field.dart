@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 class InputField extends StatelessWidget {
   String initialValue;
@@ -10,11 +12,15 @@ class InputField extends StatelessWidget {
   double fontSize;
   var validateFunction;
   var onSaved;
+  var onFieldSubmitted;
   var textController;
   bool hasBorder;
   Key key;
   TextAlign align;
   EdgeInsets padding;
+  List<TextInputFormatter> inputFormatters;
+  final bool hasClearButton;
+  final VoidCallback onClear;
 
   //passing props in the Constructor.
   //Java like style
@@ -27,11 +33,16 @@ class InputField extends StatelessWidget {
       this.textInputType,
       this.bottomMargin,
       this.validateFunction,
+      this.fontSize,
       this.onSaved,
       this.textController,
       this.hasBorder = false,
       this.align = TextAlign.start,
-      this.padding});
+      this.padding,
+      this.inputFormatters,
+      this.onFieldSubmitted,
+      this.hasClearButton = false,
+      this.onClear});
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +65,16 @@ class InputField extends StatelessWidget {
         keyboardType: textInputType,
         validator: validateFunction,
         onSaved: onSaved,
+        onFieldSubmitted: onFieldSubmitted,
         controller: textController,
         textAlign: align,
+        inputFormatters: inputFormatters,
         decoration: new InputDecoration(
-          enabledBorder: hasBorder ? null : UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          ),
+          enabledBorder: hasBorder
+              ? null
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
           border: hasBorder
               ? OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),

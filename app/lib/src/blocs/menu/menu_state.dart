@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:meta/meta.dart';
 import 'package:ddish/src/templates/menu/menu.dart';
 

@@ -1,15 +1,17 @@
 import 'package:bloc/bloc.dart';
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ddish/src/models/user.dart';
 import 'user_information_event.dart';
 import 'user_information_state.dart';
 
-class UserInformationBloc extends Bloc<UserInformationEvent, UserInformationState>{
-  final UserRepository userRepository;
+class UserInformationBloc extends AbstractBloc<UserInformationEvent, UserInformationState>{
+  UserRepository _userRepository;
 
-  UserInformationBloc({
-    @required this.userRepository});
+  UserInformationBloc(pageState):super(pageState){
+   _userRepository = UserRepository(this);
+  }
 
   @override
   UserInformationState get initialState => UserInformationInitial();
@@ -18,7 +20,7 @@ class UserInformationBloc extends Bloc<UserInformationEvent, UserInformationStat
   Stream<UserInformationState> mapEventToState(UserInformationEvent event) async* {
     if(event is UserInformationStarted) {
       yield UserInformationInitial();
-      User userInformation = await userRepository.getUserInformation();
+      User userInformation = await _userRepository.getUserInformation();
       yield UserInformationLoaded(user: userInformation);
     }
   }

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ChannelThumbnail extends StatelessWidget {
   var onPressed;
@@ -10,24 +11,27 @@ class ChannelThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return GestureDetector(
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
-          Center(
+          Flexible(
             child: CachedNetworkImage(
               imageUrl: channel.channelLogo,
               placeholder: (context, url) => Text(channel.productName),
               fit: BoxFit.contain,
             ),
           ),
-          Align(
-            child: Text('/${channel.channelNo}/', style: TextStyle(
-                color:  const Color(0xff071f49),
+          Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text(
+              '/${channel.channelNo}/',
+              style: TextStyle(
+                color: const Color(0xff071f49),
                 fontWeight: FontWeight.w400,
-                fontStyle:  FontStyle.normal,
-            ),),
-            alignment: Alignment.bottomRight,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
           )
         ],
       ),

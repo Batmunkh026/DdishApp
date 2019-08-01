@@ -6,7 +6,7 @@ class Branch {
   double lat;
   double lon;
   String city = "UB";
-  String type; //TODO салбарын төрөл ямар төрлийн өгөгдөл байх
+  String type;
   String state; //TODO салбарын төлөв ямар төрлийн өгөгдөл байх
   List<String> services = ["test"];
   String name;

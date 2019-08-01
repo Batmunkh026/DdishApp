@@ -1,26 +1,21 @@
-import 'dart:convert';
-
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/models/notification.dart';
-import 'package:http/http.dart' as http;
 import 'package:ddish/src/repositiories/globals.dart' as globals;
 
-class NotificationRepository {
+import 'abstract_repository.dart';
+
+class NotificationRepository extends AbstractRepository {
   final client = globals.client;
 
+  NotificationRepository(AbstractBloc bloc) : super(bloc);
+
   Future<List<Notification>> getNotifications() async {
-    try {
-      final _response =
-          await client.read('${globals.serverEndpoint}/notification');
-      var _notificationReponse = json.decode(_response) as Map;
+    var _notificationReponse = await getResponse('notification') as Map;
 
-      if (_notificationReponse["isSuccess"])
-        return List<Notification>.from(_notificationReponse["notifications"]
-            .map((product) => Notification.fromJson(product)));
+    if (_notificationReponse["isSuccess"])
+      return List<Notification>.from(_notificationReponse["notifications"]
+          .map((product) => Notification.fromJson(product)));
 
-      return [];
-    } on http.ClientException catch (e) {
-      // TODO catch SocketException
-      throw (e);
-    }
+    return [];
   }
 }

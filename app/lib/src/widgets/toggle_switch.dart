@@ -6,12 +6,7 @@ class ToggleSwitch extends StatelessWidget {
   TextStyle style;
   bool value;
 
-  ToggleSwitch({
-    this.hint,
-    this.onChanged,
-    this.style,
-    this.value
-  });
+  ToggleSwitch({this.hint, this.onChanged, this.style, this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +20,12 @@ class ToggleSwitch extends StatelessWidget {
           activeColor: Color(0xFF5d92d6),
           onChanged: onChanged,
         ),
-        Text(
-          hint,
-          style: style,
+        Container(
+          width: MediaQuery.of(context).size.width*0.6,
+          child: Text(
+            hint,
+            style: style,
+          ),
         )
       ],
     );

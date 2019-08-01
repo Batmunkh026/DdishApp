@@ -15,22 +15,32 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   void initState() {
-    _notificationBloc = NotificationBloc();
+    _notificationBloc = NotificationBloc(this);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: BlocBuilder(
-        bloc: _notificationBloc,
-        builder: (context, state) {
-          if (state is Loading)
-            return Center(child: CircularProgressIndicator());
-          else if (state is Loaded)
-            return buildNotifications(state.notifications);
-        },
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('Notification',
+            style: TextStyle(fontSize: 14, color: Colors.white)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      backgroundColor: Colors.transparent,
+      body: Container(
+        padding: EdgeInsets.only(left: 18, right: 18, bottom: 20),
+        child: BlocBuilder(
+          bloc: _notificationBloc,
+          builder: (context, state) {
+            if (state is Loading)
+              return Center(child: CircularProgressIndicator());
+            else if (state is Loaded)
+              return buildNotification(state.notifications);
+          },
+        ),
       ),
     );
   }
@@ -41,45 +51,60 @@ class NotificationPageState extends State<NotificationPage> {
     super.dispose();
   }
 
-  Widget buildNotifications(List<ddish.Notification> notifications) {
-    return Center(
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        width: MediaQuery.of(context).size.width * 0.8,
-//        color: Colors.white,
-        decoration: new BoxDecoration(
-            color: Colors.white,
-            borderRadius: new BorderRadius.all(Radius.circular(20))),
-        child: ListView(
-          children: notifications.map((notification) {
-            return Material(
-              child: InkWell(
-                highlightColor: Color.fromRGBO(154, 199, 255, 1),
-                onTap: () => {},
-                child: Container(
-                  padding:
-                      EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-                  child: Column(
+  Widget buildNotification(List<ddish.Notification> notifications) {
+    return Container(
+      decoration: new BoxDecoration(
+        color: Colors.white,
+        borderRadius: new BorderRadius.all(Radius.circular(20)),
+      ),
+      padding: EdgeInsets.only(top: 10),
+      child: notifications.isEmpty
+          ? Center(
+              child: Text(
+                'Мэдэгдэл ирээгүй байна.',
+                textAlign: TextAlign.center,
+              ),
+            )
+          : buildNotifications(notifications),
+    );
+  }
+
+  Widget buildNotifications(notifications) {
+    return ListView(
+      children: List<Widget>.from(notifications.map((notification) {
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            highlightColor: Color.fromRGBO(154, 199, 255, 1),
+            onTap: () => {},
+            child: Container(
+              padding:
+                  EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(notification.name),
-                          Text(DateUtil.formatDateTime(notification.date)),
-                        ],
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: Text(
+                          notification.name,
+                          softWrap: true,
+                        ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5),
-                        child: Text(notification.text),
-                      )
+                      Text(DateUtil.formatDateTime(notification.date)),
                     ],
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15),
+                    child: Text(notification.text),
+                  )
+                ],
               ),
-            );
-          }).toList(),
-        ),
-      ),
+            ),
+          ),
+        );
+      })),
     );
   }
 }

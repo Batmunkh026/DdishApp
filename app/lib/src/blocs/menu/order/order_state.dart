@@ -1,3 +1,4 @@
+import 'package:ddish/src/models/order.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:equatable/equatable.dart';
 
@@ -21,8 +22,9 @@ class OrderRequestProcessing extends OrderState {
 
 class OrderRequestFinished extends OrderState {
   final Result result;
+  final Order order;
 
-  OrderRequestFinished({this.result});
+  OrderRequestFinished({this.result, this.order});
 
   @override
   String toString() => 'order request finished.';
