@@ -31,7 +31,6 @@ class UserRepository extends AbstractRepository {
     }
 
     globals.client = client;
-    super.client = client;
 
     var sharedPref = await SharedPreferences.getInstance();
     if (rememberUsername)

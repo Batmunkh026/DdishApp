@@ -2,7 +2,6 @@ import 'package:ddish/src/blocs/menu/user/user_information_bloc.dart';
 import 'package:ddish/src/blocs/menu/user/user_information_event.dart';
 import 'package:ddish/src/blocs/menu/user/user_information_state.dart';
 import 'package:ddish/src/models/user.dart';
-import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:ddish/src/templates/menu/user_info/style.dart' as style;
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:flutter/cupertino.dart';
