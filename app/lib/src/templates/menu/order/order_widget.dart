@@ -46,7 +46,7 @@ class OrderWidgetState extends State<OrderWidget> {
               child: Center(child: Text(district.name.toUpperCase())),
             )));
     _repository = MenuRepository();
-    _bloc = OrderBloc(repository: _repository);
+    _bloc = OrderBloc(this, repository: _repository);
     super.initState();
   }
 

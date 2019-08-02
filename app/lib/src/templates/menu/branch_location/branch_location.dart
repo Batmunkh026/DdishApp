@@ -12,7 +12,7 @@ class BranchLocationView extends StatefulWidget {
 }
 
 class BranchLocationState extends State<BranchLocationView> {
-  final MenuBloc bloc = MenuBloc();
+  MenuBloc _bloc;
 
   List<Branch> branches = [];
   BranchParam _params;
@@ -39,7 +39,8 @@ class BranchLocationState extends State<BranchLocationView> {
 
   @override
   void initState() {
-    bloc.getBranchParam().then((params) {
+    _bloc = MenuBloc(this);
+    _bloc.getBranchParam().then((params) {
       setState(() {
         _params = params;
       });
@@ -52,7 +53,7 @@ class BranchLocationState extends State<BranchLocationView> {
 
     _branchFilterStreamController.stream.listen((branchFilter) {
       //branch location data load
-      bloc
+      _bloc
           .getBranches(branchFilter.cityCode, branchFilter.typeCode,
               branchFilter.serviceCode)
           .then((branches) {
@@ -291,7 +292,7 @@ class BranchLocationState extends State<BranchLocationView> {
   @override
   void dispose() {
     _branchFilterStreamController.close();
-    bloc.dispose();
+    _bloc.dispose();
     super.dispose();
   }
 

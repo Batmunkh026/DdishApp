@@ -32,7 +32,7 @@ class MenuPageState extends State<MenuPage> {
   @override
   void initState() {
     authenticated = widget.onBackButtonTap == null;
-    _menuBloc = MenuBloc();
+    _menuBloc = MenuBloc(this);
     this.menuItems = Constants.menuItems;
     super.initState();
   }

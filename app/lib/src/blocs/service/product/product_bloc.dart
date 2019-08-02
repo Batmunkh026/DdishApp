@@ -8,8 +8,10 @@ import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/product_repository.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:ddish/src/utils/converter.dart';
+import 'package:logging/logging.dart';
 
 class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
+  final Logger log = new Logger('ProductBloc');
   var _productRepository;
   var _userRepository;
 
@@ -35,7 +37,7 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
     productStream = _productRepository.getProducts();
 
     loadInitialData()
-        .listen((f) => print("products.length: ${products.length}"));
+        .listen((f) => log.info("products.length: ${products.length}"));
 
     return Loading(ProductTabType.EXTEND);
   }

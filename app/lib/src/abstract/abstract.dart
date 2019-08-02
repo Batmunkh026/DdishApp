@@ -16,7 +16,7 @@ abstract class AbstractBloc<Event, State> extends Bloc<Event, State>{
     try{
       Navigator.of(pageState.context).pushNamedAndRemoveUntil("/Login", (_) => false);
     }catch(e){
-      print(e);
+      log.warning(e);
     }
   }
 }

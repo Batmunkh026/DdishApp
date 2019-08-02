@@ -24,7 +24,7 @@ class PromoWidgetState extends State<PromoWidget> {
   void initState() {
     promotions = List<NewPromoMdl>();
     _repository = PromoRepository();
-    _bloc = PromoBloc(repository: _repository);
+    _bloc = PromoBloc(this, repository: _repository);
     super.initState();
   }
 
