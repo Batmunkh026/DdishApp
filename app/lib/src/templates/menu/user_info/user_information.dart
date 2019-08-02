@@ -51,7 +51,11 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
             return Container(
               height: height * 0.65,
               width: width * 0.9,
-              child: layoutWidgets,
+              padding: EdgeInsets.all(3),
+              child: SingleChildScrollView(
+                child: layoutWidgets,
+                scrollDirection: Axis.vertical,
+              ),
             );
           }
           return Container();
