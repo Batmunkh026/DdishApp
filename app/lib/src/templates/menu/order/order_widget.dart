@@ -15,6 +15,7 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'style.dart' as style;
@@ -87,6 +88,12 @@ class OrderWidgetState extends State<OrderWidget> {
                         validateFunction: InputValidations.validateName,
                       ),
                       InputField(
+                        inputFormatters: [
+                          InputValidations
+                              .acceptedFormatters[InputType.NumberInt],
+                          WhitelistingTextInputFormatter(
+                              RegExp(r'^[\d+]{0,8}$'))
+                        ],
                         align: TextAlign.center,
                         placeholder: 'УТАСНЫ ДУГААР',
                         textInputType: TextInputType.number,
@@ -169,7 +176,7 @@ class OrderWidgetState extends State<OrderWidget> {
           return CustomDialog(
             title: 'Санамж',
             closeButtonText: 'Хаах',
-            onClose: (){
+            onClose: () {
               Navigator.pop(context);
               _bloc.dispatch(OrderEdit(state.order));
             },
