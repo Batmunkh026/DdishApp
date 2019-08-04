@@ -11,6 +11,13 @@ abstract class ProductEvent extends Equatable {
   ProductEvent(this.selectedTab, [List props = const []]) : super(props);
 }
 
+class ProductStarted extends ProductEvent{
+  ProductStarted(ProductTabType selectedTab) : super(selectedTab);
+
+  @override
+  String toString() => "product started";
+}
+
 ///Сунгах багцуудыг төрлөөр нь сонгох үед дуудагдах эвент
 ///
 /// parameter:

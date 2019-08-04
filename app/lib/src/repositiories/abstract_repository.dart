@@ -27,13 +27,17 @@ abstract class AbstractRepository<B extends AbstractBloc> {
   Future<dynamic> getResponse(String param, {hasDecoded = true}) async {
     var client = globals.client;
     log.info("http request param : $param");
-    if (client.credentials.isExpired) bloc.connectionExpired("session expired on credential.isExpired: ${bloc}");
+    if (client.credentials.isExpired)
+      bloc.connectionExpired(
+          "session expired on credential.isExpired: ${bloc}");
 
     Response _response;
     try {
       _response = await client.get('$serverEndPoint/$param');
     } on Exception catch (e) {
-      if (e is ExpirationException) bloc.connectionExpired("session expired on abstract repo GET req: ${bloc}");
+      if (e is ExpirationException)
+        bloc.connectionExpired(
+            "session expired on abstract repo GET req: ${bloc}");
       log.warning("credential.isExpired: FALSE , but : session expired!");
 //      throw (e);
     }
@@ -48,7 +52,8 @@ abstract class AbstractRepository<B extends AbstractBloc> {
 
     if (_decoded['isSuccess'] == false &&
         _decoded['resultCode'] == 'Unauthorized') {
-      bloc.connectionExpired("session expired on : caused by server response > ${_decoded}");
+      bloc.connectionExpired(
+          "session expired on : caused by server response > ${_decoded}");
     }
     return _decoded;
   }

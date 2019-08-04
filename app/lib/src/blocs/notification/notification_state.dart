@@ -5,6 +5,10 @@ abstract class NotificationState extends Equatable {
   NotificationState([List props = const []]) : super(props);
 }
 
+class Started extends NotificationState{
+
+}
+
 class Loading extends NotificationState {
   @override
   String toString() => 'loading...';

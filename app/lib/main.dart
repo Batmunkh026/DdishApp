@@ -30,11 +30,14 @@ class SimpleBlocDelegate extends BlocDelegate {
       updateExpireTimeOfLogoutTask(client.credentials.expiration, bloc);
 
       log.warning("session will expire: ${client.credentials.expiration}}");
+
+
       //state өөрчлөгдөх бүрт credential update хийх
-      if (client.credentials.canRefresh)
-        client
-            .refreshCredentials()
-            .then((newClient) => globals.client = newClient);
+      ///TODO ddish API дээр дутуу юм байгаа. дуусахаар шалгана.
+//      if (client.credentials.canRefresh)
+//        client
+//            .refreshCredentials()
+//            .then((newClient) => globals.client = newClient);
     }
 //
     if (event is NetworkAccessRequired)
@@ -52,8 +55,8 @@ class SimpleBlocDelegate extends BlocDelegate {
 
       Timer expireTask = Timer(
           Duration(milliseconds: difference.inMilliseconds.abs()),
-          () => bloc
-              .connectionExpired("session expired on : sessionTimer task"));
+          () => bloc.connectionExpired(
+              "session expired on sessionTimerTask: bloc > $bloc"));
 
       //өмнөх таск ыг цуцлах
       if (sessionExpire != null) sessionExpire.cancel();

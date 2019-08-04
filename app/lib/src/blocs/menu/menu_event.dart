@@ -7,6 +7,11 @@ abstract class MenuEvent extends Equatable {
   MenuEvent([List props = const []]) : super(props);
 }
 
+class MenuStarted extends MenuEvent{
+  @override
+  String toString() => "menu started";
+}
+
 class MenuHidden extends MenuEvent {
   MenuHidden();
 

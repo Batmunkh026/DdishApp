@@ -57,6 +57,8 @@ class ProductPageState extends State<ProductPage>
     return BlocBuilder(
         bloc: _bloc,
         builder: (BuildContext context, ProductState state) {
+          if (state is Started) _bloc.initialize();
+
           return BlocProviderTree(blocProviders: [
             BlocProvider<ServiceBloc>(
               bloc: _serviceBloc,
@@ -77,7 +79,9 @@ class ProductPageState extends State<ProductPage>
     var productExpireDate = _bloc.getExpireDateOfUserSelectedProduct();
 
     var productAppBarContent;
-    if (_bloc.currentState is Loading && productExpireDate == null)
+
+    if (_bloc.currentState is Started ||
+        _bloc.currentState is Loading && productExpireDate == null)
       productAppBarContent = Container(
         child: Center(
           child: FittedBox(
@@ -88,8 +92,6 @@ class ProductPageState extends State<ProductPage>
         height: 25,
       );
     else {
-      updateAppBar = false;
-
       productAppBarContent = Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +201,8 @@ class ProductPageState extends State<ProductPage>
     double containerHeight = widget.height - appBarHeight;
     var _state = _bloc.currentState;
 
-    if (_state is Loading) return Center(child: CircularProgressIndicator());
+    if (_state is Loading || _state is Started)
+      return Center(child: CircularProgressIndicator());
 
     if (_state is ProductTabState || _state is ProductSelectionState) {
       if (_bloc.backState is SelectedProductPreview) createDefaultAppBar();
@@ -229,6 +232,8 @@ class ProductPageState extends State<ProductPage>
   Widget _buildAppBar() {
     var _state = _bloc.currentState;
 
+    if (updateAppBar) createDefaultAppBar();
+
     var _appBar = _state is SelectedProductPreview
         ? AppBar(
             backgroundColor: Colors.white,
@@ -241,8 +246,6 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildBody() {
-    if (updateAppBar) createDefaultAppBar();
-
     var _appBar = _buildAppBar();
 
     var _content = _buildContents();
@@ -250,7 +253,8 @@ class ProductPageState extends State<ProductPage>
     var _body =
         _createTabBarBody(_content, _bloc.currentState.selectedProductTab);
 
-    if (_bloc.currentState is SelectedProductPreview) return _body;
+    if (_bloc.currentState is SelectedProductPreview ||
+        _bloc.currentState is ProductPaymentState) return _body;
 
     return Scaffold(
       appBar: _appBar,
@@ -290,6 +294,8 @@ class ProductPageState extends State<ProductPage>
   }
 
   void createDefaultAppBar() {
+    if (!(_bloc.currentState is Loading || _bloc.currentState is Started))
+      updateAppBar = false;
     var prefSize = Size(queryData.size.width, 84);
     defaultAppBar = PreferredSize(
       child: AppBar(

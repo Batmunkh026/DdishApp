@@ -15,7 +15,10 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
   var _productRepository;
   var _userRepository;
 
-  ProductBloc(pageState) : super(pageState);
+  ProductBloc(pageState) : super(pageState) {
+    _productRepository = ProductRepository(this);
+    _userRepository = UserRepository(this);
+  }
 
   ProductEvent beforeEvent = null;
   ProductState beforeState = null;
@@ -30,16 +33,13 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
   Future<List<Product>> productStream; //TODO API аас авдаг болсон үед ашиглана
 
   @override
-  ProductState get initialState {
-    _productRepository  = ProductRepository(this);
-    _userRepository  = UserRepository(this);
+  ProductState get initialState => Started(ProductTabType.EXTEND);
 
+  initialize(){
     productStream = _productRepository.getProducts();
 
     loadInitialData()
         .listen((f) => log.info("products.length: ${products.length}"));
-
-    return Loading(ProductTabType.EXTEND);
   }
 
   loadInitialData() async* {

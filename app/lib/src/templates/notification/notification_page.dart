@@ -1,4 +1,5 @@
 import 'package:ddish/src/blocs/notification/notification_bloc.dart';
+import 'package:ddish/src/blocs/notification/notification_event.dart';
 import 'package:ddish/src/blocs/notification/notification_state.dart';
 import 'package:ddish/src/models/notification.dart' as ddish;
 import 'package:ddish/src/utils/date_util.dart';
@@ -12,7 +13,6 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage> {
   NotificationBloc _notificationBloc;
-
   @override
   void initState() {
     _notificationBloc = NotificationBloc(this);
@@ -35,10 +35,14 @@ class NotificationPageState extends State<NotificationPage> {
         child: BlocBuilder(
           bloc: _notificationBloc,
           builder: (context, state) {
-            if (state is Loading)
+            if (state is Started) _notificationBloc.dispatch(LoadEvent());
+
+            if (state is Loading || state is Started)
               return Center(child: CircularProgressIndicator());
             else if (state is Loaded)
               return buildNotification(state.notifications);
+            else
+              return Container();
           },
         ),
       ),

@@ -19,10 +19,10 @@ class MenuBloc extends AbstractBloc<MenuEvent, MenuState> {
     if (event is MenuHidden) {
       yield MenuInitial();
     }
-    if (event is MenuNavigationClicked) {
+    else if (event is MenuNavigationClicked) {
       yield MenuOpened();
     }
-    if (event is MenuClicked) {
+    else if (event is MenuClicked) {
       yield ChildMenuOpened(menu: event.selectedMenu);
     }
   }
