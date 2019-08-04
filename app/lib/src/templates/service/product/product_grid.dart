@@ -19,8 +19,9 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
 
   double _pickerWidth;
   double _pickerHeight;
+  double _containerHeight;
 
-  ProductGridPicker(this._productContent);
+  ProductGridPicker(this._productContent, this._containerHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +162,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       isChannelDetail = false,
       isMore = false}) {
     if (price == 0) price = selectedProduct.price;
-    TextStyle pickerTextStyle = TextStyle(fontSize: 12);
+    TextStyle pickerTextStyle = TextStyle(fontSize: 11);
 
     List<Widget> children = [
       Text(

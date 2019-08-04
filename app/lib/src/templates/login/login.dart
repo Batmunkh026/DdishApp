@@ -64,8 +64,10 @@ class LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginEvent, LoginState>(
       bloc: _loginBloc,
-      builder: (BuildContext context,
-          LoginState state,) {
+      builder: (
+        BuildContext context,
+        LoginState state,
+      ) {
         return Form(
           key: _formKey,
           child: Column(
@@ -82,82 +84,78 @@ class LoginViewState extends State<LoginView> {
                   ],
                 ),
               ),
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        InputField(
-                          placeholder: 'АДМИН ДУГААР / СМАРТ КАРТЫН ДУГААР',
-                          textController: _usernameController,
-                          obscureText: false,
-                          textInputType: TextInputType.number,
-                          validateFunction:
-                          InputValidations.validateNumberValue,
-                        ),
-                        InputField(
-                          placeholder: 'НУУЦ ҮГ /****/',
-                          textController: _passwordController,
-                          obscureText: true,
-                          validateFunction:
-                          InputValidations.validateNotNullValue,
-                        ),
-                        FlatButton(
-                          onPressed: () => _showDialog(context),
-                          padding: EdgeInsets.all(0.0),
-                          child: Text(
-                            'Нууц үгээ мартсан уу?',
-                            style: TextStyle(
-                              color: Color(0xffe4f0ff),
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              fontSize: 15.0,
+              Stack(children: [
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          InputField(
+                            placeholder: 'АДМИН ДУГААР / СМАРТ КАРТЫН ДУГААР',
+                            textController: _usernameController,
+                            obscureText: false,
+                            textInputType: TextInputType.number,
+                            validateFunction:
+                                InputValidations.validateNumberValue,
+                          ),
+                          InputField(
+                            placeholder: 'НУУЦ ҮГ /****/',
+                            textController: _passwordController,
+                            obscureText: true,
+                            validateFunction:
+                                InputValidations.validateNotNullValue,
+                          ),
+                          FlatButton(
+                            onPressed: () => _showDialog(context),
+                            padding: EdgeInsets.all(0.0),
+                            child: Text(
+                              'Нууц үгээ мартсан уу?',
+                              style: TextStyle(
+                                color: Color(0xffe4f0ff),
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 15.0,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.8,
-                    child: Column(
-                      children: <Widget>[
-                        ToggleSwitch(
-                          value: rememberUsername,
-                          hint: "Нэвтрэх нэр хадгалах",
-                          style: style.switchHint,
-                          onChanged: (value) => rememberUsername = value,
-                        ),
-                        Visibility(
-                          visible: widget.canCheckBiometrics,
-                          child: ToggleSwitch(
-                            value: useFingerprint,
-                            hint: "Цаашид хурууны хээгээр нэвтэрнэ",
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        children: <Widget>[
+                          ToggleSwitch(
+                            value: rememberUsername,
+                            hint: "Нэвтрэх нэр хадгалах",
                             style: style.switchHint,
-                            onChanged: (value) => useFingerprint = value,
+                            onChanged: (value) => rememberUsername = value,
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                          Visibility(
+                            visible: widget.canCheckBiometrics,
+                            child: ToggleSwitch(
+                              value: useFingerprint,
+                              hint: "Цаашид хурууны хээгээр нэвтэрнэ",
+                              style: style.switchHint,
+                              onChanged: (value) => useFingerprint = value,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Center(child: Container(child: state is LoginLoading ? CircularProgressIndicator() : null,),)
+              ]),
               SubmitButton(
                 text: "НЭВТРЭХ",
                 verticalMargin: 10.0,
                 horizontalMargin: 70.0,
                 onPressed:
-                state is! LoginLoading ? _onLoginButtonPressed : null,
-              ),
-              Container(
-                child:
-                state is LoginLoading ? CircularProgressIndicator() : null,
+                    state is! LoginLoading ? _onLoginButtonPressed : null,
               ),
             ],
           ),

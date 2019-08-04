@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:ddish/src/templates/notification/notification_page.dart';
 import 'package:ddish/src/templates/service/service_page.dart';
@@ -62,7 +63,6 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver {
       notificationPage,
       menuPage,
     ];
-    final double height = MediaQuery.of(context).size.height;
     return WillPopScope(
         child: Scaffold(
             resizeToAvoidBottomPadding: false,
@@ -76,12 +76,15 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: Container(
-                child: content[_currentTabIndex],
+              child: SafeArea(
+                minimum: EdgeInsets.all(16),
+                child: Container(
+                  child: content[_currentTabIndex],
+                ),
               ),
             ),
             bottomNavigationBar: Container(
-              height: height * 0.08,
+              height: MediaQuery.of(context).size.height * 0.09,
               child: BottomNavigationBar(
                 currentIndex: _currentTabIndex,
                 backgroundColor: Color(0xFF2a68b8),

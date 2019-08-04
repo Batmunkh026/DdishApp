@@ -26,33 +26,9 @@ class ServicePageState extends State<ServicePage>
   var serviceTabs = Constants.serviceTabs;
   TabController _tabController;
 
-  ///Үйлчилгээний үндсэн таб ууд
-  TabBar get createTabBar => TabBar(
-        labelPadding: EdgeInsets.symmetric(horizontal: 30.0),
-        indicatorSize: TabBarIndicatorSize.label,
-        isScrollable: true,
-        controller: _tabController,
-        tabs: serviceTabs
-            .map((tabItem) => Tab(
-                  text: tabItem.title,
-                ))
-            .toList(),
-        onTap: (tabIndex) =>
-            bloc.dispatch(ServiceTabSelected(serviceTabs[tabIndex].state)),
-        labelStyle: const TextStyle(
-          color: const Color(0xfff9f9f9),
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-          fontSize: 15.0,
-        ),
-        indicator: BubbleTabIndicator(
-            indicatorColor: Color(0xff2a68b8),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0)),
-        indicatorColor: Colors.transparent,
-        unselectedLabelStyle: TextStyle(color: Color(0xfff9f9f9)),
-        unselectedLabelColor: Color(0xfff9f9f9),
-      );
+  TabBar tabBar;
+  double titleContainerHeight = 0;
+  double contentContainerHeight = 0;
 
   @override
   void initState() {
@@ -66,52 +42,82 @@ class ServicePageState extends State<ServicePage>
 
   @override
   Widget build(BuildContext context) {
+    if (contentContainerHeight == 0) {
+      double screenHeight = MediaQuery.of(context).size.height;
+      double bottomBarHeight = screenHeight*0.09;
+      //not initialized
+      tabBar = createTabBar;
+      double tabBarHeight = tabBar.preferredSize.height;
+      titleContainerHeight = screenHeight * 0.05;
+
+      contentContainerHeight =
+          screenHeight - titleContainerHeight - tabBarHeight - bottomBarHeight - screenHeight * 0.1;
+    }
+
     return BlocProvider(bloc: bloc, child: createBuilder(context));
   }
 
   Widget createBuilder(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-
-    return SingleChildScrollView(
-      physics: NeverScrollableScrollPhysics(),
-      child: Container(
-        margin: EdgeInsets.fromLTRB(8, 10, 8, 4),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: height * 0.07),
-              child: Text("Үйлчилгээ",
-                  style: const TextStyle(
-                      color: const Color(0xfff8f8f8),
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 17.0)),
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            height: titleContainerHeight,
+            child: Text("Үйлчилгээ",
+                style: TextStyle(
+                  color: Color(0xfff8f8f8),
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                  fontSize: 17,
+                )),
+          ),
+          tabBar,
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: new BorderRadius.circular(20.0),
             ),
-            createTabBar,
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 70.0),
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: new BorderRadius.circular(20.0),
-                ),
-                child: SizedBox(
-                  height: height * 0.7,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [AccountPage(), ProductPage(), MoviePage()],
-                  ),
-                ),
+            child: SizedBox(
+              height: contentContainerHeight,
+              child: TabBarView(
+                controller: _tabController,
+                children: [AccountPage(contentContainerHeight), ProductPage(contentContainerHeight), MoviePage()],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+
+  ///Үйлчилгээний үндсэн таб ууд
+  TabBar get createTabBar => TabBar(
+    labelPadding: EdgeInsets.symmetric(horizontal: 30.0),
+        indicatorSize: TabBarIndicatorSize.label,
+        isScrollable: true,
+        controller: _tabController,
+        tabs: serviceTabs
+            .map((tabItem) => Tab(
+                  text: tabItem.title,
+                ))
+            .toList(),
+        onTap: (tabIndex) =>
+            bloc.dispatch(ServiceTabSelected(serviceTabs[tabIndex].state)),
+        labelStyle: TextStyle(
+          color: Color(0xfff9f9f9),
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+          fontSize: 15,
+        ),
+        indicator: BubbleTabIndicator(
+            indicatorColor: Color(0xff2a68b8),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0)),
+        indicatorColor: Colors.transparent,
+        unselectedLabelStyle: TextStyle(color: Color(0xfff9f9f9)),
+        unselectedLabelColor: Color(0xfff9f9f9),
+      );
 
   @override
   void dispose() {

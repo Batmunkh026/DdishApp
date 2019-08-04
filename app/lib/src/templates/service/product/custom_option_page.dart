@@ -53,6 +53,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
     super.initState();
   }
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     if (widget.isPaymentComputed) {
@@ -89,57 +90,60 @@ class CustomProductChooserState extends State<CustomProductChooser>
         : label;
     return ListView(
       children: [
-        Column(
-          children: <Widget>[
-            FlatButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Constants.appIcons[AppIcons.Back],
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: backComponent,
+        Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                FlatButton(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Constants.appIcons[AppIcons.Back],
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.55,
+                        child: backComponent,
+                      ),
+                      Divider()
+                    ],
                   ),
-                  Divider()
-                ],
-              ),
-              //TODO back to previous page
-              onPressed: _bloc.backToPrevState,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.3,
-              height: MediaQuery.of(context).size.height * 0.055,
-              margin: EdgeInsets.only(top: 15, bottom: 15),
-              child: InputField(
-                hasBorder: true,
-                align: TextAlign.center,
-                initialValue: '${month == null ? '' : month}',
-                textInputType: TextInputType.text,
-                inputFormatters: [
-                  InputValidations.acceptedFormatters[InputType.NumberInt],
-                  WhitelistingTextInputFormatter(RegExp(r'(^1[0-2]$)|(^[0-9]$)'))
-                ],
-                onFieldSubmitted: (value) =>
-                    monthStreamController.add(Converter.toInt(value)),
-              ),
-            ),
-            Text(
-              "Сунгах сарын үнийн дүн",
-              style: TextStyle(fontSize: 10),
-            ),
-            Padding(
-              padding: EdgeInsets.all(15),
-              child: Text(
-                  "₮${PriceFormatter.productPriceFormat(paymentPreview)}",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            SubmitButton(
-                text: "Сунгах",
-                onPressed: () => _toExtend(state),
-                verticalMargin: 0,
-                horizontalMargin: 0)
-          ],
-        )
+                  //TODO back to previous page
+                  onPressed: _bloc.backToPrevState,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.055,
+                  margin: EdgeInsets.only(top: 15, bottom: 15),
+                  child: InputField(
+                    hasBorder: true,
+                    align: TextAlign.center,
+                    initialValue: '${month == null ? '' : month}',
+                    textInputType: TextInputType.text,
+                    inputFormatters: [
+                      InputValidations.acceptedFormatters[InputType.NumberInt],
+                      WhitelistingTextInputFormatter(
+                          RegExp(r'(^1[0-2]$)|(^[0-9]$)'))
+                    ],
+                    onFieldSubmitted: (value) =>
+                        monthStreamController.add(Converter.toInt(value)),
+                  ),
+                ),
+                Text(
+                  "Сунгах сарын үнийн дүн",
+                  style: TextStyle(fontSize: 10),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                      "₮${PriceFormatter.productPriceFormat(paymentPreview)}",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                SubmitButton(
+                    text: "Сунгах",
+                    onPressed: () => _toExtend(state),
+                    verticalMargin: 0,
+                    horizontalMargin: 0)
+              ],
+            ))
       ],
     );
   }

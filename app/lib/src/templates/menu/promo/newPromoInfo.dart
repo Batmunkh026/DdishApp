@@ -65,7 +65,8 @@ class PromoWidgetState extends State<PromoWidget> {
                             child: GestureDetector(
                               child: Container(
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
                                   child: CachedNetworkImage(
                                     imageUrl: promotions[index].PromoPosterUrl,
                                     placeholder: (context, url) => Container(
@@ -121,25 +122,26 @@ class PromoWidgetState extends State<PromoWidget> {
           );
         }
         if (state is PromoWidgetDetialTapped) {
-          return Container(
-            height: (MediaQuery.of(context).size.height * 0.75),
-            width: (MediaQuery.of(context).size.width * 0.9),
-            alignment: Alignment.topCenter,
-            child: new ListView(
-              reverse: false,
-              children: <Widget>[
-                RichText(
-                  text: TextSpan(
-                      text: selectedPromo.PromoDescText,
-                      style: const TextStyle(
-                        color: const Color(0xffFFFFF0),
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.normal,
-                        //fontSize: 16.0,
-                        fontFamily: 'Montserrat',
-                      )),
-                )
-              ].reversed.toList(),
+          return Expanded(
+            child: Container(
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                reverse: false,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                        text: selectedPromo.PromoDescText,
+                        style: const TextStyle(
+                          color: const Color(0xffFFFFF0),
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.normal,
+                          //fontSize: 16.0,
+                          fontFamily: 'Montserrat',
+                        )),
+                  )
+                ].reversed.toList(),
+              ),
+              padding: EdgeInsets.only(right: 15, left: 15),
             ),
           );
         }

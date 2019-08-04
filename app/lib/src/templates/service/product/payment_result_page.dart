@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductPaymentPreview extends StatefulWidget {
+  ProductPaymentPreview();
+
   @override
   State<StatefulWidget> createState() => ProductPaymentPreviewState();
 }
@@ -37,42 +39,47 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 
   @override
   Widget build(BuildContext context) {
+    var fontSize = MediaQuery.of(context).size.aspectRatio * 30;
     var titles = ["Багц", "Хугацаа", "Дүн"];
     List<Widget> contentsForGrid = [];
     var style = TextStyle(
         fontWeight: FontWeight.w500,
         color: Color(0xff071f49),
-        fontSize: 12,
-        fontFamily: 'Montserrat');
-    var boldStyle = TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: style.fontSize,
+//        fontSize: fontSize,
         fontFamily: 'Montserrat');
 
-    contentsForGrid
-        .addAll(titles.map((title) => Text("$title", style: style)).toList());
+    var boldStyle = TextStyle(
+        fontWeight: FontWeight.bold,
+//        fontSize: fontSize,
+        fontFamily: 'Montserrat');
+
+    contentsForGrid.addAll(titles.map((title) => Text("$title")).toList());
 
     var isUpgrade = _state.selectedProductTab == ProductTabType.UPGRADE;
     var isUpgradeOrChannel =
         _state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             isUpgrade;
 
-    contentsForGrid.add(isUpgradeOrChannel
-        ? Padding(
-            padding: EdgeInsets.only(right: 40),
-            child: CachedNetworkImage(
-              imageUrl: _state.selectedProduct.image,
-              placeholder: (context, url) => Text(
+    contentsForGrid.add(
+      Align(
+        alignment: Alignment.topCenter,
+        child: isUpgradeOrChannel
+            ? CachedNetworkImage(
+                imageUrl: _state.selectedProduct.image,
+                placeholder: (context, url) => Text(
+                  _state.selectedProduct.name,
+                  style: style,
+                ),
+                fit: BoxFit.contain,
+              )
+            : Text(
                 _state.selectedProduct.name,
-                style: style,
+                style: boldStyle,
+                textAlign: TextAlign.center,
+                softWrap: true,
               ),
-              fit: BoxFit.contain,
-            ))
-        : Text(
-            _state.selectedProduct.name,
-            style: boldStyle,
-            softWrap: true,
-          ));
+      ),
+    );
     contentsForGrid.add(Text("${_state.monthToExtend} сар", style: boldStyle));
 
 //      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
@@ -85,59 +92,64 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 
     return Scaffold(
       body: Column(
-        children: <Widget>[
-          Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(10),
-              child: Text(
-                "Сунгах",
-                style: boldStyle,
-                textAlign: TextAlign.start,
-              )),
-          FlatButton(
-            padding: EdgeInsets.only(bottom: 20, right: 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Constants.appIcons[AppIcons.Back],
-                UnderlinedText(
-                  "Төлбөрийн мэдээлэл",
-                  textStyle: TextStyle(fontSize: 13),
-                  underlineWidth: 1,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    "Сунгах",
+                    style: boldStyle,
+                    textAlign: TextAlign.start,
+                  )),
+              FlatButton(
+                padding: EdgeInsets.only(bottom: 20, right: 40),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Constants.appIcons[AppIcons.Back],
+                    UnderlinedText(
+                      "Төлбөрийн мэдээлэл",
+//                  textStyle: TextStyle(fontSize: fontSize),
+                      underlineWidth: 1,
+                    ),
+                    Divider(),
+                  ],
                 ),
-                Divider(),
-              ],
-            ),
-            onPressed: _bloc.backToPrevState,
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.25,
-            child: Scaffold(
-              body: GridView.count(
-                padding: EdgeInsets.only(left: 40),
-                childAspectRatio: 2.5,
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                children: contentsForGrid,
+                onPressed: _bloc.backToPrevState,
               ),
-              floatingActionButton: FlatButton(
+              Container(
+                height: MediaQuery.of(context).size.height * 0.15,
+                child: GridView.count(
+                  padding: EdgeInsets.only(left: 40),
+                  childAspectRatio: 2,
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  children: contentsForGrid,
+                ),
+              ),
+              FlatButton(
                 child: UnderlinedText("Үндсэн дансаар"),
                 onPressed: () => {},
               ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerFloat,
-            ),
+            ],
           ),
-          SubmitButton(
-              text: "Сунгах",
-              padding: EdgeInsets.only(top: 50),
-              onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
-                  _state.selectedProductTab,
-                  _state.selectedProduct,
-                  _state.monthToExtend,
-                  _state.priceToExtend)),
-              verticalMargin: 0,
-              horizontalMargin: 0)
+          Center(
+            child: SubmitButton(
+                text: "Сунгах",
+                padding: EdgeInsets.only(top: 20),
+                onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
+                    _state.selectedProductTab,
+                    _state.selectedProduct,
+                    _state.monthToExtend,
+                    _state.priceToExtend)),
+                verticalMargin: 0,
+                horizontalMargin: 0),
+          ),
+          Divider()
         ],
       ),
     );
@@ -202,8 +214,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
       TextSpan(text: '${state.monthToExtend} ', style: boldStyle),
       TextSpan(text: 'сараар '),
       TextSpan(text: '${state.priceToExtend} ₮ ', style: boldStyle),
-      TextSpan(
-          text: ' төлөн амжилттай $resultText.')
+      TextSpan(text: ' төлөн амжилттай $resultText.')
     ];
   }
 }

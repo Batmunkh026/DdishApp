@@ -24,13 +24,16 @@ class SubmitButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(
             vertical: verticalMargin, horizontal: horizontalMargin),
         onPressed: onPressed,
-        shape:
-        RoundedRectangleBorder(borderRadius: new BorderRadius.circular(20.0)),
-        child: Text(text,
-            style: const TextStyle(
-                color: const Color(0xffffffff),
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal)),
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(20.0)),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Color(0xffffffff),
+            fontWeight: FontWeight.w400,
+            fontStyle: FontStyle.normal,
+          ),
+        ),
       ),
     );
   }

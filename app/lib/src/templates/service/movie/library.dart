@@ -4,7 +4,6 @@ import 'package:ddish/src/blocs/service/movie/library/library_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_event.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
 import 'package:ddish/src/models/result.dart';
-import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/message.dart' as message;
 import 'package:ddish/src/widgets/movie/poster_image.dart';
@@ -49,7 +48,6 @@ class LibraryState extends State<Library> {
                   searchById: true,
                   onSearchTap: onRentButtonTap,
                   controller: movieIdFieldController,
-                  fontSize: 12,
                 ),
               ),
               Container(
