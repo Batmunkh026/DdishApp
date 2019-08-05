@@ -73,14 +73,16 @@ class CustomProductChooserState extends State<CustomProductChooser>
     Widget backComponent = isUpgradeOrChannel
         ? Column(children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * 0.08,
+              height: MediaQuery.of(context).size.height * 0.1,
               padding: EdgeInsets.only(top: 10),
               child: Padding(
                 padding: EdgeInsets.all(8),
                 child: CachedNetworkImage(
                   imageUrl: state.selectedProduct.image,
-                  placeholder: (context, url) =>
-                      Text(state.selectedProduct.name),
+                  placeholder: (context, url) => Text(
+                    state.selectedProduct.name,
+                    softWrap: true,
+                  ),
                   fit: BoxFit.contain,
                 ),
               ),
@@ -88,63 +90,83 @@ class CustomProductChooserState extends State<CustomProductChooser>
             Container(width: MediaQuery.of(context).size.width, child: label)
           ])
         : label;
-    return ListView(
-      children: [
-        Form(
-            key: _formKey,
-            child: Column(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Center(
+        child: Form(
+          key: _formKey,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ListView(
+              shrinkWrap: true,
               children: <Widget>[
                 FlatButton(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Stack(
+                    alignment: Alignment.centerRight,
                     children: <Widget>[
-                      Constants.appIcons[AppIcons.Back],
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.55,
-                        child: backComponent,
+                      Align(
+                        child: Constants.appIcons[AppIcons.Back],
+                        alignment: Alignment.centerLeft,
                       ),
-                      Divider()
+                      Align(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          child: backComponent,
+                        ),
+                        alignment: Alignment.topCenter,
+                      ),
                     ],
                   ),
                   //TODO back to previous page
                   onPressed: _bloc.backToPrevState,
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  height: MediaQuery.of(context).size.height * 0.055,
-                  margin: EdgeInsets.only(top: 15, bottom: 15),
-                  child: InputField(
-                    hasBorder: true,
-                    align: TextAlign.center,
-                    initialValue: '${month == null ? '' : month}',
-                    textInputType: TextInputType.text,
-                    inputFormatters: [
-                      InputValidations.acceptedFormatters[InputType.NumberInt],
-                      WhitelistingTextInputFormatter(
-                          RegExp(r'(^1[0-2]$)|(^[0-9]$)'))
-                    ],
-                    onFieldSubmitted: (value) =>
-                        monthStreamController.add(Converter.toInt(value)),
-                  ),
-                ),
-                Text(
-                  "Сунгах сарын үнийн дүн",
-                  style: TextStyle(fontSize: 10),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                      "₮${PriceFormatter.productPriceFormat(paymentPreview)}",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                SubmitButton(
-                    text: "Сунгах",
-                    onPressed: () => _toExtend(state),
-                    verticalMargin: 0,
-                    horizontalMargin: 0)
+                Center(
+                    child: Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.055,
+                      padding: EdgeInsets.only(top: 5),
+                      child: InputField(
+                        hasBorder: true,
+                        align: TextAlign.center,
+                        initialValue: '${month == null ? '' : month}',
+                        textInputType: TextInputType.text,
+                        inputFormatters: [
+                          InputValidations
+                              .acceptedFormatters[InputType.NumberInt],
+                          WhitelistingTextInputFormatter(
+                              RegExp(r'(^1[0-2]$)|(^[0-9]$)'))
+                        ],
+                        onFieldSubmitted: (value) =>
+                            monthStreamController.add(Converter.toInt(value)),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text(
+                        "Сунгах сарын үнийн дүн",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 15, bottom: 15),
+                      child: Text(
+                          "₮${PriceFormatter.productPriceFormat(paymentPreview)}",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    SubmitButton(
+                        text: "Сунгах",
+                        onPressed: () => _toExtend(state),
+                        verticalMargin: 0,
+                        horizontalMargin: 0)
+                  ],
+                )),
               ],
-            ))
-      ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 

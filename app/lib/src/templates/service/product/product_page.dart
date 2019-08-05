@@ -257,6 +257,7 @@ class ProductPageState extends State<ProductPage>
         _bloc.currentState is ProductPaymentState) return _body;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: _appBar,
       body: _body,
     );
