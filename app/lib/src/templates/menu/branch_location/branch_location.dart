@@ -32,10 +32,10 @@ class BranchLocationState extends State<BranchLocationView> {
 
   Branch selectedBranch = null;
 
-  bool isStateFilter=false;
+  bool isStateFilter = false;
 
   var textStyle =
-      TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 13.0);
+      TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 11);
 
   @override
   void initState() {
@@ -69,13 +69,17 @@ class BranchLocationState extends State<BranchLocationView> {
     super.initState();
   }
 
+  double pickersContainerHeight = 0;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height * 0.4;
+    pickersContainerHeight = MediaQuery.of(context).size.height * 0.18;
 
     //state filter нь service учир static зааж өглөө
     //TODO тодруулах
-    isStateFilter = selectedState != null && selectedState.isNotEmpty && selectedState != "Бүгд";
+    isStateFilter = selectedState != null &&
+        selectedState.isNotEmpty &&
+        selectedState != "Бүгд";
 
     loadMarkerImages(context);
 
@@ -88,13 +92,14 @@ class BranchLocationState extends State<BranchLocationView> {
       child: Column(
         children: <Widget>[
           Container(
-            height: MediaQuery.of(context).size.height * 0.2,
+            height: pickersContainerHeight,
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: createFilterComponents(branches)),
           ),
           Container(
-            padding: EdgeInsets.only(top: 8, bottom: 8),
+            padding: EdgeInsets.only(top: 5, bottom: 5),
             height: height,
             child: Card(child: createGoogleMap()),
           ),
@@ -109,59 +114,74 @@ class BranchLocationState extends State<BranchLocationView> {
   Widget createSelector(String title, List<dynamic> items,
       Function(dynamic) event, selectedItem) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
+      height: pickersContainerHeight / 2.2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            child: Text(
-              title,
-              style: textStyle,
-            ),
-            padding: EdgeInsets.only(bottom: 8),
-          ),
+          Padding(padding: EdgeInsets.only(bottom: 5), child: Text(
+            title,
+            style: textStyle,
+          ),),
           Theme(
-              data: ThemeData(canvasColor: Theme.of(context).primaryColor),
-              child: Container(
-                padding: EdgeInsets.only(right: 5, left: 5, top: 0, bottom: 0),
-                height: MediaQuery.of(context).size.height * 0.05,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                        width: 1.0,
-                        style: BorderStyle.solid,
-                        color: textStyle.color),
-                    borderRadius: BorderRadius.all(Radius.circular(33.0)),
-                  ),
+            data: ThemeData(canvasColor: Theme.of(context).primaryColor),
+            child: Container(
+              padding: EdgeInsets.only(right: 5, left: 5, top: 0, bottom: 0),
+              height: MediaQuery.of(context).size.height * 0.05,
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                      width: 1.0,
+                      style: BorderStyle.solid,
+                      color: textStyle.color),
+                  borderRadius: BorderRadius.all(Radius.circular(33.0)),
                 ),
-                child: DropdownButton<dynamic>(
-                  isExpanded: true,
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: textStyle.color,
-                  ),
-                  underline: Container(),
-                  items: items
-                      .map(
-                        (item) => DropdownMenuItem(
-                            child: Center(
+              ),
+              child: DropdownButton<dynamic>(
+                isExpanded: true,
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: textStyle.color,
+                ),
+                underline: Container(),
+                items: items
+                    .map(
+                      (item) => DropdownMenuItem(
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.all(3),
                               child: Text(
                                 item is String ? item : item.name,
-                                style: TextStyle(
-                                    fontSize: textStyle.fontSize,
-                                    color: textStyle.color),
+                                style: TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 12),
+                                softWrap: true,
                               ),
                             ),
-                            value: item),
-                      )
-                      .toList(),
-                  value: selectedItem == null && items.isNotEmpty
-                      ? items.first
-                      : selectedItem,
-                  onChanged: (selectedItem) =>
-                      Function.apply(event, [selectedItem]),
-                ),
-              ))
+                          ),
+                          value: item),
+                    )
+                    .toList(),
+                value: selectedItem == null && items.isNotEmpty
+                    ? items.first
+                    : selectedItem,
+                onChanged: (selectedItem) =>
+                    Function.apply(event, [selectedItem]),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  createSelectorColumn(selector1, selector2) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width * 0.45,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          selector1,
+          selector2,
         ],
       ),
     );
@@ -170,10 +190,7 @@ class BranchLocationState extends State<BranchLocationView> {
   ///Шүүлтүүрүүд
   List<Widget> createFilterComponents(List<Branch> branches) {
     return [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
+      createSelectorColumn(
           createSelector(
               "Хот, Аймаг",
               _params.branchAreas,
@@ -189,13 +206,8 @@ class BranchLocationState extends State<BranchLocationView> {
                     this.selectedType = type;
                     addToBranchFilterStream();
                   }),
-              selectedType),
-        ],
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
+              selectedType)),
+      createSelectorColumn(
           createSelector(
               "Салбарын төлөв",
               ["Бүгд", "Нээлттэй", "Хаалттай"],
@@ -211,9 +223,7 @@ class BranchLocationState extends State<BranchLocationView> {
                     this.selectedService = service;
                     addToBranchFilterStream();
                   }),
-              selectedService),
-        ],
-      ),
+              selectedService)),
     ];
   }
 
@@ -222,13 +232,14 @@ class BranchLocationState extends State<BranchLocationView> {
     if (selectedBranch == null) return Container();
 
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(5),
       child: SingleChildScrollView(
+        padding: EdgeInsets.all(5),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              width: MediaQuery.of(context).size.width * 0.5,
+              width: MediaQuery.of(context).size.width * 0.45,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -236,8 +247,7 @@ class BranchLocationState extends State<BranchLocationView> {
                     padding: EdgeInsets.only(bottom: 10),
                     child: Text(
                       selectedBranch.name,
-                      style:
-                      TextStyle(color: textStyle.color, fontSize: 14),
+                      style: TextStyle(color: textStyle.color),
                     ),
                   ),
                   RichText(
@@ -248,7 +258,9 @@ class BranchLocationState extends State<BranchLocationView> {
                 ],
               ),
             ),
-            Column(children: createTimeTableWidgets(selectedBranch))
+            Flexible(
+              child: Column(children: createTimeTableWidgets(selectedBranch)),
+            )
           ],
         ),
       ),
@@ -284,8 +296,8 @@ class BranchLocationState extends State<BranchLocationView> {
       ),
       icon: icon,
       onTap: () => setState(() {
-            this.selectedBranch = branch;
-          }),
+        this.selectedBranch = branch;
+      }),
     );
   }
 
@@ -326,10 +338,11 @@ class BranchLocationState extends State<BranchLocationView> {
   void filterByBranchState() {
     setState(() {
       selectedBranch = null;
-      if(selectedState == "Бүгд")
+      if (selectedState == "Бүгд")
         widget.filteredBranch.clear();
       else
-        widget.filteredBranch = branches.where((b)=> b.state == selectedState).toList();
+        widget.filteredBranch =
+            branches.where((b) => b.state == selectedState).toList();
     });
   }
 }

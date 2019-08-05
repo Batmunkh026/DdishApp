@@ -51,7 +51,7 @@ class ServicePageState extends State<ServicePage>
       titleContainerHeight = screenHeight * 0.05;
 
       contentContainerHeight =
-          screenHeight - titleContainerHeight - tabBarHeight - bottomBarHeight - screenHeight * 0.1;
+          screenHeight - titleContainerHeight - tabBarHeight - bottomBarHeight - screenHeight * 0.11;
     }
 
     return BlocProvider(bloc: bloc, child: createBuilder(context));
