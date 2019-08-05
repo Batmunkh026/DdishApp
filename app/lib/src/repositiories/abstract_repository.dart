@@ -54,6 +54,7 @@ abstract class AbstractRepository<B extends AbstractBloc> {
         _decoded['resultCode'] == 'Unauthorized') {
       bloc.connectionExpired(
           "session expired on : caused by server response > ${_decoded}");
+      throw ExpirationException(globals.client.credentials);
     }
     return _decoded;
   }
