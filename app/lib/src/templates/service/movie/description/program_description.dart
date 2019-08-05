@@ -103,28 +103,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
             Padding(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DetailButton(
-                    text: 'Тайлбар',
-                    onTap: _content.contentDescr != null ||
-                            _content.contentDescr.isNotEmpty
-                        ? () => showOverview(_content)
-                        : null,
-                  ),
-                  DetailButton(
-                    text: 'Видео',
-                    onTap: _content.trailerUrl.length == 11
-                        ? () => showTrailer(_content)
-                        : null,
-                  ),
-                  DetailButton(
-                    text: 'Зураг',
-                    onTap: _content.posterUrl != null &&
-                            _content.posterUrl.isNotEmpty
-                        ? () => showPoster(_content)
-                        : null,
-                  ),
-                ],
+                children: buildButtons(),
               ),
               padding: const EdgeInsets.symmetric(vertical: 10.0),
             ),
@@ -338,5 +317,32 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                 ],
               ));
         });
+  }
+
+  buildButtons() {
+    List<Widget> buttons = [
+      DetailButton(
+        text: 'Тайлбар',
+        onTap: _content.contentDescr != null || _content.contentDescr.isNotEmpty
+            ? () => showOverview(_content)
+            : null,
+      ),
+      DetailButton(
+        text: 'Видео',
+        onTap: _content.trailerUrl.length == 11
+            ? () => showTrailer(_content)
+            : null,
+      ),
+      DetailButton(
+        text: 'Зураг',
+        onTap: _content.posterUrl != null && _content.posterUrl.isNotEmpty
+            ? () => showPoster(_content)
+            : null,
+      )
+    ];
+    return List<Widget>.from(buttons.map((btn) => Container(
+          child: btn,
+          width: MediaQuery.of(context).size.width * 0.25,
+        )));
   }
 }
