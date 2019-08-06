@@ -112,6 +112,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.55,
                           child: backComponent,
+                          padding: EdgeInsets.only(bottom: 10),
                         ),
                         alignment: Alignment.topCenter,
                       ),

@@ -63,6 +63,7 @@ class OrderWidgetState extends State<OrderWidget> {
         }
         return Expanded(
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.transparent,
             body: Center(
               child: ListView(
