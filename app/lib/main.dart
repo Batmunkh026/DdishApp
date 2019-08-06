@@ -5,6 +5,7 @@ import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/blocs/authentication/authentication_event.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
+import 'package:ddish/src/integration/integration.dart';
 import 'package:ddish/src/utils/connectivity.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,9 @@ void main() async {
 }
 
 Future<Widget> initializeApp(routes) async {
+
+  FirebaseNotifications().setUpFirebase();
+
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
