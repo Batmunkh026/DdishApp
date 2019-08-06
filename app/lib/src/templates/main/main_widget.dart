@@ -1,7 +1,7 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'dart:io';
 import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
-import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/templates/menu/menu_page.dart';
 import 'package:ddish/src/templates/notification/notification_page.dart';
 import 'package:ddish/src/templates/service/service_page.dart';
@@ -14,10 +14,28 @@ import 'package:logging/logging.dart';
 
 class MainView extends StatefulWidget {
   final Logger log = new Logger('MainView');
-  MainView({Key key}) : super(key: key);
+  MainView({Key key}) : super(key: key) {
+    registerFCMToken();
+  }
 
   @override
   State<MainView> createState() => MainViewState();
+
+  void registerFCMToken() {
+    if (globals.client != null)
+      globals.client.get(
+          "${globals.serverEndpoint}/regClientToken/${globals.FCM_TOKEN}",
+          headers: {
+            HttpHeaders.authorizationHeader: globals.authorizationToken
+          }).then((response) {
+        try {
+          var responseJson = json.decode(response.body);
+          log.info("registering FCM token : ${responseJson}");
+        } catch (e) {
+          log.warning(e);
+        }
+      });
+  }
 }
 
 class MainViewState extends State<MainView> with WidgetsBindingObserver {
