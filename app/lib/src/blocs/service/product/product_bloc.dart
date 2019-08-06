@@ -35,7 +35,7 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
   @override
   ProductState get initialState => Started(ProductTabType.EXTEND);
 
-  initialize(){
+  initialize() {
     productStream = _productRepository.getProducts();
 
     loadInitialData()
@@ -141,9 +141,14 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
     }
-    if (!(event is Loading || event is ProductStarted ||
-        event is ExtendSelectedProduct ||
-        event is PreviewSelectedProduct) && beforeState != currentState) {
+    if (!(event is Loading ||
+            event is ProductStarted ||
+            event is ExtendSelectedProduct ||
+            event is PreviewSelectedProduct ||
+            event is CustomMonthChanged) &&
+        beforeState != currentState) {
+      log.info(
+          "state changing : before = $beforeState  ,  current = $currentState ");
       beforeState = currentState;
       beforeEvent = event;
     }

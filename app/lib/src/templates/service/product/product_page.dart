@@ -35,7 +35,6 @@ class ProductPageState extends State<ProductPage>
   bool updateAppBar = true;
   var defaultAppBar;
 
-  double appBarHeight = 0;
   double contentContainerHeight = 0;
 
   MediaQueryData queryData;
@@ -82,45 +81,31 @@ class ProductPageState extends State<ProductPage>
 
     if (_bloc.currentState is Started ||
         _bloc.currentState is Loading && productExpireDate == null)
-      productAppBarContent = Container(
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        height: 25,
+      productAppBarContent = Center(
+        child: CircularProgressIndicator(),
       );
     else {
       productAppBarContent = Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Flexible(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  height: 35,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Text("Идэвхтэй багц", style: fontStyle),
-                      new Text("Дуусах хугацаа: ", style: fontStyle),
-                    ],
-                  ),
-                ),
-                new Text(
-                  "${DateUtil.formatProductDate(productExpireDate)}",
-                  style: TextStyle(
-                    color: Color(0xff071f49),
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.normal,
-                    fontSize: fontSize * 1.1,
-                  ),
-                ),
+                new Text("Идэвхтэй багц", style: fontStyle),
+                new Text("Дуусах хугацаа: ", style: fontStyle),
               ],
+            ),
+          ),
+          new Text(
+            "${DateUtil.formatProductDate(productExpireDate)}",
+            style: TextStyle(
+              color: Color(0xff071f49),
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.normal,
+              fontSize: fontSize * 1.1,
             ),
           ),
         ],
@@ -131,10 +116,19 @@ class ProductPageState extends State<ProductPage>
       else if (state is ProductTabState ||
           state is CustomProductSelector ||
           state is ProductSelectionState)
-        productAppBarContent.children.add(_createProductPicker(state));
+        productAppBarContent.children.add(
+          Expanded(
+            child: Align(
+              child: FittedBox(
+                  child: _createProductPicker(state), fit: BoxFit.fitHeight),
+              alignment: Alignment.centerRight,
+            ),
+          ),
+        );
     }
-    return PreferredSize(
-      preferredSize: Size(queryData.size.width, 38),
+    return Container(
+      padding: EdgeInsets.all(5),
+      width: queryData.size.width,
       child: productAppBarContent,
     );
   }
@@ -153,7 +147,6 @@ class ProductPageState extends State<ProductPage>
               .map((product) => DropdownMenuItem<Product>(
                   value: product,
                   child: Container(
-                    height: 28,
                     width: pickerWidth,
                     child: CachedNetworkImage(
                       imageUrl: product.image,
@@ -198,7 +191,7 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildContents() {
-    double containerHeight = widget.height - appBarHeight;
+    double containerHeight = widget.height;
     var _state = _bloc.currentState;
 
     if (_state is Loading || _state is Started)
@@ -236,13 +229,13 @@ class ProductPageState extends State<ProductPage>
     if (updateAppBar) createDefaultAppBar();
 
     var _appBar = _state is SelectedProductPreview
-        ? AppBar(
-            backgroundColor: Colors.white,
-            title: _buildAppBarHeader(context, _state),
+        ? Container(
+            child: _buildAppBarHeader(context, _state),
           )
-        : defaultAppBar;
-
-    appBarHeight = _appBar.preferredSize.height;
+        : AbsorbPointer(
+            child: defaultAppBar,
+            absorbing: _state is Loading || _state is Started,
+          );
     return _appBar;
   }
 
@@ -259,8 +252,15 @@ class ProductPageState extends State<ProductPage>
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: _appBar,
-      body: _body,
+      body: Container(
+          child: Column(
+        children: [
+          _appBar,
+          Expanded(
+            child: _body,
+          ),
+        ],
+      )),
     );
   }
 
@@ -269,7 +269,8 @@ class ProductPageState extends State<ProductPage>
       children: <Widget>[
         content,
         GestureDetector(onHorizontalDragEnd: (details) {
-          if (_bloc.currentState is Loading) return;
+          if (_bloc.currentState is Loading || _bloc.currentState is Started)
+            return;
           double delta = details.velocity.pixelsPerSecond.dx;
           if (delta != 0.0) {
             bool isRight = delta < 0;
@@ -298,23 +299,12 @@ class ProductPageState extends State<ProductPage>
   void createDefaultAppBar() {
     if (!(_bloc.currentState is Loading || _bloc.currentState is Started))
       updateAppBar = false;
-    var prefSize = Size(queryData.size.width, 84);
-    defaultAppBar = PreferredSize(
-      child: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: prefSize,
-          child: Column(
-            children: <Widget>[
-              _buildAppBarHeader(context, _bloc.currentState),
-              createTabBar()
-            ],
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),
-      preferredSize: prefSize,
+//    var prefSize = Size(queryData.size.width, 84);
+    defaultAppBar = Column(
+      children: <Widget>[
+        _buildAppBarHeader(context, _bloc.currentState),
+        createTabBar()
+      ],
     );
   }
 
@@ -325,8 +315,7 @@ class ProductPageState extends State<ProductPage>
         controller: _tabController,
         tabs: _productTabs.map((tabItem) => Tab(text: tabItem.title)).toList(),
         onTap: (tabIndex) {
-          if (!(_bloc.currentState is Loading))
-            _bloc.dispatch(ProductTabChanged(_productTabs[tabIndex].state));
+          _bloc.dispatch(ProductTabChanged(_productTabs[tabIndex].state));
         },
         labelStyle: TextStyle(fontWeight: FontWeight.w600),
         labelColor: Color(0xff071f49),
