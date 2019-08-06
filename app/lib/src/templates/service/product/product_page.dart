@@ -205,6 +205,7 @@ class ProductPageState extends State<ProductPage>
       return Center(child: CircularProgressIndicator());
 
     if (_state is ProductTabState || _state is ProductSelectionState) {
+      updateAppBar = true;
       if (_bloc.backState is SelectedProductPreview) createDefaultAppBar();
 
       //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
