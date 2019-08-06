@@ -23,7 +23,7 @@ class AntennaWidgetState extends State<AntennaWidget> {
     manuals = List<AntennMdl>();
     //manuals = List<String>();
     _repository = AntennRepository();
-    _bloc = AntennaBloc(repository: _repository);
+    _bloc = AntennaBloc(this, repository: _repository);
     super.initState();
   }
 

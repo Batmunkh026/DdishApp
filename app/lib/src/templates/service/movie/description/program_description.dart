@@ -7,7 +7,6 @@ import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
-import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/movie/poster_image.dart';
@@ -51,21 +50,22 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
       bloc: _bloc,
       builder: (BuildContext context, DescriptionState state) {
         bool alreadyRented =
-            state is RentRequestFinished && state.result.isSuccess == true || _content.isOrdered;
+            state is RentRequestFinished && state.result.isSuccess == true ||
+                _content.isOrdered;
         if (state is RentRequestFinished && state.isNotOpened) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => showResultMessage(state.result));
           state.isNotOpened = false;
         }
 
-        return Column(
+        return ListView(
           children: <Widget>[
             Row(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: SizedBox(
-                    height: height / 4,
+                    height: height / 4.5,
                     child: PosterImage(
                       url: _content.posterUrl,
                     ),
@@ -103,32 +103,11 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
             Padding(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  DetailButton(
-                    text: 'Тайлбар',
-                    onTap: _content.contentDescr != null ||
-                            _content.contentDescr.isNotEmpty
-                        ? () => showOverview(_content)
-                        : null,
-                  ),
-                  DetailButton(
-                    text: 'Видео',
-                    onTap: _content.trailerUrl.length == 11
-                        ? () => showTrailer(_content)
-                        : null,
-                  ),
-                  DetailButton(
-                    text: 'Зураг',
-                    onTap: _content.posterUrl != null &&
-                            _content.posterUrl.isNotEmpty
-                        ? () => showPoster(_content)
-                        : null,
-                  ),
-                ],
+                children: buildButtons(),
               ),
               padding: const EdgeInsets.symmetric(vertical: 10.0),
             ),
-            Container(
+            Center(
               child: state is RentRequestProcessing
                   ? CircularProgressIndicator()
                   : SubmitButton(
@@ -338,5 +317,32 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                 ],
               ));
         });
+  }
+
+  buildButtons() {
+    List<Widget> buttons = [
+      DetailButton(
+        text: 'Тайлбар',
+        onTap: _content.contentDescr != null || _content.contentDescr.isNotEmpty
+            ? () => showOverview(_content)
+            : null,
+      ),
+      DetailButton(
+        text: 'Видео',
+        onTap: _content.trailerUrl.length == 11
+            ? () => showTrailer(_content)
+            : null,
+      ),
+      DetailButton(
+        text: 'Зураг',
+        onTap: _content.posterUrl != null && _content.posterUrl.isNotEmpty
+            ? () => showPoster(_content)
+            : null,
+      )
+    ];
+    return List<Widget>.from(buttons.map((btn) => Container(
+          child: btn,
+          width: MediaQuery.of(context).size.width * 0.25,
+        )));
   }
 }

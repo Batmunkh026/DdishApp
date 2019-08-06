@@ -3,7 +3,6 @@ import 'package:ddish/src/blocs/service/movie/theatre/theatre_event.dart';
 import 'package:ddish/src/blocs/service/movie/theatre/theatre_state.dart';
 import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/vod_channel.dart';
-import 'package:ddish/src/repositiories/vod_repository.dart';
 import 'package:ddish/src/templates/service/movie/description/program_description.dart';
 import 'package:ddish/src/templates/service/movie/program_search.dart';
 import 'package:ddish/src/templates/service/movie/theatre/search_header.dart';
@@ -48,31 +47,34 @@ class TheatreWidgetState extends State<TheatreWidget> {
 
   @override
   Widget build(BuildContext context) {
-//    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final fontSize = MediaQuery.of(context).size.height / 300 * 6;
     bool isTheatreChannelDetail = selectedChannel != null;
     var contentContainer = Column(
       children: <Widget>[
         Container(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: !isTheatreChannelDetail
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: ProgramSearchWidget(
-                      searchById: false,
-                      onSearchTap: _onSearchTap,
-                      controller: _searchFieldController,
-                      onReturnTap: _onReturnTap,
-                    ),
-                  )
-                : ChannelHeaderWidget(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: !isTheatreChannelDetail
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: ProgramSearchWidget(
+                    searchById: false,
+                    onSearchTap: _onSearchTap,
+                    controller: _searchFieldController,
+                    onReturnTap: _onReturnTap,
+                  ),
+                )
+              : Container(
+                  child: ChannelHeaderWidget(
                     date: date,
                     selectedChannel: selectedChannel,
                     onReturnTap: _onReturnTap,
                     onDateValueChanged: _searchFieldController.text.isEmpty
                         ? _onDateChange
                         : null,
-                  )),
+                  ),
+                ),
+        ),
         Visibility(
             visible: searchHeaderVisible,
             child: SearchHeader(
@@ -100,9 +102,9 @@ class TheatreWidgetState extends State<TheatreWidget> {
                   child: GridView.count(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    crossAxisSpacing: width * 0.1,
+                    crossAxisSpacing: width * 0.05,
                     padding: EdgeInsets.symmetric(horizontal: width * 0.08),
-                    childAspectRatio: 1.5,
+                    childAspectRatio: 1.6,
                     crossAxisCount: 2,
                     children: List.generate(channelList.length, (index) {
                       return ChannelThumbnail(

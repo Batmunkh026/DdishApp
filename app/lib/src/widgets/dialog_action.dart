@@ -14,14 +14,16 @@ class ActionButton extends StatelessWidget {
         width: MediaQuery.of(context).size.width / 2.6,
         alignment: Alignment.center,
         child: title != null
-            ? Text(
-                title,
-                style: TextStyle(
-                  color: const Color(0xffe8e8e8),
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 14.0,
+            ? FittedBox(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: const Color(0xffe8e8e8),
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
+                fit: BoxFit.scaleDown,
               )
             : Icon(
                 Icons.close,

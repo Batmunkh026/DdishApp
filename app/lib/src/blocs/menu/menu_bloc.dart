@@ -1,11 +1,15 @@
 import 'package:bloc/bloc.dart';
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/blocs/menu/menu_event.dart';
 import 'package:ddish/src/blocs/menu/menu_state.dart';
 import 'package:ddish/src/models/branch.dart';
 import 'package:ddish/src/repositiories/menu_repository.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
-class MenuBloc extends Bloc<MenuEvent, MenuState> {
+class MenuBloc extends AbstractBloc<MenuEvent, MenuState> {
   final MenuRepository repository = MenuRepository();
+
+  MenuBloc(State<StatefulWidget> pageState) : super(pageState);
 
   @override
   MenuState get initialState => MenuInitial();
@@ -15,10 +19,10 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     if (event is MenuHidden) {
       yield MenuInitial();
     }
-    if (event is MenuNavigationClicked) {
+    else if (event is MenuNavigationClicked) {
       yield MenuOpened();
     }
-    if (event is MenuClicked) {
+    else if (event is MenuClicked) {
       yield ChildMenuOpened(menu: event.selectedMenu);
     }
   }

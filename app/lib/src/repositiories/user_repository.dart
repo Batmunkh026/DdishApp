@@ -25,13 +25,13 @@ class UserRepository extends AbstractRepository {
     // TODO fingerPrintLogin
     try {
       client = await oauth2.resourceOwnerPasswordGrant(
-          authorizationEndpoint, username, password);
+          authorizationEndpoint, username, password,
+          identifier: globals.identifier, secret: globals.secret);
     } on Exception catch (e) {
       throw e;
     }
 
     globals.client = client;
-    super.client = client;
 
     var sharedPref = await SharedPreferences.getInstance();
     if (rememberUsername)

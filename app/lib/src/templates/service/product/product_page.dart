@@ -13,14 +13,19 @@ import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 class ProductPage extends StatefulWidget {
+  double height;
+  ProductPage(this.height);
+
   @override
   State<StatefulWidget> createState() => ProductPageState();
 }
 
 class ProductPageState extends State<ProductPage>
     with TickerProviderStateMixin {
+  final Logger log = new Logger('ProductPageState');
   ProductBloc _bloc;
 
   var _productTabs = Constants.productTabs;
@@ -30,17 +35,12 @@ class ProductPageState extends State<ProductPage>
   bool updateAppBar = true;
   var defaultAppBar;
 
-  get createTabBar => TabBar(
-        isScrollable: true,
-        controller: _tabController,
-        tabs: _productTabs.map((tabItem) => Tab(text: tabItem.title)).toList(),
-        onTap: (tabIndex) =>
-            _bloc.dispatch(ProductTabChanged(_productTabs[tabIndex].state)),
-        labelStyle: const TextStyle(fontWeight: FontWeight.w600),
-        labelColor: const Color(0xff071f49),
-        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
-        indicatorColor: Color(0xFF3069b2),
-      );
+  double appBarHeight = 0;
+  double contentContainerHeight = 0;
+
+  MediaQueryData queryData;
+  double fontSize = 0;
+
   @override
   void initState() {
     _bloc = ProductBloc(this);
@@ -50,10 +50,15 @@ class ProductPageState extends State<ProductPage>
 
   @override
   Widget build(BuildContext context) {
+    queryData = MediaQuery.of(context);
+    fontSize = queryData.size.width * 0.02 + 5;
+
     var _serviceBloc = BlocProvider.of<ServiceBloc>(context);
     return BlocBuilder(
         bloc: _bloc,
         builder: (BuildContext context, ProductState state) {
+          if (state is Started) _bloc.initialize();
+
           return BlocProviderTree(blocProviders: [
             BlocProvider<ServiceBloc>(
               bloc: _serviceBloc,
@@ -66,65 +71,79 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildAppBarHeader(BuildContext context, ProductState state) {
-    var fontStyle =
-        TextStyle(color: const Color(0xff071f49), fontWeight: FontWeight.w500);
+    var fontStyle = TextStyle(
+        color: const Color(0xff071f49),
+        fontWeight: FontWeight.w500,
+        fontSize: fontSize);
 
     var productExpireDate = _bloc.getExpireDateOfUserSelectedProduct();
-    if (_bloc.currentState is Loading && productExpireDate == null)
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    else
-      updateAppBar = false;
 
-    var productAppBarContent = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Flexible(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * 0.06,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text("Идэвхтэй багц", style: fontStyle),
-                    new Text("Дуусах хугацаа: ", style: fontStyle),
-                  ],
-                ),
-              ),
-              new Text("${DateUtil.formatProductDate(productExpireDate)}",
-                  style: TextStyle(
-                    color: const Color(0xff071f49),
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.normal,
-                  )),
-            ],
+    var productAppBarContent;
+
+    if (_bloc.currentState is Started ||
+        _bloc.currentState is Loading && productExpireDate == null)
+      productAppBarContent = Container(
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: CircularProgressIndicator(),
           ),
         ),
-      ],
-    );
-    if (state is SelectedProductPreview)
-      return Text("Сунгах");
-    else if (state is ProductTabState ||
-        state is CustomProductSelector ||
-        state is ProductSelectionState)
-      productAppBarContent.children.add(_createProductPicker(state));
+        height: 25,
+      );
+    else {
+      productAppBarContent = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Flexible(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  height: 35,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text("Идэвхтэй багц", style: fontStyle),
+                      new Text("Дуусах хугацаа: ", style: fontStyle),
+                    ],
+                  ),
+                ),
+                new Text(
+                  "${DateUtil.formatProductDate(productExpireDate)}",
+                  style: TextStyle(
+                    color: Color(0xff071f49),
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.normal,
+                    fontSize: fontSize * 1.1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
 
-    return Container(
-      padding: EdgeInsets.all(8),
+      if (state is SelectedProductPreview)
+        return Text("Сунгах");
+      else if (state is ProductTabState ||
+          state is CustomProductSelector ||
+          state is ProductSelectionState)
+        productAppBarContent.children.add(_createProductPicker(state));
+    }
+    return PreferredSize(
+      preferredSize: Size(queryData.size.width, 38),
       child: productAppBarContent,
     );
   }
 
   Widget _createProductPicker(ProductState state) {
     List<Product> items = _bloc.products;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    double pickerWidth = queryData.size.width * 0.22;
+    return Stack(
+      alignment: Alignment.bottomCenter,
       children: <Widget>[
         DropdownButton(
           iconSize: 0,
@@ -134,13 +153,14 @@ class ProductPageState extends State<ProductPage>
               .map((product) => DropdownMenuItem<Product>(
                   value: product,
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.23,
+                    height: 28,
+                    width: pickerWidth,
                     child: CachedNetworkImage(
                       imageUrl: product.image,
                       placeholder: (context, url) => Center(
                         child: SizedBox(
-                          height: 20,
-                          width: 20,
+                          height: 15,
+                          width: 15,
                           child: CircularProgressIndicator(),
                         ),
                       ),
@@ -160,9 +180,12 @@ class ProductPageState extends State<ProductPage>
                   ProductTypeSelectorClicked(state.selectedProductTab, value));
           },
         ),
-        Icon(
-          Icons.arrow_drop_down,
-          color: Color.fromRGBO(48, 105, 178, 1),
+        Container(
+          height: 10,
+          child: Icon(
+            Icons.arrow_drop_down,
+            color: Color.fromRGBO(48, 105, 178, 1),
+          ),
         )
       ],
     );
@@ -175,23 +198,24 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildContents() {
+    double containerHeight = widget.height - appBarHeight;
     var _state = _bloc.currentState;
 
-    if (_state is Loading) return Center(child: CircularProgressIndicator());
+    if (_state is Loading || _state is Started)
+      return Center(child: CircularProgressIndicator());
 
     if (_state is ProductTabState || _state is ProductSelectionState) {
-      if(_bloc.backState is SelectedProductPreview)
-        createDefaultAppBar();
+      if (_bloc.backState is SelectedProductPreview) createDefaultAppBar();
 
       //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
       var itemsForGrid = _state.selectedProductTab == ProductTabType.EXTEND
           ? _state.selectedProduct
           : _state.initialItems;
-      var productPicker = ProductGridPicker(itemsForGrid);
+      var productPicker = ProductGridPicker(itemsForGrid, containerHeight);
       return productPicker;
     } else if (_state is AdditionalChannelState) {
       //нэмэлт суваг сонгосон төлөв
-      return ProductGridPicker(_state.selectedProduct);
+      return ProductGridPicker(_state.selectedProduct, containerHeight);
     } else if (_state is SelectedProductPreview ||
         _state is ProductPaymentState) {
       updateAppBar = true;
@@ -208,27 +232,33 @@ class ProductPageState extends State<ProductPage>
   Widget _buildAppBar() {
     var _state = _bloc.currentState;
 
-    if (_state is SelectedProductPreview)
-      return AppBar(
-        backgroundColor: Colors.white,
-        title: _buildAppBarHeader(context, _state),
-      );
+    if (updateAppBar) createDefaultAppBar();
 
-    return defaultAppBar;
+    var _appBar = _state is SelectedProductPreview
+        ? AppBar(
+            backgroundColor: Colors.white,
+            title: _buildAppBarHeader(context, _state),
+          )
+        : defaultAppBar;
+
+    appBarHeight = _appBar.preferredSize.height;
+    return _appBar;
   }
 
   Widget _buildBody() {
-    if (updateAppBar) createDefaultAppBar();
+    var _appBar = _buildAppBar();
 
     var _content = _buildContents();
 
     var _body =
         _createTabBarBody(_content, _bloc.currentState.selectedProductTab);
 
-    if (_bloc.currentState is SelectedProductPreview) return _body;
+    if (_bloc.currentState is SelectedProductPreview ||
+        _bloc.currentState is ProductPaymentState) return _body;
 
     return Scaffold(
-      appBar: _buildAppBar(),
+      resizeToAvoidBottomInset: false,
+      appBar: _appBar,
       body: _body,
     );
   }
@@ -238,6 +268,7 @@ class ProductPageState extends State<ProductPage>
       children: <Widget>[
         content,
         GestureDetector(onHorizontalDragEnd: (details) {
+          if (_bloc.currentState is Loading) return;
           double delta = details.velocity.pixelsPerSecond.dx;
           if (delta != 0.0) {
             bool isRight = delta < 0;
@@ -264,20 +295,46 @@ class ProductPageState extends State<ProductPage>
   }
 
   void createDefaultAppBar() {
+    if (!(_bloc.currentState is Loading || _bloc.currentState is Started))
+      updateAppBar = false;
+    var prefSize = Size(queryData.size.width, 84);
     defaultAppBar = PreferredSize(
       child: AppBar(
         automaticallyImplyLeading: false,
-        flexibleSpace: _buildAppBarHeader(context, _bloc.currentState),
-        titleSpacing: 10,
         elevation: 0,
         bottom: PreferredSize(
-          child: Flexible(
-            child: createTabBar,
+          preferredSize: prefSize,
+          child: Column(
+            children: <Widget>[
+              _buildAppBarHeader(context, _bloc.currentState),
+              createTabBar()
+            ],
           ),
         ),
         backgroundColor: Colors.white,
       ),
-      preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.11),
+      preferredSize: prefSize,
+    );
+  }
+
+  createTabBar() {
+    return PreferredSize(
+      child: TabBar(
+        isScrollable: true,
+        controller: _tabController,
+        tabs: _productTabs.map((tabItem) => Tab(text: tabItem.title)).toList(),
+        onTap: (tabIndex) {
+          if (!(_bloc.currentState is Loading))
+            _bloc.dispatch(ProductTabChanged(_productTabs[tabIndex].state));
+        },
+        labelStyle: TextStyle(fontWeight: FontWeight.w600),
+        labelColor: Color(0xff071f49),
+        indicatorSize: TabBarIndicatorSize.label,
+        unselectedLabelStyle:
+            TextStyle(fontWeight: FontWeight.w500, fontSize: fontSize),
+        indicatorColor: Color(0xFF3069b2),
+      ),
+      preferredSize: Size(queryData.size.width, 25),
     );
   }
 }

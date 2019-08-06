@@ -19,6 +19,9 @@ abstract class ProductState extends Equatable {
       selectedProduct = initialItems.first;
   }
 }
+class Started extends ProductState{
+  Started(tabState) : super(tabState, [], null);
+}
 
 class Loading extends ProductState {
   Loading(ProductTabType selectedTab) : super(selectedTab, [], null);

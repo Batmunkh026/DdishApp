@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/blocs/menu/promo/antenn_event.dart';
 import 'package:ddish/src/blocs/menu/promo/antenn_state.dart';
 import 'package:ddish/src/models/promo.dart';
-import 'package:ddish/src/models/videoManualMdl.dart';
 import 'package:ddish/src/repositiories/promo_repository.dart';
 
-class AntennaBloc extends Bloc<AntennaEvent, AntennaState>{
+class AntennaBloc extends AbstractBloc<AntennaEvent, AntennaState>{
   final AntennRepository repository;
-  AntennaBloc({this.repository});
+  AntennaBloc(pageState, {this.repository}) : super(pageState);
 
   @override
   AntennaState get initialState => AntennaWidgetStarted();

@@ -19,7 +19,7 @@ class DetailButton extends StatelessWidget {
               color: const Color(0xffffffff),
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.normal,
-              fontSize: 15.0)),
+              )),
     );
   }
 }

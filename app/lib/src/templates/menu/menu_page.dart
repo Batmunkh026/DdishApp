@@ -29,11 +29,15 @@ class MenuPageState extends State<MenuPage> {
   List<Menu> menuItems;
   List<GlobalKey<MenuExpansionTileState>> expansionTileKeys;
 
+  MenuPageState() {
+    _menuBloc = MenuBloc(this);
+  }
+
   @override
   void initState() {
     authenticated = widget.onBackButtonTap == null;
-    _menuBloc = MenuBloc();
     this.menuItems = Constants.menuItems;
+    _menuBloc.dispatch(MenuStarted());
     super.initState();
   }
 
@@ -45,70 +49,66 @@ class MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.transparent,
-      body: BlocProvider(
+    return BlocBuilder<MenuEvent, MenuState>(
         bloc: _menuBloc,
-        child: BlocBuilder<MenuEvent, MenuState>(
-            bloc: _menuBloc,
-            builder: (BuildContext context, MenuState state) {
-              if (state is ChildMenuOpened && state.menu.screen != null) {
+        builder: (BuildContext context, MenuState state) {
+          return Scaffold(
+              resizeToAvoidBottomPadding: false,
+              backgroundColor: Colors.transparent,
+              body: buildBody(state));
+        });
+  }
+
+  buildBody(state) {
+    if (state is ChildMenuOpened && state.menu.screen != null) {
+      return Column(
+        children: <Widget>[
+          Header(
+            title: state.menu.title,
+            onBackPressed: () => _menuBloc.dispatch(MenuNavigationClicked()),
+          ),
+          state.menu.screen
+        ],
+      );
+    } else if (state is MenuOpened || state is MenuInitial) {
+      expansionTileKeys = List();
+      return Column(
+        children: <Widget>[
+          Visibility(
+            maintainState: true,
+            maintainAnimation: true,
+            maintainSize: true,
+            visible: !authenticated,
+            child: Header(onBackPressed: widget.onBackButtonTap),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: menuItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                var menuItem = _buildMenuItem(menuItems[index], true);
                 return Column(
                   children: <Widget>[
-                    Header(
-                      title: state.menu.title,
-                      onBackPressed: () =>
-                          _menuBloc.dispatch(MenuNavigationClicked()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: menuItem != null ? menuItem : Container(),
                     ),
-                    state.menu.screen
-                  ],
-                );
-              } else if (state is MenuOpened || state is MenuInitial) {
-                expansionTileKeys = List();
-                return Column(
-                  children: <Widget>[
                     Visibility(
-                      maintainState: true,
-                      maintainAnimation: true,
-                      maintainSize: true,
-                      visible: !authenticated,
-                      child: Header(onBackPressed: widget.onBackButtonTap),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: menuItems.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          var menuItem = _buildMenuItem(menuItems[index], true);
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 25.0),
-                                child:
-                                    menuItem != null ? menuItem : Container(),
-                              ),
-                              Visibility(
-                                visible: menuItem != null,
-                                child: Line(
-                                  color: Color(0xFF3069b2),
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 25.0),
-                                  thickness: 1.0,
-                                ),
-                              )
-                            ],
-                          );
-                        },
+                      visible: menuItem != null,
+                      child: Line(
+                        color: Color(0xFF3069b2),
+                        margin: EdgeInsets.symmetric(horizontal: 25.0),
+                        thickness: 1.0,
                       ),
                     )
                   ],
                 );
-              } else
-                return Container();
-            }),
-      ),
-    );
+              },
+            ),
+          )
+        ],
+      );
+    } else
+      return Container();
   }
 
   Widget _buildMenuItem(Menu menu, bool root) {
@@ -145,7 +145,8 @@ class MenuPageState extends State<MenuPage> {
     if (menu.screen == null && menu.event != null)
       eventExecutionPermission(menu);
     else if (menu.title == 'Гарах') {
-      Navigator.of(context).pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false);
     } else
       _menuBloc.dispatch(MenuClicked(selectedMenu: menu));
   }

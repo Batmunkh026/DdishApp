@@ -12,7 +12,8 @@ class NotificationRepository extends AbstractRepository {
   Future<List<Notification>> getNotifications() async {
     var _notificationReponse = await getResponse('notification') as Map;
 
-    if (_notificationReponse["isSuccess"])
+    if (_notificationReponse["isSuccess"] != null &&
+        _notificationReponse["isSuccess"])
       return List<Notification>.from(_notificationReponse["notifications"]
           .map((product) => Notification.fromJson(product)));
 

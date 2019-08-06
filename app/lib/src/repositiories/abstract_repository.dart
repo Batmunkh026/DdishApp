@@ -4,16 +4,17 @@ import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/repositiories/globals.dart' as globals;
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:oauth2/oauth2.dart';
 
-abstract class AbstractRepository<B extends AbstractBloc>{
+abstract class AbstractRepository<B extends AbstractBloc> {
+  final Logger log = new Logger('AbstractRepository');
 
   B bloc;
 
   @mustCallSuper
   AbstractRepository(this.bloc);
 
-  var client = globals.client;
   final serverEndPoint = globals.serverEndpoint;
 
   ///get request
@@ -23,27 +24,38 @@ abstract class AbstractRepository<B extends AbstractBloc>{
   /// hasDecoded д false утга дамжуулвал jsonDecode хийхгүй response.body буцаана
   ///
   ///returns decoded json
-  Future<dynamic> getResponse(String param, {hasDecoded = true}) async{
-    debugPrint("http request param : $param");
+  Future<dynamic> getResponse(String param, {hasDecoded = true}) async {
+    var client = globals.client;
+    log.info("http request param : $param");
+    if (client.credentials.isExpired)
+      bloc.connectionExpired(
+          "session expired on credential.isExpired: ${bloc}");
 
-    if(client.credentials.isExpired)
-      bloc.connectionExpired();
     Response _response;
     try {
       _response = await client.get('$serverEndPoint/$param');
     } on Exception catch (e) {
-      throw (e);
+      if (e is ExpirationException)
+        bloc.connectionExpired(
+            "session expired on abstract repo GET req: ${bloc}");
+      log.warning("credential.isExpired: FALSE , but : session expired!");
+//      throw (e);
     }
 
-    debugPrint(_response.body);
+    if (_response == null) return Map<dynamic, dynamic>.from({});
 
-    if(!hasDecoded)
-      return _response.body;
+    if (!hasDecoded) return _response.body;
 
     var _decoded = json.decode(_response.body);
 
-    debugPrint(_decoded.toString());
+    log.info(_decoded.toString());
 
+    if (_decoded['isSuccess'] == false &&
+        _decoded['resultCode'] == 'Unauthorized') {
+      bloc.connectionExpired(
+          "session expired on : caused by server response > ${_decoded}");
+      throw ExpirationException(globals.client.credentials);
+    }
     return _decoded;
   }
 }

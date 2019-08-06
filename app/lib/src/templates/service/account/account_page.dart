@@ -1,4 +1,3 @@
-import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/blocs/service/account/account_bloc.dart';
 import 'package:ddish/src/blocs/service/account/account_event.dart';
@@ -7,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AccountPage extends StatefulWidget {
+  double height;
+  AccountPage(this.height);
+
   @override
   State<StatefulWidget> createState() => AccountPageState();
 }
@@ -28,45 +30,68 @@ class AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    double height = widget.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return BlocBuilder<AccountEvent, AccountState>(
       bloc: _bloc,
       builder: (BuildContext context, AccountState state) {
         _bloc.dispatch(AccountTabSelected());
         return Container(
-          padding: const EdgeInsets.only(top: 15.0),
+          height: height * 0.8,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(
-                    style: const TextStyle(
-                        color: const Color(0xff144478),
-                        fontWeight: FontWeight.w500,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 17.0),
-                    text: "Үндсэн дансны үлдэгдэл:   "),
-                TextSpan(
-                    style: const TextStyle(
-                        color: const Color(0xff144478),
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 17.0),
-                    text: state is AccountBalanceLoaded
-                        ? ' ${state.mainCounter.counterBalance} ₮'
-                        : '-')
-              ])),
-              Padding(
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                child: Text(
-                  "Данс цэнэглэх заавар",
-                  style: const TextStyle(
+              Container(
+                height: height * 0.05,
+                width: screenWidth * 0.7,
+//                margin: EdgeInsets.only(bottom: 10),
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: RichText(
+                      text: TextSpan(children: [
+                    TextSpan(
+                        style: const TextStyle(
+                          color: const Color(0xff144478),
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FontStyle.normal,
+                        ),
+                        text: "Үндсэн дансны үлдэгдэл:   "),
+                    TextSpan(
+                        style: const TextStyle(
+                          color: const Color(0xff144478),
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                        ),
+                        text: state is AccountBalanceLoaded
+                            ? ' ${state.mainCounter.counterBalance} ₮'
+                            : '-')
+                  ])),
+                ),
+              ),
+              Container(
+//                padding: EdgeInsets.only(top: 10, bottom: 10),
+                height: height * 0.05,
+                width: screenWidth * 0.5,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    "Данс цэнэглэх заавар",
+                    style: TextStyle(
                       color: const Color(0xff071f49),
                       fontWeight: FontWeight.w700,
                       fontStyle: FontStyle.normal,
-                      fontSize: 15.0),
+                    ),
+                  ),
                 ),
               ),
-              showAccountChargeInstruction()
+              Container(
+                padding: EdgeInsets.all(10),
+                width: MediaQuery.of(context).size.width,
+                height: height * 0.89,
+                child: showAccountChargeInstruction(),
+              )
             ],
           ),
         );
@@ -271,25 +296,20 @@ class AccountPageState extends State<AccountPage> {
               ))
           .toList(),
     );
-    return Container(
-      padding: EdgeInsets.only(left: 20, right: 20),
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.56,
-      child: instructionWidgets,
-    );
+    return instructionWidgets;
   }
 
   Text createTitle(String title) {
     return Text(
       title,
-      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
     );
   }
 
   Text createText(String text) {
     return Text(
       text,
-      style: TextStyle(fontSize: 15),
+      style: TextStyle(fontSize: 12),
     );
   }
 
@@ -298,7 +318,7 @@ class AccountPageState extends State<AccountPage> {
         text: text,
         style: TextStyle(
             color: Colors.black,
-            fontSize: 15,
+            fontSize: 12,
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal));
   }
 
