@@ -41,7 +41,7 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
         .firstWhere((p) => p.month == monthToExtend, orElse: () => null);
 
     //хэрэглэгчийн оруулсан утга ахиулах багцын стандарт сарын утгатай ижил бол ахиулах багцын мэдээллээр бодож буцаах
-    if (priceObj != null) return "${priceObj.month * priceObj.price}";
+    if (priceObj != null) return "${priceObj.price}";
 
     Map<String, dynamic> response = await _requestJson(
         "upgradeProduct/${currentProduct.id}/$monthToExtend/${productToExtend.id}");

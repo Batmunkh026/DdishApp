@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 
 class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
   final Logger log = new Logger('ProductBloc');
-  var _productRepository;
+  ProductRepository _productRepository;
   var _userRepository;
 
   ProductBloc(pageState) : super(pageState) {
@@ -141,9 +141,9 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
       } else //өөр таб руу шилжиж байгаа бол цэвэрлэх
         currentState.prevStates.clear();
     }
-    if (!(event is Loading ||
+    if (!(event is Loading || event is ProductStarted ||
         event is ExtendSelectedProduct ||
-        event is PreviewSelectedProduct)) {
+        event is PreviewSelectedProduct) && beforeState != currentState) {
       beforeState = currentState;
       beforeEvent = event;
     }

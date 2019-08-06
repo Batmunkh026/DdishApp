@@ -18,7 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomProductChooser extends StatefulWidget {
   int priceToExtend;
-  int monthToExtend;
+  int monthToExtend = 1;
   bool isPaymentComputed;
 
   CustomProductChooser(this.priceToExtend, this.monthToExtend,
@@ -173,6 +173,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
 
   _toExtend(state) {
     if (widget.isPaymentComputed) month = widget.monthToExtend;
+    if (month == null || month == 0) return;
 
     var event = PreviewSelectedProduct(state.selectedProductTab,
         state.selectedProduct, month, widget.priceToExtend);

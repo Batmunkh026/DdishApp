@@ -198,10 +198,11 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 
     bool isChannel =
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL;
+    bool isUpgrade = state.selectedProductTab == ProductTabType.UPGRADE;
 
     var resultText = isChannel
         ? 'түрээслэлээ'
-        : (state.selectedProductTab == ProductTabType.UPGRADE
+        : (isUpgrade
             ? 'ахиуллаа'
             : 'сунгалаа');
 
@@ -213,7 +214,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
       TextSpan(text: isChannel ? 'сувгийг ' : ''),
       TextSpan(text: '${state.monthToExtend} ', style: boldStyle),
       TextSpan(text: 'сараар '),
-      TextSpan(text: '${state.priceToExtend} ₮ ', style: boldStyle),
+      TextSpan(text: '${isUpgrade ? state.priceToExtend : state.priceToExtend*state.monthToExtend} ₮ ', style: boldStyle),
       TextSpan(text: ' төлөн амжилттай $resultText.')
     ];
   }
