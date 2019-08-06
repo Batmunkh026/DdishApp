@@ -11,6 +11,8 @@ class FirebaseNotifications {
     _firebaseMessaging = FirebaseMessaging();
 
     firebaseCloudMessaging_Listeners();
+
+    _firebaseMessaging.subscribeToTopic("ddish");
   }
 
   void firebaseCloudMessaging_Listeners() {
@@ -20,6 +22,9 @@ class FirebaseNotifications {
       globals.FCM_TOKEN = token;
       log.info("FCM_TOKEN = $token");
     });
+
+    _firebaseMessaging.onTokenRefresh
+        .listen((newToken) => globals.FCM_TOKEN = newToken);
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
