@@ -186,7 +186,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
             onClose: state.isSuccess
                 ? () {
                     Navigator.pop(context);
-                    _bloc.backToPrevState();
+                    _bloc.dispatch(ProductTabChanged(state.selectedProductTab));
                   }
                 : null,
           );
