@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:ddish/src/abstract/abstract.dart';
+import 'package:ddish/src/blocs/authentication/authentication_event.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
 import 'package:ddish/src/utils/connectivity.dart';
@@ -26,18 +27,21 @@ class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
     Client client = globals.client;
-    if (client != null) {
-      updateExpireTimeOfLogoutTask(client.credentials.expiration, bloc);
-
+    if (!(event is AuthenticationEvent) && client != null) {
       log.warning("session will expire: ${client.credentials.expiration}}");
 
 
-      //state өөрчлөгдөх бүрт credential update хийх
-      ///TODO ddish API дээр дутуу юм байгаа. дуусахаар шалгана.
-//      if (client.credentials.canRefresh)
-//        client
-//            .refreshCredentials()
-//            .then((newClient) => globals.client = newClient);
+      //хэрэглэгчийн эвент бүрт credential update хийх
+      if (client.credentials.canRefresh)
+        client
+            .refreshCredentials()
+            .then((newClient){
+              globals.client = newClient;
+
+              log.warning("NEW EXPIRE DATE >> : ${newClient.credentials.expiration}");
+              updateExpireTimeOfLogoutTask(newClient.credentials.expiration, bloc);
+
+        });
     }
 //
     if (event is NetworkAccessRequired)
