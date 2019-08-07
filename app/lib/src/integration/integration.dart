@@ -7,24 +7,19 @@ class FirebaseNotifications {
   final Logger log = new Logger('FirebaseNotifications');
   FirebaseMessaging _firebaseMessaging;
 
-  void setUpFirebase() {
+  void setUpFirebase()async {
     _firebaseMessaging = FirebaseMessaging();
 
     firebaseCloudMessaging_Listeners();
-
-    _firebaseMessaging.subscribeToTopic("ddish");
   }
 
   void firebaseCloudMessaging_Listeners() {
     if (Platform.isIOS) iOS_Permission();
 
-    _firebaseMessaging.getToken().then((token) {
-      globals.FCM_TOKEN = token;
-      log.info("FCM_TOKEN = $token");
-    });
+    _firebaseMessaging.getToken().then((token) => setToken(token));
 
     _firebaseMessaging.onTokenRefresh
-        .listen((newToken) => globals.FCM_TOKEN = newToken);
+        .listen((newToken) => setToken(newToken, isTokenRefresh: true));
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -46,5 +41,15 @@ class FirebaseNotifications {
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
+  }
+
+  setToken(String token, {isTokenRefresh = false}) {
+    log.info("FCM_TOKEN = $token , isRefresh = $isTokenRefresh");
+
+    if (token == null) return;
+
+    globals.FCM_TOKEN = token;
+
+    _firebaseMessaging.subscribeToTopic("ddish");
   }
 }

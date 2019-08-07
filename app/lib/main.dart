@@ -82,9 +82,6 @@ void main() async {
 }
 
 Future<Widget> initializeApp(routes) async {
-
-  FirebaseNotifications().setUpFirebase();
-
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
@@ -97,6 +94,9 @@ Future<Widget> initializeApp(routes) async {
     if (ConnectivityResult.none == result)
       Constants.notificationCheckConnection();
   });
+
+  FirebaseNotifications().setUpFirebase();
+
   return MaterialApp(
     theme: ThemeData(
       primaryColor: Color(0xFF2a68b8),

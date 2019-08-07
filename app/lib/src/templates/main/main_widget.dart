@@ -22,8 +22,8 @@ class MainView extends StatefulWidget {
   State<MainView> createState() => MainViewState();
 
   void registerFCMToken() {
-    if (globals.client != null)
-      globals.client.get(
+    if (globals.client != null && globals.FCM_TOKEN != null)
+      globals.client.post(
           "${globals.serverEndpoint}/regClientToken/${globals.FCM_TOKEN}",
           headers: {
             HttpHeaders.authorizationHeader: globals.authorizationToken
