@@ -22,19 +22,20 @@ class MainView extends StatefulWidget {
   State<MainView> createState() => MainViewState();
 
   void registerFCMToken() {
-    if (globals.client != null && globals.FCM_TOKEN != null)
-      globals.client.post(
-          "${globals.serverEndpoint}/regClientToken/${globals.FCM_TOKEN}",
-          headers: {
-            HttpHeaders.authorizationHeader: globals.authorizationToken
-          }).then((response) {
-        try {
-          var responseJson = json.decode(response.body);
-          log.info("registering FCM token : ${responseJson}");
-        } catch (e) {
-          log.warning(e);
-        }
-      });
+    if (globals.client == null || globals.FCM_TOKEN == null) return;
+
+    var body = {"clientToken": globals.FCM_TOKEN};
+
+    globals.client
+        .post("${globals.serverEndpoint}/regClientToken", body: body)
+        .then((response) {
+      try {
+        var responseJson = json.decode(response.body);
+        log.info("registering FCM token : ${responseJson}");
+      } catch (e) {
+        log.warning(e);
+      }
+    });
   }
 }
 

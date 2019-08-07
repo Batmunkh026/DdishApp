@@ -24,7 +24,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
                 printf("phone number is null");
             }
             else{
-                NSURL *phoneNumberUrl = [@"tel://" stringByAppendingString:phoneNumber];
+                NSString *phoneNumberUrl = [@"tel://" stringByAppendingString:phoneNumber];
                 
                 NSURL *URL = [NSURL URLWithString: phoneNumberUrl];
                 [application openURL:URL options:@{} completionHandler:^(BOOL success) {
