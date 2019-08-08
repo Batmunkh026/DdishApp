@@ -70,7 +70,7 @@ class VodRepository extends AbstractRepository {
     var decoded = await getResponse(
         'searchVodContent/$value/0?pageNumber=${(page / 10 + 1).toInt()}');
     Result result = Result.fromJson(decoded);
-    List<Program> programList;
+    List<Program> programList = [];
     if (result.isSuccess)
       programList = List<Program>.from(
           decoded['programList'].map((program) => Program.fromJson(program)));

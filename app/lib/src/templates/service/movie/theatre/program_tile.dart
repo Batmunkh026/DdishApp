@@ -43,7 +43,7 @@ class ProgramTile extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: style.programGenresStyle),
                     ),
-                    Text(DateUtil.formatTime(program.beginDate),
+                    Text(DateUtil.formatDateAndTime(program.beginDate),
                         style: style.programStartTimeStyle),
                   ],
                 ),

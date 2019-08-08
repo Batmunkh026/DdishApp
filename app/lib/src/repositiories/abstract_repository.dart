@@ -42,7 +42,7 @@ abstract class AbstractRepository<B extends AbstractBloc> {
 //      throw (e);
     }
 
-    if (_response == null) return Map<dynamic, dynamic>.from({});
+    if (_response == null || _response.statusCode == 404) return Map<dynamic, dynamic>.from({});
 
     if (!hasDecoded) return _response.body;
 

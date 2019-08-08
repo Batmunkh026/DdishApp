@@ -221,6 +221,7 @@ class TheatreWidgetState extends State<TheatreWidget> {
   _onSearchTap() {
     content = List();
     setState(() => searchHeaderVisible = true);
+    FocusScope.of(context).nextFocus();
     _bloc.dispatch(SearchTapped(value: _searchFieldController.text));
   }
 
