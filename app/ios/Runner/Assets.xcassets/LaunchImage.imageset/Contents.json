@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
+      "idiom" : "iphone",
       "filename" : "background.jpg",
       "scale" : "1x"
     },
     {
-      "idiom" : "universal",
+      "idiom" : "iphone",
       "filename" : "background-1.jpg",
       "scale" : "2x"
     },
     {
-      "idiom" : "universal",
+      "idiom" : "iphone",
       "filename" : "background-2.jpg",
       "scale" : "3x"
     }

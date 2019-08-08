@@ -178,7 +178,12 @@ class CustomProductChooserState extends State<CustomProductChooser>
     var event = PreviewSelectedProduct(state.selectedProductTab,
         state.selectedProduct, month, widget.priceToExtend);
 
-    openPermissionDialog(_bloc, context, event, _bloc.selectedProduct.name,
+    var productName =
+        _bloc.currentState.selectedProductTab == ProductTabType.EXTEND
+            ? _bloc.selectedProduct.name
+            : state.selectedProduct.name;
+
+    openPermissionDialog(_bloc, context, event, productName,
         month, widget.priceToExtend);
   }
 
