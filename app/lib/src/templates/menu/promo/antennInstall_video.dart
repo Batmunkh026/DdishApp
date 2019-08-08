@@ -18,6 +18,7 @@ class AntennaVideoWidget extends StatefulWidget{
 
 class AntennaVideoWidgetState extends State<AntennaVideoWidget>{
   AntennaVideoBloc _bloc;
+  bool pressed = false;
   AntennVideoRepository _repository;
   List<AntennVideoMdl> manuals;
   VideoManual selectedManual;
@@ -60,26 +61,33 @@ class AntennaVideoWidgetState extends State<AntennaVideoWidget>{
                 itemCount: manuals.length,
                 itemBuilder: (BuildContext context, int index){
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 40.0),
-                    child: GestureDetector(
-                      child: Container(
-                        //padding: const EdgeInsets.fromLTRB(150.0, 150.0, 0.0, 0.0),
-                        child: Center(
-                          child: Text(
-                            manuals[index].videoName,
-                            style: const TextStyle(
-                              decoration: TextDecoration.underline,
-                              color: const Color(0xFFFAEBD7),
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FontStyle.normal,
-                              //fontSize: 16.0,
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Center(
+                      child: RaisedButton(
+                        child: new Text(
+                          manuals[index].videoName,
+                          style: pressed ? TextStyle(
                               fontFamily: 'Montserrat',
-                            ),
-                          )
-                        )
+                              fontStyle: FontStyle.normal,
+                              color: const Color(0xFFFAEBD7),
+                          ):
+                          TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontStyle: FontStyle.normal ,
+                              color: Colors.white,//const Color(0xFFFAEBD7),
+                          ),
+                        ),
+                        color: Theme.of(context).accentColor,
+                        elevation: 2.0,
+                        splashColor: Colors.blueGrey,
+                        onPressed: () {
+                          setState(() {
+                            showTrailer(manuals[index]);
+                            pressed = !pressed;
+                          });
+                        },
                       ),
-                      onTap: ()=> showTrailer(manuals[index]),
-                    ),
+                    )
                   );
                 },
               ),
