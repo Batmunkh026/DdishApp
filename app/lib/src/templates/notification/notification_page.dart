@@ -1,7 +1,6 @@
 import 'package:ddish/src/blocs/notification/notification_bloc.dart';
 import 'package:ddish/src/blocs/notification/notification_event.dart';
 import 'package:ddish/src/blocs/notification/notification_state.dart';
-import 'package:ddish/src/models/notification.dart' as ddish;
 import 'package:ddish/src/utils/date_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,32 +20,31 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('Notification',
-            style: TextStyle(fontSize: 14, color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      backgroundColor: Colors.transparent,
-      body: Container(
-        padding: EdgeInsets.only(left: 18, right: 18, bottom: 20),
-        child: BlocBuilder(
-          bloc: _notificationBloc,
-          builder: (context, state) {
-            if (state is Started) _notificationBloc.dispatch(LoadEvent());
-
-            if (state is Loading || state is Started)
-              return Center(child: CircularProgressIndicator());
-            else if (state is Loaded)
-              return buildNotification(state.notifications);
-            else
-              return Container();
-          },
-        ),
-      ),
-    );
+    return BlocBuilder(
+        bloc: _notificationBloc,
+        builder: (context, state) {
+          if (state is Started) _notificationBloc.dispatch(LoadEvent());
+          return Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(children: [
+              Text('Сонордуулга',
+                  style: TextStyle(fontSize: 17, color: Colors.white)),
+              Expanded(
+                child: SafeArea(
+                  minimum: EdgeInsets.only(top: 16),
+                  child: Container(
+                    decoration: new BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: new BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: buildNotification(state),
+                  ),
+                ),
+              ),
+            ]),
+          );
+        });
   }
 
   @override
@@ -55,22 +53,21 @@ class NotificationPageState extends State<NotificationPage> {
     super.dispose();
   }
 
-  Widget buildNotification(List<ddish.Notification> notifications) {
-    return Container(
-      decoration: new BoxDecoration(
-        color: Colors.white,
-        borderRadius: new BorderRadius.all(Radius.circular(20)),
-      ),
-      padding: EdgeInsets.only(top: 10),
-      child: notifications.isEmpty
+  Widget buildNotification(state) {
+    Widget body = Container();
+
+    if (state is Loading || state is Started)
+      body = Center(child: CircularProgressIndicator());
+    else if (state is Loaded)
+      return state.notifications.isEmpty
           ? Center(
               child: Text(
                 'Мэдэгдэл ирээгүй байна.',
                 textAlign: TextAlign.center,
               ),
             )
-          : buildNotifications(notifications),
-    );
+          : buildNotifications(state.notifications);
+    return body;
   }
 
   Widget buildNotifications(notifications) {
