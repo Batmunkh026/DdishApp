@@ -166,7 +166,11 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
   void fetchUserSelectedProduct() {
     if (products.isEmpty) return;
     //хэрэглэгчийн идэвхтэй бүтээгдэхүүнийг авах
-    selectedProduct = products.lastWhere(
+    selectedProduct = getUserActiveProduct();
+  }
+
+  Product getUserActiveProduct() {
+    return products.lastWhere(
         (p) =>
             user.activeProducts.singleWhere((up) => up.isMain && p.id == up.id,
                 orElse: () => null) !=

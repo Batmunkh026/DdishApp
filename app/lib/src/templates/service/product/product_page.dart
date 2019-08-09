@@ -136,6 +136,30 @@ class ProductPageState extends State<ProductPage>
   Widget _createProductPicker(ProductState state) {
     List<Product> items = _bloc.products;
     double pickerWidth = queryData.size.width * 0.22;
+
+    Product activeProduct = _bloc.getUserActiveProduct();
+
+    if (activeProduct == null) return Container();
+
+    if (state.selectedProductTab != ProductTabType.EXTEND)
+      return Container(
+        width: pickerWidth,
+        child: CachedNetworkImage(
+          imageUrl: activeProduct.image,
+          placeholder: (context, url) => Center(
+            child: SizedBox(
+              height: 15,
+              width: 15,
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          fit: BoxFit.contain,
+        ),
+      );
+
+    activeProduct =
+        _bloc.selectedProduct == null ? items.first : _bloc.selectedProduct;
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
@@ -162,16 +186,9 @@ class ProductPageState extends State<ProductPage>
                   )))
               .toList(),
           //TODO Багц сунгах таб биш бол яах?
-          value: _bloc.selectedProduct == null
-              ? items.first
-              : _bloc.selectedProduct,
-          onChanged: (value) {
-            if (state.selectedProductTab ==
-                ProductTabType
-                    .EXTEND) //TODO сонгосон таб нь [НЭМЭЛТ СУВАГ || АХИУЛАХ] бол яах ёстой ??
-              _bloc.dispatch(
-                  ProductTypeSelectorClicked(state.selectedProductTab, value));
-          },
+          value: activeProduct,
+          onChanged: (value) => _bloc.dispatch(
+              ProductTypeSelectorClicked(state.selectedProductTab, value)),
         ),
         Container(
           height: 10,
