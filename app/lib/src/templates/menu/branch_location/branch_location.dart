@@ -153,6 +153,7 @@ class BranchLocationState extends State<BranchLocationView> {
                                 item is String ? item : item.name,
                                 style: TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 12),
                                 softWrap: true,
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
