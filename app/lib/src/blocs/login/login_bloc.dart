@@ -11,18 +11,21 @@ import 'package:ddish/src/repositiories/globals.dart' as globals;
 import 'login_event.dart';
 import 'login_state.dart';
 
-class LoginBloc extends AbstractBloc<LoginEvent, LoginState>{
+class LoginBloc extends AbstractBloc<LoginEvent, LoginState> {
   final UserRepository userRepository;
   final AuthenticationBloc authenticationBloc;
 
-  LoginBloc(pageState, {
-    @required this.userRepository,
-    @required this.authenticationBloc
-  }): assert(authenticationBloc != null), super(pageState);
+  var rememberUsername;
+
+  LoginBloc(pageState,
+      {@required this.userRepository, @required this.authenticationBloc})
+      : assert(authenticationBloc != null),
+        super(pageState);
 
   @override
   LoginState get initialState {
     globals.client = null;
+    userRepository.isUsernameRemember().then((value) => rememberUsername = value);
     return LoginInitial();
   }
 
@@ -46,12 +49,16 @@ class LoginBloc extends AbstractBloc<LoginEvent, LoginState>{
         message.show(event.context, "Нэвтрэх нэр эсвэл нууц үг буруу байна",
             message.SnackBarType.ERROR);
         yield LoginFailure(error: "Bad credentials.");
-      } on SocketException catch(e){
+      } on SocketException catch (e) {
         yield LoginFailure(error: "Network error.");
       }
-    }else if(event is ForgotPass){
+    } else if (event is ForgotPass) {
       //TODO нууц үг сэргээх зааваргаа бүхий dialog нээх
       //....
     }
+  }
+
+  updateSharedStoreValue({rememberUsername}) {
+    userRepository.rememberUsername(rememberUsername);
   }
 }

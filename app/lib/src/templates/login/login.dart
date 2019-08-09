@@ -41,13 +41,11 @@ class LoginViewState extends State<LoginView> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool useFingerprint;
-  bool rememberUsername;
   bool canCheckBiometrics;
 
   @override
   void initState() {
     _usernameController.text = widget.username;
-    rememberUsername = widget.username != null;
     useFingerprint = widget.useFingerprint;
     canCheckBiometrics = widget.canCheckBiometrics;
     super.initState();
@@ -123,10 +121,15 @@ class LoginViewState extends State<LoginView> {
                       ),
                     ),
                     ToggleSwitch(
-                      value: rememberUsername,
+                      value: _loginBloc.rememberUsername,
                       hint: "Нэвтрэх нэр хадгалах",
                       style: style.switchHint,
-                      onChanged: (value) => rememberUsername = value,
+                      onChanged: (value) {
+                        setState(() {
+                          _loginBloc.rememberUsername = value;
+                          _loginBloc.updateSharedStoreValue(rememberUsername: value);
+                        });
+                      },
                     ),
                     Visibility(
                       visible: widget.canCheckBiometrics,
@@ -175,7 +178,7 @@ class LoginViewState extends State<LoginView> {
       _loginBloc.dispatch(LoginButtonPressed(
         username: _usernameController.text,
         password: _passwordController.text,
-        rememberUsername: rememberUsername,
+        rememberUsername: _loginBloc.rememberUsername,
         useFingerprint: useFingerprint,
         fingerPrintLogin: false,
         context: context,

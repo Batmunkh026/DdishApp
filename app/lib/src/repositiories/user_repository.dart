@@ -82,4 +82,16 @@ class UserRepository extends AbstractRepository {
   Future<bool> hasToken() async {
     return false;
   }
+
+  Future<bool> isUsernameRemember()async {
+    var prefs = await SharedPreferences.getInstance();
+    if(!prefs.containsKey('isUsernameRemember'))
+      prefs.setBool('isUsernameRemember', false);
+    return prefs.getBool('isUsernameRemember');
+  }
+
+  Future<bool> rememberUsername(isRemember)async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.setBool('isUsernameRemember', isRemember);
+  }
 }
