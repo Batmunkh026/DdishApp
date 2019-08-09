@@ -124,6 +124,7 @@ class AntennaVideoWidgetState extends State<AntennaVideoWidget>{
                           videoId: vmanual.videoId,
                           showVideoProgressIndicator: true,
                           videoProgressIndicatorColor: Colors.red,
+                          autoPlay: false,
                         ),
                         alignment: Alignment.center,
                       ),
