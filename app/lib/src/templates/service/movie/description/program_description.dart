@@ -267,7 +267,6 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                         child: YoutubePlayer(
                           context: context,
                           videoId: content.trailerUrl,
-                          autoPlay: false,
                           showVideoProgressIndicator: true,
                           videoProgressIndicatorColor: Colors.red,
                         ),

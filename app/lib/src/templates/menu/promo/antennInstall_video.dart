@@ -122,7 +122,6 @@ class AntennaVideoWidgetState extends State<AntennaVideoWidget>{
                         child: YoutubePlayer(
                           context: context,
                           videoId: vmanual.videoId,
-                          autoPlay: false,
                           showVideoProgressIndicator: true,
                           videoProgressIndicatorColor: Colors.red,
                         ),
