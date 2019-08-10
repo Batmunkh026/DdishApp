@@ -77,4 +77,12 @@ class VodRepository extends AbstractRepository {
     // TODO handle isSuccess = false
     return programList;
   }
+
+  ///өгөгдсөн ID кино байгаа эсэхийг шалгах
+  Future<bool> isValidMovieId(String movieId) async {
+    var decoded = await getResponse('searchArVod/$movieId');
+    Result result = Result.fromJson(decoded);
+    log.info("isValidMovieID : $result");
+    return result.isSuccess;
+  }
 }

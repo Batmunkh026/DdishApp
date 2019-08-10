@@ -106,33 +106,63 @@ class LibraryState extends State<Library> {
   }
 
   onRentButtonTap() {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CustomDialog(
-            important: true,
-            title: 'Санамж',
-            submitButtonText: 'Түрээслэх',
-            closeButtonText: 'Болих',
-            onSubmit: _onRentAgreeTap,
-            content: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                style: TextStyle(
-                    color: const Color(0xffe4f0ff),
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14.0),
-                children: <TextSpan>[
-                  TextSpan(text: 'Та Кино сангаас '),
-                  TextSpan(
-                      text: movieIdFieldController.text,
-                      style: TextStyle(fontWeight: FontWeight.w600)),
-                  TextSpan(text: ' ID-тай киног түрээслэх гэж байна. '),
-                ],
-              ),
+    _bloc.isValidMovieId(movieIdFieldController.text).then((isValid) {
+      var resultDialog;
+
+      if (isValid)
+        CustomDialog(
+          important: true,
+          title: 'Санамж',
+          submitButtonText: 'Түрээслэх',
+          closeButtonText: 'Болих',
+          onSubmit: _onRentAgreeTap,
+          content: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(
+                  color: const Color(0xffe4f0ff),
+                  fontStyle: FontStyle.normal,
+                  fontSize: 14.0),
+              children: <TextSpan>[
+                TextSpan(text: 'Та Кино сангаас '),
+                TextSpan(
+                    text: movieIdFieldController.text,
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+                TextSpan(text: ' ID-тай киног түрээслэх гэж байна. '),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      else
+        resultDialog = CustomDialog(
+          important: true,
+          title: 'Анхааруулга',
+          closeButtonText: 'Хаах',
+          onSubmit: _onRentAgreeTap,
+          content: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(
+                  color: const Color(0xffe4f0ff),
+                  fontStyle: FontStyle.normal,
+                  fontSize: 14.0),
+              children: <TextSpan>[
+                TextSpan(
+                    text: movieIdFieldController.text,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(text: " ID-тай кино олдсонгүй! "),
+                TextSpan(text: ' Та шалгаад дахин оролдож үзнэ үү. '),
+              ],
+            ),
+          ),
+        );
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return resultDialog;
+          });
+    });
   }
 
   _onRentAgreeTap() {

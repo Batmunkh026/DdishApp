@@ -34,6 +34,12 @@ class InputValidations {
     if (!usernameRegex.hasMatch(value)) return 'Утасны дугаараа зөв оруулна уу.';
     return null;
   }
+  static String validateMonth(String value) {
+    if (value.isEmpty) return 'Утга оруулна уу!';
+    final RegExp usernameRegex = new RegExp(r'(^1[0-2]$)|(^[0-9]$)');
+    if (!usernameRegex.hasMatch(value)) return 'Сарын тоогоо зөв оруулна уу.';
+    return null;
+  }
 
   static String validateNotNullValue(String value) {
     if (value.isEmpty) return 'Утга оруулна уу.';

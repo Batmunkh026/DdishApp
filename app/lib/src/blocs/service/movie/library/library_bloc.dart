@@ -5,11 +5,12 @@ import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
 
-class MovieLibraryBloc extends AbstractBloc<MovieLibraryEvent, MovieLibraryState> {
+class MovieLibraryBloc
+    extends AbstractBloc<MovieLibraryEvent, MovieLibraryState> {
   VodRepository _repository;
 
-  MovieLibraryBloc(pageState):super(pageState){
-    _repository = VodRepository(this);  
+  MovieLibraryBloc(pageState) : super(pageState) {
+    _repository = VodRepository(this);
   }
 
   @override
@@ -27,5 +28,12 @@ class MovieLibraryBloc extends AbstractBloc<MovieLibraryEvent, MovieLibraryState
       Result result = await _repository.rentContent(event.contentId);
       yield ContentOrderRequestFinished(result: result);
     }
+  }
+
+  ///өгөгдсөн киноны ID зөв эсэхийг шалгах
+  Future<bool> isValidMovieId(String movieId) async {
+    if (movieId == null || movieId.isEmpty) return false;
+
+    return _repository.isValidMovieId(movieId);
   }
 }
