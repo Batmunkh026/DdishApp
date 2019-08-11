@@ -293,7 +293,7 @@ class BranchLocationState extends State<BranchLocationView> {
       position: position,
       infoWindow: InfoWindow(
         title: branch.name,
-        snippet: branch.address,
+        snippet: clearSpecialChars(branch.address),
       ),
       icon: icon,
       onTap: () => setState(() {
@@ -346,4 +346,6 @@ class BranchLocationState extends State<BranchLocationView> {
             branches.where((b) => b.state == selectedState).toList();
     });
   }
+
+  String clearSpecialChars(String address) => address.replaceAll(RegExp(r'\\n|\\r'), "");
 }
