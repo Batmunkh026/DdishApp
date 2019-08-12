@@ -54,6 +54,7 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
   Stream<ProductState> mapEventToState(ProductEvent event) async* {
     if (event is ProductTabChanged) {
       yield Loading(event.selectedProductTabType);
+      fetchUserSelectedProduct();
 
       if (event.selectedProductTabType == ProductTabType.ADDITIONAL_CHANNEL) {
         assert(selectedProduct != null);

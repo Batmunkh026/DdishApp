@@ -215,7 +215,6 @@ class ProductPageState extends State<ProductPage>
       return Center(child: CircularProgressIndicator());
 
     if (_state is ProductTabState || _state is ProductSelectionState) {
-      updateAppBar = true;
       if (_bloc.backState is SelectedProductPreview) createDefaultAppBar();
 
       //багц сунгах бол сонгосон багцыг , бусад таб бол боломжит бүх багцуудыг
@@ -257,6 +256,9 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildBody() {
+    if (_bloc.currentState is ProductTabState || _bloc.currentState is ProductSelectionState)
+      updateAppBar = true;
+
     var _appBar = _buildAppBar();
 
     var _content = _buildContents();
@@ -305,7 +307,7 @@ class ProductPageState extends State<ProductPage>
                 _tabController.animateTo(nextTabIndex);
                 _bloc.dispatch(ProductTabChanged(nextTab.state));
               }
-            } else
+            } else if(delta > 0)
               _bloc.backToPrevState();
           }
         })
