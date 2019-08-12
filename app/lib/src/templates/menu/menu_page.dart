@@ -170,7 +170,7 @@ class MenuPageState extends State<MenuPage> {
     const platform = Constants.platform;
 
     if (Platform.isIOS)
-      platform.invokeMethod('call', [menu.title]);
+      Future(menu.event);
     else
       showDialog(
           context: context,
