@@ -282,16 +282,14 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                       padding: const EdgeInsets.symmetric(vertical: 50.0),
                       child: DialogCloseButton(onTap: () {
                         Navigator.pop(context);
-                        sessionUpdateTask.cancel();
+                        _bloc.cancelSessionUpdateTask(sessionUpdateTask);
                       }),
                     ),
                     alignment: Alignment.bottomCenter,
                   )
                 ],
               ));
-        }).then((_) {
-      sessionUpdateTask.cancel();
-    });
+        }).then((_) => _bloc.cancelSessionUpdateTask(sessionUpdateTask));
   }
 
   showPoster(Movie content) {

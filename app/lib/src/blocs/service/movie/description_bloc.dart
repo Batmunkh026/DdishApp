@@ -34,13 +34,18 @@ class ProgramDescriptionBloc
   }
 
   Timer updateSession() {
-    Timer updateTask = Timer(Duration(seconds: 1), () {
-      if (globals.client.credentials.canRefresh)
-        globals.client
-            .refreshCredentials()
-            .then((newClient) => globals.client = newClient);
+    return Timer.periodic(Duration(seconds: 30), (timer) {
+      new Timer(Duration(seconds: 1), (){
+        if (globals.client.credentials.canRefresh)
+          globals.client.refreshCredentials().then((newClient) {
+            globals.client = newClient;
+            print("NEW EXPIRE DATE >> ${newClient.credentials.expiration}");
+          });
+      });
     });
+  }
 
-    return Timer.periodic(Duration(seconds: 30), (timer) => updateTask);
+  cancelSessionUpdateTask(Timer sessionUpdateTask) {
+    sessionUpdateTask.cancel();
   }
 }
