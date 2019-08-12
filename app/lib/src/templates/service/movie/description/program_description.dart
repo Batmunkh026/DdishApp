@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:ddish/src/blocs/service/movie/description_bloc.dart';
@@ -253,6 +254,8 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
   }
 
   showTrailer(Movie content) {
+    Timer sessionUpdateTask = _bloc.updateSession();
+
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -277,14 +280,18 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   Align(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 50.0),
-                      child: DialogCloseButton(
-                          onTap: () => Navigator.pop(context)),
+                      child: DialogCloseButton(onTap: () {
+                        Navigator.pop(context);
+                        sessionUpdateTask.cancel();
+                      }),
                     ),
                     alignment: Alignment.bottomCenter,
                   )
                 ],
               ));
-        });
+        }).then((_) {
+      sessionUpdateTask.cancel();
+    });
   }
 
   showPoster(Movie content) {

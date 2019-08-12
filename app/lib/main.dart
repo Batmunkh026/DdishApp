@@ -31,17 +31,14 @@ class SimpleBlocDelegate extends BlocDelegate {
     if (!(event is AuthenticationEvent) && client != null) {
       log.warning("session will expire: ${client.credentials.expiration}}");
 
-
       //хэрэглэгчийн эвент бүрт credential update хийх
       if (client.credentials.canRefresh)
-        client
-            .refreshCredentials()
-            .then((newClient){
-              globals.client = newClient;
+        client.refreshCredentials().then((newClient) {
+          globals.client = newClient;
 
-              log.warning("NEW EXPIRE DATE >> : ${newClient.credentials.expiration}");
-              updateExpireTimeOfLogoutTask(newClient.credentials.expiration, bloc);
-
+          log.warning(
+              "NEW EXPIRE DATE >> : ${newClient.credentials.expiration}");
+          updateExpireTimeOfLogoutTask(newClient.credentials.expiration, bloc);
         });
     }
 //
@@ -58,10 +55,12 @@ class SimpleBlocDelegate extends BlocDelegate {
           ? now.difference(expireTime)
           : Duration(seconds: 0);
 
-      Timer expireTask = Timer(
-          Duration(milliseconds: difference.inMilliseconds.abs()),
-          () => bloc.connectionExpired(
-              "session expired on sessionTimerTask: bloc > $bloc"));
+      Timer expireTask =
+          Timer(Duration(milliseconds: difference.inMilliseconds.abs()), () {
+        if (expireTime == globals.client.credentials.expiration)//credentials нь шинэчлэгдсэн эсэх?
+          bloc.connectionExpired(
+              "session expired on sessionTimerTask: bloc > $bloc");
+      });
 
       //өмнөх таск ыг цуцлах
       if (sessionExpire != null) sessionExpire.cancel();

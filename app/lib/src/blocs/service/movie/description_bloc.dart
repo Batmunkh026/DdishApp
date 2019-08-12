@@ -1,10 +1,11 @@
-import 'package:bloc/bloc.dart';
+import 'dart:async';
 import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/blocs/service/movie/description_event.dart';
 import 'package:ddish/src/blocs/service/movie/description_state.dart';
 import 'package:ddish/src/models/movie.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/repositiories/vod_repository.dart';
+import 'package:ddish/src/repositiories/globals.dart' as globals;
 
 class ProgramDescriptionBloc
     extends AbstractBloc<DescriptionEvent, DescriptionState> {
@@ -30,5 +31,16 @@ class ProgramDescriptionBloc
       Result result = await _vodRepository.chargeProduct(event.rentProgram);
       yield RentRequestFinished(result: result);
     }
+  }
+
+  Timer updateSession() {
+    Timer updateTask = Timer(Duration(seconds: 1), () {
+      if (globals.client.credentials.canRefresh)
+        globals.client
+            .refreshCredentials()
+            .then((newClient) => globals.client = newClient);
+    });
+
+    return Timer.periodic(Duration(seconds: 30), (timer) => updateTask);
   }
 }
