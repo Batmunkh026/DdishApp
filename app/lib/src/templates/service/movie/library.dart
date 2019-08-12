@@ -34,6 +34,7 @@ class LibraryState extends State<Library> {
     super.dispose();
   }
 
+  final GlobalKey<FormState> formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,6 +46,7 @@ class LibraryState extends State<Library> {
             children: <Widget>[
               Container(
                 child: ProgramSearchWidget(
+                  formKey: formKey,
                   searchById: true,
                   onSearchTap: onRentButtonTap,
                   controller: movieIdFieldController,

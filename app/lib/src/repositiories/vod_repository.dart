@@ -27,13 +27,17 @@ class VodRepository extends AbstractRepository {
     String cacheKey = '${channel.productId}/${DateUtil.formatParamDate(date)}';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var cached = await prefs.getString(cacheKey);
+
     if (cached != null) {
       response = cached;
     } else {
       response = await getResponse(
           'vodList/${channel.productId}/${DateUtil.formatParamDate(date)}',
           hasDecoded: false);
-      await prefs.setString(cacheKey, response.toString());
+      if(Result.fromJson(jsonDecode(response)).isSuccess)
+        await prefs.setString(cacheKey, response.toString());
+      else
+        return List<Program>.from([]);
     }
 
     var decoded = json.decode(response);

@@ -8,15 +8,15 @@ class ProgramSearchWidget extends StatelessWidget {
   final bool searchById;
   final TextEditingController controller;
   final VoidCallback onReturnTap;
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey;
 
   ProgramSearchWidget(
-      {this.searchById, this.onSearchTap, this.controller, this.onReturnTap});
+      {this.formKey, this.searchById, this.onSearchTap, this.controller, this.onReturnTap});
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: formKey,
       child: Column(
         children: <Widget>[
           Row(
@@ -40,7 +40,7 @@ class ProgramSearchWidget extends StatelessWidget {
                 text: searchById ? 'Түрээслэх' : 'Хайх',
                 padding: const EdgeInsets.all(5.0),
                 onPressed: () {
-                  if (_formKey.currentState.validate()) Future(onSearchTap);
+                  if (formKey.currentState.validate()) Future(onSearchTap);
                 },
               ),
             ],

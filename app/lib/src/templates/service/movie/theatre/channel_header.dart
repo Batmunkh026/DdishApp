@@ -43,27 +43,33 @@ class ChannelHeaderState extends State<ChannelHeaderWidget> {
         children: <Widget>[
           FittedBox(
             fit: BoxFit.contain,
-            child: Container(
-              height: headerContainerHeight,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  IconButton(
-                    iconSize: 24.0,
-                    color: Color(0xff3069b2),
-                    disabledColor: Color(0xffe8e8e8),
-                    icon: Icon(DdishAppIcons.before),
-                    onPressed: widget.onReturnTap,
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 5, right: 50),
-                    child: ChannelThumbnail(
-                      height: headerContainerHeight,
-                      channel: selectedChannel,
+            child: GestureDetector(
+              onHorizontalDragEnd: (details) {
+                double _delta = details.velocity.pixelsPerSecond.dx;
+                if (_delta > 0) widget.onReturnTap();
+              },
+              child: Container(
+                height: headerContainerHeight,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    IconButton(
+                      iconSize: 24.0,
+                      color: Color(0xff3069b2),
+                      disabledColor: Color(0xffe8e8e8),
+                      icon: Icon(DdishAppIcons.before),
+                      onPressed: widget.onReturnTap,
                     ),
-                  ),
-                ],
+                    Container(
+                      padding: EdgeInsets.only(top: 5, right: 50),
+                      child: ChannelThumbnail(
+                        height: headerContainerHeight,
+                        channel: selectedChannel,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
