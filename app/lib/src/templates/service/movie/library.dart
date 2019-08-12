@@ -110,7 +110,7 @@ class LibraryState extends State<Library> {
       var resultDialog;
 
       if (isValid)
-        CustomDialog(
+        resultDialog = CustomDialog(
           important: true,
           title: 'Санамж',
           submitButtonText: 'Түрээслэх',
