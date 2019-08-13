@@ -294,7 +294,7 @@ class ProductPageState extends State<ProductPage>
           if (delta != 0.0) {
             bool isRight = delta < 0;
 
-            if (_bloc.beforeState is ProductTabState ||
+            if (_bloc.beforeState is ProductTabState || _bloc.currentState is ProductSelectionState ||
                 _bloc.beforeState == null) {
               ProductTabType selectedTab =
                   (_bloc.currentState as ProductState).selectedProductTab;
