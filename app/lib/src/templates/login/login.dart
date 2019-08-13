@@ -41,13 +41,11 @@ class LoginViewState extends State<LoginView> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool useFingerprint;
   bool canCheckBiometrics;
 
   @override
   void initState() {
     _usernameController.text = widget.username;
-    useFingerprint = widget.useFingerprint;
     canCheckBiometrics = widget.canCheckBiometrics;
     super.initState();
   }
@@ -121,25 +119,31 @@ class LoginViewState extends State<LoginView> {
                         ),
                       ),
                     ),
-                    ToggleSwitch(
+                    new ToggleSwitch(
                       value: _loginBloc.rememberUsername,
                       hint: "Нэвтрэх нэр хадгалах",
                       style: style.switchHint,
                       onChanged: (value) {
                         setState(() {
                           _loginBloc.rememberUsername = value;
-                          _loginBloc.updateSharedStoreValue(
+                          _loginBloc.updateRememberUsername(
                               rememberUsername: value);
                         });
                       },
                     ),
                     Visibility(
                       visible: widget.canCheckBiometrics,
-                      child: ToggleSwitch(
-                        value: useFingerprint,
+                      child: new ToggleSwitch(
+                        value: _loginBloc.useFingerprint,
                         hint: "Цаашид хурууны хээгээр нэвтэрнэ",
                         style: style.switchHint,
-                        onChanged: (value) => useFingerprint = value,
+                        onChanged: (value) {
+                          setState(() {
+                            _loginBloc.useFingerprint = value;
+                            _loginBloc.updateRememberFingerprint(
+                                rememberFingerprint: value);
+                          });
+                        },
                       ),
                     ),
                     Center(
@@ -208,7 +212,7 @@ class LoginViewState extends State<LoginView> {
         username: _usernameController.text,
         password: _passwordController.text,
         rememberUsername: _loginBloc.rememberUsername,
-        useFingerprint: useFingerprint,
+        useFingerprint: _loginBloc.useFingerprint,
         fingerPrintLogin: false,
         context: context,
       ));

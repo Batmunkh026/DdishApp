@@ -61,11 +61,6 @@ class UserRepository extends AbstractRepository {
     return prefs.getString('username');
   }
 
-  Future<bool> useFingerprint() async {
-    var prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('useFingerprint');
-  }
-
   Future<void> deleteToken() async {
     //TODO token устгах
     await Future.delayed(Duration(seconds: 1));
@@ -93,5 +88,18 @@ class UserRepository extends AbstractRepository {
   Future<bool> rememberUsername(isRemember)async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.setBool('isUsernameRemember', isRemember);
+  }
+
+  Future<bool> useFingerprint() async {
+    var prefs = await SharedPreferences.getInstance();
+    if(!prefs.containsKey('useFingerprint'))
+      prefs.setBool('useFingerprint', false);
+
+    return prefs.getBool('useFingerprint');
+  }
+
+  Future<bool> rememberFingerprint(bool isRemember)async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.setBool('useFingerprint', isRemember);
   }
 }

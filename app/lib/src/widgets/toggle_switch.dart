@@ -22,7 +22,7 @@ class ToggleSwitchState extends State<ToggleSwitch> {
       children: <Widget>[
         GestureDetector(
           onTapDown: (details) {
-            setState((){
+            setState(() {
               value = !value;
               widget.value = value;
               widget.onChanged(value);
@@ -39,9 +39,12 @@ class ToggleSwitchState extends State<ToggleSwitch> {
         ),
         Container(
           width: MediaQuery.of(context).size.width * 0.6,
-          child: Text(
-            widget.hint,
-            style: widget.style,
+          child: GestureDetector(
+            onTap: () => widget.onChanged(!value),
+            child: Text(
+              widget.hint,
+              style: widget.style,
+            ),
           ),
         )
       ],

@@ -15,7 +15,8 @@ class LoginBloc extends AbstractBloc<LoginEvent, LoginState> {
   final UserRepository userRepository;
   final AuthenticationBloc authenticationBloc;
 
-  var rememberUsername;
+  bool useFingerprint;
+  bool rememberUsername;
 
   LoginBloc(pageState,
       {@required this.userRepository, @required this.authenticationBloc})
@@ -25,7 +26,10 @@ class LoginBloc extends AbstractBloc<LoginEvent, LoginState> {
   @override
   LoginState get initialState {
     globals.client = null;
-    userRepository.isUsernameRemember().then((value) => rememberUsername = value);
+    userRepository
+        .isUsernameRemember()
+        .then((value) => rememberUsername = value);
+    userRepository.useFingerprint().then((value) => useFingerprint = value);
     return LoginInitial();
   }
 
@@ -58,7 +62,11 @@ class LoginBloc extends AbstractBloc<LoginEvent, LoginState> {
     }
   }
 
-  updateSharedStoreValue({rememberUsername}) {
+  updateRememberUsername({rememberUsername}) {
     userRepository.rememberUsername(rememberUsername);
+  }
+
+  updateRememberFingerprint({rememberFingerprint}) {
+    userRepository.rememberFingerprint(rememberFingerprint);
   }
 }
