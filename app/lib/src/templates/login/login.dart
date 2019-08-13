@@ -1,14 +1,15 @@
 import 'dart:ui';
-
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'package:ddish/src/blocs/login/login_event.dart';
 import 'package:ddish/src/blocs/login/login_state.dart';
+import 'package:ddish/src/utils/events.dart';
 import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/toggle_switch.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -127,7 +128,8 @@ class LoginViewState extends State<LoginView> {
                       onChanged: (value) {
                         setState(() {
                           _loginBloc.rememberUsername = value;
-                          _loginBloc.updateSharedStoreValue(rememberUsername: value);
+                          _loginBloc.updateSharedStoreValue(
+                              rememberUsername: value);
                         });
                       },
                     ),
@@ -161,12 +163,39 @@ class LoginViewState extends State<LoginView> {
   }
 
   Future _showDialog(BuildContext context) async {
+    const phoneNumber = '139898';
+
+    var forgotPasswordHint = new RichText(
+        text: new TextSpan(children: [
+      TextSpan(style: style.hintTextStyle, text: "- Та нууц кодоо харах бол "),
+      TextSpan(style: style.hintBoldTextStyle, text: "$phoneNumber "),
+      TextSpan(style: style.hintTextStyle, text: " дугаарт "),
+      createClickableSpan(phoneNumber, "KOD"),
+      TextSpan(
+          style: style.hintTextStyle,
+          text: "гэж бичин илгээнэ үү. \n- Та нууц кодоо солих бол "),
+      TextSpan(style: style.hintBoldTextStyle, text: "$phoneNumber "),
+      TextSpan(style: style.hintTextStyle, text: "дугаарт "),
+      createClickableSpan(phoneNumber, "SOLIH"),
+      TextSpan(
+          style: style.hintTextStyle,
+          text:
+              "гэж бичээд солих нууц кодоо бичин илгээнэ үү. \n- Та админ утасны дугааргүй бол "),
+      TextSpan(style: style.hintBoldTextStyle, text: "$phoneNumber "),
+      TextSpan(style: style.hintTextStyle, text: "дугаарт "),
+      createClickableSpan(phoneNumber, "Help"),
+      TextSpan(
+          style: style.hintTextStyle,
+          text:
+              "мессеж илгээн админ дугаараа бүртгүүлэх дэлгэрэнгүй зааврыг авна уу")
+    ]));
+
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
             title: 'Санамж',
-            content: style.forgotPasswordHint,
+            content: forgotPasswordHint,
             closeButtonText: 'Хаах',
           );
         });
@@ -184,5 +213,18 @@ class LoginViewState extends State<LoginView> {
         context: context,
       ));
     }
+  }
+
+  _onTapSms(phoneNumber, content) {
+    var tapRec = TapGestureRecognizer();
+    tapRec.onTap = () => Events().smsEvent(phoneNumber, content);
+    return tapRec;
+  }
+
+  TextSpan createClickableSpan(String phoneNumber, String content) {
+    return TextSpan(
+        text: "$content ",
+        style: style.hintBoldTextStyle,
+        recognizer: _onTapSms(phoneNumber, content));
   }
 }
