@@ -101,19 +101,6 @@ class LoginWidgetState extends State<LoginWidget> {
                 onPressed: () => onMenuTap(),
               ),
             ),
-            BlocBuilder<AuthenticationEvent, AuthenticationState>(
-              bloc: authenticationBloc,
-              builder: (BuildContext context, AuthenticationState state) {
-                if (state is AuthenticationAuthenticated) {
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    Navigator.pushNamed(context, "/Main");
-                  });
-                  authenticationBloc.dispatch(
-                      AuthenticationFinished()); // to reset the state and avoid an infinite loop
-                }
-                return Container();
-              },
-            ),
           ],
         ),
       ),

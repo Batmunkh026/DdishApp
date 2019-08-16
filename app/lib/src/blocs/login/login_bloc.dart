@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:ddish/src/abstract/abstract.dart';
+import 'package:flutter/widgets.dart';
 import 'package:oauth2/oauth2.dart' as oauth;
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
 import 'package:ddish/src/blocs/authentication/authentication_event.dart';
@@ -47,7 +48,8 @@ class LoginBloc extends AbstractBloc<LoginEvent, LoginState> {
           fingerPrintLogin: event.fingerPrintLogin,
         );
 
-        authenticationBloc.dispatch(LoggedIn(token: token));
+        //        authenticationBloc.dispatch(LoggedIn(token: token));
+        Navigator.pushNamed(pageState.context, "/Main");
         yield LoginInitial();
       } on oauth.AuthorizationException {
         message.show(event.context, "Нэвтрэх нэр эсвэл нууц үг буруу байна",
