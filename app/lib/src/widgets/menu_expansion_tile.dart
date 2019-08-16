@@ -154,7 +154,6 @@ class MenuExpansionTileState extends State<MenuExpansionTile>
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    _borderColor.end = theme.dividerColor;
     _headerColor
       ..begin = theme.textTheme.subhead.color
       ..end = theme.accentColor;
