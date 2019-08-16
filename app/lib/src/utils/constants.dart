@@ -67,7 +67,7 @@ class Constants {
       title: 'Захиалга өгөх',
       children: <Menu>[
         Menu(
-            title: 'Антенн тохируулах захиалга өгөх',
+            title: 'Антен тохируулах захиалга өгөх',
             screen: OrderWidget('15378')),
         Menu(
             title: 'Шинэ хэрэглэгчийн захиалга өгөх',
