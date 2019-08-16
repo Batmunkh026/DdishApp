@@ -85,6 +85,7 @@ class LoginViewState extends State<LoginView> {
                           ),
                         ],
                       ),
+                      margin: EdgeInsets.only(bottom: 25),
                     ),
                     InputField(
                       placeholder: 'АДМИН ДУГААР / СМАРТ КАРТЫН ДУГААР',
@@ -92,12 +93,14 @@ class LoginViewState extends State<LoginView> {
                       obscureText: false,
                       textInputType: TextInputType.number,
                       validateFunction: InputValidations.validateNumberValue,
+                      fontSize: 12,
                     ),
                     InputField(
-                      placeholder: 'НУУЦ ҮГ /****/',
+                      placeholder: 'НУУЦ КОД / * * * * /',
                       textController: _passwordController,
                       obscureText: true,
                       validateFunction: InputValidations.validateNotNullValue,
+                      fontSize: 12,
                     ),
                     Center(
                       child: Container(
@@ -109,13 +112,16 @@ class LoginViewState extends State<LoginView> {
                     FlatButton(
                       onPressed: () => _showDialog(context),
                       padding: EdgeInsets.all(0.0),
-                      child: Text(
-                        'Нууц үгээ мартсан уу?',
-                        style: TextStyle(
-                          color: Color(0xffe4f0ff),
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 15.0,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Нууц кодоо мартсан уу?',
+                          style: TextStyle(
+                            color: Color(0xffe4f0ff),
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ),
@@ -145,6 +151,10 @@ class LoginViewState extends State<LoginView> {
                           });
                         },
                       ),
+                    ),
+                    Divider(
+                      color: Colors.transparent,
+                      height: 11,
                     ),
                     Center(
                       child: SubmitButton(

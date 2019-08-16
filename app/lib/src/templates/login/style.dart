@@ -4,7 +4,7 @@ var switchHint = const TextStyle(
     color: const Color(0xffe4f0ff),
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
-    fontSize: 15.0);
+    fontSize: 12.0);
 
 var hintTextStyle = const TextStyle(
     color: const Color(0xffe4f0ff),
