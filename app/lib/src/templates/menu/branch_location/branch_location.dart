@@ -118,10 +118,13 @@ class BranchLocationState extends State<BranchLocationView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(padding: EdgeInsets.only(bottom: 5), child: Text(
-            title,
-            style: textStyle,
-          ),),
+          Padding(
+            padding: EdgeInsets.only(bottom: 5),
+            child: Text(
+              title,
+              style: textStyle,
+            ),
+          ),
           Theme(
             data: ThemeData(canvasColor: Theme.of(context).primaryColor),
             child: Container(
@@ -151,7 +154,9 @@ class BranchLocationState extends State<BranchLocationView> {
                               padding: EdgeInsets.all(3),
                               child: Text(
                                 item is String ? item : item.name,
-                                style: TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 12),
+                                style: TextStyle(
+                                    color: Color.fromRGBO(202, 224, 252, 1),
+                                    fontSize: 12),
                                 softWrap: true,
                                 textAlign: TextAlign.center,
                               ),
@@ -236,31 +241,29 @@ class BranchLocationState extends State<BranchLocationView> {
       padding: EdgeInsets.all(5),
       child: SingleChildScrollView(
         padding: EdgeInsets.all(5),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width * 0.45,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      selectedBranch.name,
-                      style: TextStyle(color: textStyle.color),
-                    ),
-                  ),
-                  RichText(
-                    softWrap: true,
-                    text: TextSpan(
-                        text: selectedBranch.address, style: textStyle),
-                  )
-                ],
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 10),
+              child: Text(
+                selectedBranch.name,
+                style: TextStyle(color: textStyle.color),
               ),
             ),
-            Flexible(
-              child: Column(children: createTimeTableWidgets(selectedBranch)),
+            Row(
+              children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  margin: EdgeInsets.only(right: 15),
+                  child: RichText(
+                    softWrap: true,
+                    text: TextSpan(
+                        text: clearSpecialChars(selectedBranch.address), style: textStyle),
+                  ),
+                ),
+                Column(children: createTimeTableWidgets(selectedBranch))
+              ],
             )
           ],
         ),
@@ -347,5 +350,6 @@ class BranchLocationState extends State<BranchLocationView> {
     });
   }
 
-  String clearSpecialChars(String address) => address.replaceAll(RegExp(r'\\n|\\r'), "");
+  String clearSpecialChars(String address) =>
+      address.replaceAll(RegExp(r'\\n|\\r'), "");
 }
