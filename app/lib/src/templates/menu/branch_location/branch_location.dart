@@ -197,45 +197,49 @@ class BranchLocationState extends State<BranchLocationView> {
   List<Widget> createFilterComponents(List<Branch> branches) {
     return [
       createSelectorColumn(
-          createSelector(
-              "Хот, Аймаг",
-              _params.branchAreas,
-              (area) => setState(() {
-                    this.selectedArea = area;
-                    addToBranchFilterStream();
-                  }),
-              selectedArea),
-          createSelector(
-              "Салбарын төрөл",
-              _params.branchTypes,
-              (type) => setState(() {
-                    this.selectedType = type;
-                    addToBranchFilterStream();
-                  }),
-              selectedType)),
+        createSelector(
+            "Хот, Аймаг",
+            _params.branchAreas,
+            (area) => setState(() {
+                  this.selectedArea = area;
+                  addToBranchFilterStream();
+                }),
+            selectedArea),
+        createSelector(
+            "Салбарын төлөв",
+            ["Бүгд", "Нээлттэй", "Хаалттай"],
+            (branchState) => setState(() {
+                  this.selectedState = branchState;
+                  filterByBranchState();
+                }),
+            selectedState),
+      ),
       createSelectorColumn(
-          createSelector(
-              "Салбарын төлөв",
-              ["Бүгд", "Нээлттэй", "Хаалттай"],
-              (branchState) => setState(() {
-                    this.selectedState = branchState;
-                    filterByBranchState();
-                  }),
-              selectedState),
-          createSelector(
-              "Үзүүлэх үйлчилгээ",
-              _params.branchServices,
-              (service) => setState(() {
-                    this.selectedService = service;
-                    addToBranchFilterStream();
-                  }),
-              selectedService)),
+        createSelector(
+            "Салбарын төрөл",
+            _params.branchTypes,
+            (type) => setState(() {
+                  this.selectedType = type;
+                  addToBranchFilterStream();
+                }),
+            selectedType),
+        createSelector(
+            "Үзүүлэх үйлчилгээ",
+            _params.branchServices,
+            (service) => setState(() {
+                  this.selectedService = service;
+                  addToBranchFilterStream();
+                }),
+            selectedService),
+      ),
     ];
   }
 
   ///сонгосон салбарын цагийн хуваарь, байршлын мэдээлэл
   Widget createInfoOfSelectedbranch() {
     if (selectedBranch == null) return Container();
+
+    var addressContainerWidth = MediaQuery.of(context).size.width * 0.35;
 
     return Padding(
       padding: EdgeInsets.all(5),
@@ -252,17 +256,22 @@ class BranchLocationState extends State<BranchLocationView> {
               ),
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: addressContainerWidth,
                   margin: EdgeInsets.only(right: 15),
                   child: RichText(
                     softWrap: true,
                     text: TextSpan(
-                        text: clearSpecialChars(selectedBranch.address), style: textStyle),
+                        text: clearSpecialChars(selectedBranch.address),
+                        style: textStyle),
                   ),
                 ),
-                Column(children: createTimeTableWidgets(selectedBranch))
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: createTimeTableWidgets(selectedBranch))
               ],
             )
           ],
@@ -317,7 +326,24 @@ class BranchLocationState extends State<BranchLocationView> {
       List dayTimes = dayAndTime.split("@");
       List<String> days = dayTimes[0].split(",");
       String time = dayTimes[1];
-      return Text("${days.first} - ${days.last}: $time", style: textStyle);
+
+      return Container(
+        margin: EdgeInsets.only(bottom: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+              child: Text("${days.first.trim()} - ${days.last}:",
+                  style: textStyle),
+              margin: EdgeInsets.only(right: 10),
+            ),
+            Text(
+              "$time",
+              style: textStyle,
+            )
+          ],
+        ),
+      );
     }).toList();
   }
 
