@@ -1,3 +1,4 @@
+import 'package:ddish/src/utils/price_format.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/blocs/service/account/account_bloc.dart';
 import 'package:ddish/src/blocs/service/account/account_event.dart';
@@ -65,7 +66,7 @@ class AccountPageState extends State<AccountPage> {
                           fontStyle: FontStyle.normal,
                         ),
                         text: state is AccountBalanceLoaded
-                            ? ' ${state.mainCounter.counterBalance} ₮'
+                            ? ' ${PriceFormatter.productPriceFormat(state.mainCounter.counterBalance)} ₮'
                             : '-')
                   ])),
                 ),
