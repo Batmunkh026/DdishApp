@@ -37,7 +37,7 @@ class Header extends StatelessWidget {
           Visibility(
             visible: title != null && title.isNotEmpty,
             child: Line(
-              color: Color(0xff3069b2),
+              color: Color(0xffe4f0ff),
               thickness: 1.0,
               margin: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
             ),
