@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+mixin MenuAccessible{
+  Function onBack;
 
+  bool hasBackState = false;
+}
 class Menu {
   Menu(
       {this.title,

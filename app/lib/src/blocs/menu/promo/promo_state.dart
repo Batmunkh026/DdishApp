@@ -20,12 +20,14 @@ class PromoWidgetLoaded extends PromoState{
   String toString() => 'Promo widget finished.';
 }
 class PromoWidgetTapped extends PromoState{
-  PromoWidgetTapped();
+  var selectedPromo;
+  PromoWidgetTapped(this.selectedPromo);
   @override
   String toString() => 'Promo opened.';
 }
 class PromoWidgetDetialTapped extends PromoState{
-  PromoWidgetDetialTapped();
+  var selectedPromo;
+  PromoWidgetDetialTapped(this.selectedPromo);
   @override
   String toString() => 'Promo opened.';
 }

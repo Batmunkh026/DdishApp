@@ -52,10 +52,20 @@ class MenuPageState extends State<MenuPage> {
     return BlocBuilder<MenuEvent, MenuState>(
         bloc: _menuBloc,
         builder: (BuildContext context, MenuState state) {
-          return Scaffold(
+          return GestureDetector(
+            onHorizontalDragEnd: (details) {
+              double delta = details.velocity.pixelsPerSecond.dx;
+              if (delta > 0)
+                state is ChildMenuOpened && state.menu.screen != null
+                    ? onBackPressed(state.menu.screen)
+                    : widget.onBackButtonTap();
+            },
+            child: Scaffold(
               resizeToAvoidBottomPadding: false,
               backgroundColor: Colors.transparent,
-              body: buildBody(state));
+              body: buildBody(state),
+            ),
+          );
         });
   }
 
@@ -65,7 +75,7 @@ class MenuPageState extends State<MenuPage> {
         children: <Widget>[
           Header(
             title: state.menu.title,
-            onBackPressed: () => _menuBloc.dispatch(MenuNavigationClicked()),
+            onBackPressed: () => onBackPressed(state.menu.screen),
           ),
           state.menu.screen
         ],
@@ -210,5 +220,12 @@ class MenuPageState extends State<MenuPage> {
                   });
                 },
               ));
+  }
+
+  void onBackPressed(screen) {
+    if (screen is MenuAccessible && screen.hasBackState)
+      screen.onBack();
+    else
+      _menuBloc.dispatch(MenuNavigationClicked());
   }
 }
