@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/models/product.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/price_format.dart';
+import 'package:ddish/src/widgets/product_back_btn.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,7 +57,6 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
               _productContent is Product;
 
       var pickerContainer = GridView.count(
-        padding: EdgeInsets.only(top: 20),
         scrollDirection: Axis.vertical,
         crossAxisCount: _isChannelDetailPicker ? 3 : 2,
         childAspectRatio: _isChannelDetailPicker ? 1.6 : 2,
@@ -65,14 +64,22 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       );
 
       if (_isChannelDetailPicker) {
-        return Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: _buildChannelDetailPickerHeader(_productContent),
+        return Column(
+          children: <Widget>[
+            Container(
+              child: ProductBackBtn(
+                "",
+                onTap: () => _bloc.backToPrevState(),
+                productImage: _productContent.image,
+                productName: _productContent.name,
+              ),
+              height: MediaQuery.of(context).size.width * 0.2,
             ),
-            body: pickerContainer);
+            Flexible(
+              child: pickerContainer,
+            ),
+          ],
+        );
       }
 
       return pickerContainer;
@@ -234,23 +241,5 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
                 _bloc, _context, event, selectedProduct.name, month, price);
           }
         });
-  }
-
-  Widget _buildChannelDetailPickerHeader(selectedChannel) {
-    return FlatButton(
-      padding: EdgeInsets.only(top: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Icon(DdishAppIcons.before, color: Color.fromRGBO(57, 110, 170, 1)),
-          CachedNetworkImage(
-            imageUrl: selectedChannel.image,
-            placeholder: (context, text) => Text(selectedChannel.name),
-          ),
-          Divider()
-        ],
-      ),
-      onPressed: _bloc.backToPrevState,
-    );
   }
 }

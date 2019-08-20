@@ -1,14 +1,10 @@
-import 'dart:async';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
-import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/tab_models.dart';
-import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/converter.dart';
 import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/utils/price_format.dart';
+import 'package:ddish/src/widgets/product_back_btn.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:ddish/src/widgets/ui_mixins.dart';
@@ -91,30 +87,6 @@ class CustomProductChooserState extends State<CustomProductChooser>
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             state.selectedProductTab == ProductTabType.UPGRADE;
 
-    var label = Text(
-      "Сунгах сарын тоогоо оруулна уу",
-      style: TextStyle(fontSize: 10),
-    );
-    Widget backComponent = isUpgradeOrChannel
-        ? Column(children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.1,
-              padding: EdgeInsets.only(top: 10),
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: CachedNetworkImage(
-                  imageUrl: state.selectedProduct.image,
-                  placeholder: (context, url) => Text(
-                    state.selectedProduct.name,
-                    softWrap: true,
-                  ),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            Container(width: MediaQuery.of(context).size.width, child: label)
-          ])
-        : label;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -127,67 +99,78 @@ class CustomProductChooserState extends State<CustomProductChooser>
               child: ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  FlatButton(
-                    child: Stack(
-                      alignment: Alignment.centerRight,
-                      children: <Widget>[
-                        Align(
-                          child: Constants.appIcons[AppIcons.Back],
-                          alignment: Alignment.centerLeft,
-                        ),
-                        Align(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.55,
-                            child: backComponent,
-                            padding: EdgeInsets.only(bottom: 10),
+                  Container(
+                    child: isUpgradeOrChannel
+                        ? ProductBackBtn(
+                            "Сунгах сарын тоогоо оруулна уу",
+                            onTap: () => _bloc.backToPrevState(),
+                            productImage: state.selectedProduct.image,
+                            productName: state.selectedProduct.name,
+                          )
+                        : ProductBackBtn(
+                            "Сунгах сарын тоогоо оруулна уу",
+                            onTap: () => _bloc.backToPrevState(),
                           ),
-                          alignment: Alignment.topCenter,
-                        ),
-                      ],
-                    ),
-                    //TODO back to previous page
-                    onPressed: _bloc.backToPrevState,
+                    height: MediaQuery.of(context).size.width * 0.2,
                   ),
                   Center(
-                      child: Column(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        height: MediaQuery.of(context).size.height * 0.055,
-                        padding: EdgeInsets.only(top: 5),
-                        child: InputField(
-                          hasBorder: true,
-                          align: TextAlign.center,
-                          textInputType: TextInputType.number,
-                          inputFormatters: [
-                            InputValidations
-                                .acceptedFormatters[InputType.NumberInt],
-                            WhitelistingTextInputFormatter(
-                                RegExp(r'(^1[0-2]$)|(^[0-9]$)'))
-                          ],
-                          textController: monthEditingController,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: MediaQuery.of(context).size.height * 0.055,
+                          margin: EdgeInsets.only(
+                              top: isUpgradeOrChannel
+                                  ? 15 +
+                                      (MediaQuery.of(context).size.width * 0.02)
+                                  : 0),
+                          child: InputField(
+                            hasBorder: true,
+                            align: TextAlign.center,
+                            textInputType: TextInputType.number,
+                            inputFormatters: [
+                              InputValidations
+                                  .acceptedFormatters[InputType.NumberInt],
+                              WhitelistingTextInputFormatter(
+                                  RegExp(r'(^1[0-2]$)|(^[0-9]$)'))
+                            ],
+                            textController: monthEditingController,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 15),
-                        child: Text(
-                          "Сунгах сарын үнийн дүн",
-                          style: TextStyle(fontSize: 10),
+                        Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width *
+                                (isUpgradeOrChannel ? 0.53 : 0.44),
+                            child: FittedBox(
+                              child: Text(
+                                "Сунгах сарын үнийн дүн",
+                              ),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
-                        child: Text(
+                        Padding(
+                          padding: EdgeInsets.only(top: 15, bottom: 15),
+                          child: Text(
                             "₮${PriceFormatter.productPriceFormat(paymentPreview)}",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                      SubmitButton(
-                          text: "Сунгах",
-                          onPressed: () => _toExtend(state),
-                          verticalMargin: 0,
-                          horizontalMargin: 0)
-                    ],
-                  )),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: SubmitButton(
+                              text: "Сунгах",
+                              onPressed: () => _toExtend(state),
+                              verticalMargin: 0,
+                              horizontalMargin: 0),
+                          width: MediaQuery.of(context).size.width * 0.35,
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
