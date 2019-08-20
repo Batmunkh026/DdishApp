@@ -53,12 +53,13 @@ class AccountPageState extends State<AccountPage> {
                   child: RichText(
                       text: TextSpan(children: [
                     TextSpan(
-                        style: const TextStyle(
-                          color: const Color(0xff144478),
-                          fontWeight: FontWeight.w500,
-                          fontStyle: FontStyle.normal,
-                        ),
-                        text: "Үндсэн дансны үлдэгдэл:   "),
+                      style: const TextStyle(
+                        color: const Color(0xff144478),
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                      ),
+                      text: "Үндсэн дансны үлдэгдэл:   ",
+                    ),
                     TextSpan(
                         style: const TextStyle(
                           color: const Color(0xff144478),
