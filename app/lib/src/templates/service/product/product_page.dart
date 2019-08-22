@@ -11,6 +11,7 @@ import 'package:ddish/src/templates/service/product/payment_result_page.dart';
 import 'package:ddish/src/templates/service/product/product_grid.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:ddish/src/widgets/dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -160,9 +161,33 @@ class ProductPageState extends State<ProductPage>
     activeProduct =
         _bloc.selectedProduct == null ? items.first : _bloc.selectedProduct;
 
+    var productPicker = Selector<Product>(
+      initialValue: activeProduct,
+      items: items,
+      onSelect: (value) => _bloc.dispatch(
+          ProductTypeSelectorClicked(state.selectedProductTab, value)),
+      childMap: (p) {
+        return Container(
+          width: pickerWidth,
+          child: CachedNetworkImage(
+            imageUrl: p.image,
+            placeholder: (context, url) => Center(
+              child: SizedBox(
+                height: 15,
+                width: 15,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            fit: BoxFit.contain,
+          ),
+        );
+      },
+    );
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
+//        productPicker,
         DropdownButton(
           iconSize: 0,
           isDense: true,
@@ -256,8 +281,8 @@ class ProductPageState extends State<ProductPage>
   }
 
   Widget _buildBody() {
-    if (_bloc.currentState is ProductTabState || _bloc.currentState is ProductSelectionState)
-      updateAppBar = true;
+    if (_bloc.currentState is ProductTabState ||
+        _bloc.currentState is ProductSelectionState) updateAppBar = true;
 
     var _appBar = _buildAppBar();
 
@@ -294,7 +319,8 @@ class ProductPageState extends State<ProductPage>
           if (delta != 0.0) {
             bool isRight = delta < 0;
 
-            if (_bloc.beforeState is ProductTabState || _bloc.currentState is ProductSelectionState ||
+            if (_bloc.beforeState is ProductTabState ||
+                _bloc.currentState is ProductSelectionState ||
                 _bloc.beforeState == null) {
               ProductTabType selectedTab =
                   (_bloc.currentState as ProductState).selectedProductTab;
@@ -307,8 +333,7 @@ class ProductPageState extends State<ProductPage>
                 _tabController.animateTo(nextTabIndex);
                 _bloc.dispatch(ProductTabChanged(nextTab.state));
               }
-            } else if(delta > 0)
-              _bloc.backToPrevState();
+            } else if (delta > 0) _bloc.backToPrevState();
           }
         })
       ],
@@ -339,8 +364,10 @@ class ProductPageState extends State<ProductPage>
         labelStyle: TextStyle(fontWeight: FontWeight.w600),
         labelColor: Color(0xff071f49),
         indicatorSize: TabBarIndicatorSize.label,
-        unselectedLabelStyle:
-            TextStyle(fontWeight: FontWeight.w500, fontSize: fontSize),
+        unselectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize:
+                MediaQuery.of(context).size.width < 340 ? fontSize : null),
         indicatorColor: Color(0xFF3069b2),
       ),
       preferredSize: Size(queryData.size.width, 25),

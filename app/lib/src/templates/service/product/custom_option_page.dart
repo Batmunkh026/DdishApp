@@ -71,6 +71,9 @@ class CustomProductChooserState extends State<CustomProductChooser>
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    var deviceWidth = MediaQuery.of(context).size.width;
+    var deviceHeight = MediaQuery.of(context).size.height;
+
     var state = _bloc.currentState;
 
     if (widget.isPaymentComputed) {
@@ -91,13 +94,14 @@ class CustomProductChooserState extends State<CustomProductChooser>
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ListView(
-                shrinkWrap: true,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            width: isUpgradeOrChannel ? deviceWidth * 0.7 : deviceWidth * 0.8,
+            child: Form(
+              key: _formKey,
+              child: Column(
+//                shrinkWrap: true,
                 children: <Widget>[
                   Container(
                     child: isUpgradeOrChannel
@@ -111,19 +115,20 @@ class CustomProductChooserState extends State<CustomProductChooser>
                             "Сунгах сарын тоогоо оруулна уу",
                             onTap: () => _bloc.backToPrevState(),
                           ),
-                    height: MediaQuery.of(context).size.width * 0.2,
+                    height: deviceWidth * 0.15,
                   ),
-                  Center(
+                  Visibility(
+                    child: Divider(
+                      height: deviceWidth * 0.13,
+                    ),
+                    visible: isUpgradeOrChannel,
+                  ),
+                  Container(
                     child: Column(
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          height: MediaQuery.of(context).size.height * 0.055,
-                          margin: EdgeInsets.only(
-                              top: isUpgradeOrChannel
-                                  ? 15 +
-                                      (MediaQuery.of(context).size.width * 0.02)
-                                  : 0),
+                          width: deviceWidth * 0.38,
+//                          margin: EdgeInsets.only(top: ),
                           child: InputField(
                             hasBorder: true,
                             align: TextAlign.center,
@@ -137,18 +142,16 @@ class CustomProductChooserState extends State<CustomProductChooser>
                             textController: monthEditingController,
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width *
-                                (isUpgradeOrChannel ? 0.53 : 0.44),
-                            child: FittedBox(
-                              child: Text(
-                                "Сунгах сарын үнийн дүн",
-                              ),
-                              fit: BoxFit.contain,
+                        Container(
+                          width:
+                              deviceWidth * (isUpgradeOrChannel ? 0.48 : 0.44),
+                          child: FittedBox(
+                            child: Text(
+                              "Сунгах сарын үнийн дүн",
                             ),
+                            fit: BoxFit.contain,
                           ),
+                          margin: EdgeInsets.only(bottom: 5, top: 15),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 15, bottom: 15),
@@ -166,7 +169,8 @@ class CustomProductChooserState extends State<CustomProductChooser>
                               onPressed: () => _toExtend(state),
                               verticalMargin: 0,
                               horizontalMargin: 0),
-                          width: MediaQuery.of(context).size.width * 0.35,
+                          width: deviceWidth * 0.3,
+                          height: 25 + deviceWidth * 0.01,
                         )
                       ],
                     ),

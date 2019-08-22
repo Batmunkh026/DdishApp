@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
@@ -39,6 +40,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 
   @override
   Widget build(BuildContext context) {
+    var deviceWidth = MediaQuery.of(context).size.width;
     var fontSize = MediaQuery.of(context).size.aspectRatio * 30;
     var titles = ["Багц", "Хугацаа", "Дүн"];
     List<Widget> contentsForGrid = [];
@@ -48,47 +50,36 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 //        fontSize: fontSize,
         fontFamily: 'Montserrat');
 
-    var boldStyle = TextStyle(
-        fontWeight: FontWeight.bold,
-//        fontSize: fontSize,
-        fontFamily: 'Montserrat');
-
-    contentsForGrid.addAll(titles.map((title) => Text("$title")).toList());
+    var boldStyle =
+        TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Montserrat');
 
     var isUpgrade = _state.selectedProductTab == ProductTabType.UPGRADE;
     var isUpgradeOrChannel =
         _state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             isUpgrade;
 
-    contentsForGrid.add(
-      Align(
-        alignment: Alignment.topCenter,
-        child: isUpgradeOrChannel
-            ? CachedNetworkImage(
-                imageUrl: _state.selectedProduct.image,
-                placeholder: (context, url) => Text(
-                  _state.selectedProduct.name,
-                  style: style,
-                ),
-                fit: BoxFit.contain,
-              )
-            : Text(
-                _state.selectedProduct.name,
-                style: boldStyle,
-                textAlign: TextAlign.center,
-                softWrap: true,
-              ),
-      ),
-    );
-    contentsForGrid.add(Text("${_state.monthToExtend} сар", style: boldStyle));
-
-//      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
-    contentsForGrid.add(Text(
-        "₮${PriceFormatter.productPriceFormat(isUpgrade ? _state.priceToExtend : _state.monthToExtend * _state.priceToExtend)}",
-        style: boldStyle));
+//
+//    contentsForGrid.addAll(titles.map((title) => Text("$title")).toList());
+//
+//
+//
+//    contentsForGrid.add(
+//      Align(
+//        alignment: Alignment.topCenter,
+//        child: ,
+//      ),
+//    );
+//    contentsForGrid.add(Text("${_state.monthToExtend} сар", style: boldStyle));
+//
+////      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
+//    contentsForGrid.add(Text(
+//        "₮${PriceFormatter.productPriceFormat(isUpgrade ? _state.priceToExtend : _state.monthToExtend * _state.priceToExtend)}",
+//        style: boldStyle));
 
 //    if (state is ProductPaymentState)
 //      openResultDialog(context, state as ProductPaymentState);
+
+    var paymentInfoContainerWidth = deviceWidth * 0.8;
 
     return Scaffold(
       body: Column(
@@ -98,7 +89,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
-                  width: MediaQuery.of(context).size.width,
+                  width: deviceWidth,
                   padding: EdgeInsets.all(10),
                   child: Text(
                     "Сунгах",
@@ -110,7 +101,11 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Constants.appIcons[AppIcons.Back],
+                    Icon(
+                      DdishAppIcons.before,
+                      size: 24.0,
+                      color: Color.fromRGBO(57, 110, 170, 1),
+                    ),
                     UnderlinedText(
                       "Төлбөрийн мэдээлэл",
 //                  textStyle: TextStyle(fontSize: fontSize),
@@ -122,13 +117,54 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                 onPressed: _bloc.backToPrevState,
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: GridView.count(
-                  padding: EdgeInsets.only(left: 40),
-                  childAspectRatio: 2,
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  children: contentsForGrid,
+                width: paymentInfoContainerWidth,
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          createPaymentData([
+                            Text("Багц"),
+                            (isUpgradeOrChannel
+                                ? CachedNetworkImage(
+                                    imageUrl: _state.selectedProduct.image,
+                                    placeholder: (context, url) => Text(
+                                      _state.selectedProduct.name,
+                                      style: style,
+                                    ),
+                                    fit: BoxFit.contain,
+                                  )
+                                : Text(
+                                    _state.selectedProduct.name,
+                                    style: boldStyle,
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                  ))
+                          ],
+                              paymentInfoContainerWidth:
+                                  paymentInfoContainerWidth,
+                              isUpgradeOrChannel: isUpgradeOrChannel),
+                          createPaymentData([
+                            Text("Хугацаа"),
+                            Text("${_state.monthToExtend} сар",
+                                style: boldStyle)
+                          ],
+                              paymentInfoContainerWidth:
+                                  paymentInfoContainerWidth,
+                              isUpgradeOrChannel: isUpgradeOrChannel),
+                          createPaymentData([
+                            Text("Дүн"),
+                            Text(
+                                "₮${PriceFormatter.productPriceFormat(isUpgrade ? _state.priceToExtend : _state.monthToExtend * _state.priceToExtend)}",
+                                style: boldStyle)
+                          ],
+                              paymentInfoContainerWidth:
+                                  paymentInfoContainerWidth,
+                              isUpgradeOrChannel: isUpgradeOrChannel),
+                        ]),
+                  ),
                 ),
               ),
               FlatButton(
@@ -138,16 +174,20 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
             ],
           ),
           Center(
-            child: SubmitButton(
-                text: "Сунгах",
-                padding: EdgeInsets.only(top: 20),
-                onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
-                    _state.selectedProductTab,
-                    _state.selectedProduct,
-                    _state.monthToExtend,
-                    _state.priceToExtend)),
-                verticalMargin: 0,
-                horizontalMargin: 0),
+            child: Container(
+              child: SubmitButton(
+                  text: "Сунгах",
+//                padding: EdgeInsets.only(top: 20),
+                  onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
+                      _state.selectedProductTab,
+                      _state.selectedProduct,
+                      _state.monthToExtend,
+                      _state.priceToExtend)),
+                  verticalMargin: 0,
+                  horizontalMargin: 0),
+              width: deviceWidth * 0.3,
+              height: 30,
+            ),
           ),
           Divider()
         ],
@@ -200,11 +240,8 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL;
     bool isUpgrade = state.selectedProductTab == ProductTabType.UPGRADE;
 
-    var resultText = isChannel
-        ? 'түрээслэлээ'
-        : (isUpgrade
-            ? 'ахиуллаа'
-            : 'сунгалаа');
+    var resultText =
+        isChannel ? 'түрээслэлээ' : (isUpgrade ? 'ахиуллаа' : 'сунгалаа');
 
     var boldStyle = TextStyle(fontWeight: FontWeight.w600);
 
@@ -214,8 +251,32 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
       TextSpan(text: isChannel ? 'сувгийг ' : ''),
       TextSpan(text: '${state.monthToExtend} ', style: boldStyle),
       TextSpan(text: 'сараар '),
-      TextSpan(text: '${isUpgrade ? state.priceToExtend : state.priceToExtend*state.monthToExtend} ₮ ', style: boldStyle),
+      TextSpan(
+          text:
+              '${isUpgrade ? state.priceToExtend : state.priceToExtend * state.monthToExtend} ₮ ',
+          style: boldStyle),
       TextSpan(text: ' төлөн амжилттай $resultText.')
     ];
+  }
+
+  Widget createPaymentData(List<Widget> children,
+      {paymentInfoContainerWidth, isUpgradeOrChannel = false}) {
+    return Container(
+      padding: EdgeInsets.only(right: 10, left: 10),
+      child: Column(
+        children: List<Widget>.of(
+          children.map(
+            (child) => Container(
+              width: paymentInfoContainerWidth / 3,
+              height: isUpgradeOrChannel
+                  ? 30 + MediaQuery.of(context).size.width * 0.03
+                  : null,
+              padding: EdgeInsets.only(bottom: isUpgradeOrChannel ? 10 : 5),
+              child: Center(child: child),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

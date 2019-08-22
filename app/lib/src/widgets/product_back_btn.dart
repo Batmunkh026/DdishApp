@@ -14,11 +14,26 @@ class ProductBackBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context);
     bool hasImageAndText = title.isNotEmpty && productImage.isNotEmpty;
+    var deviceHeight = media.size.height;
+    var deviceWidth = media.size.width;
+    var titleContainerWidth =
+        deviceWidth * (productImage.isNotEmpty ? 0.7 : 0.5);
+    var deviceWidthPercent = deviceWidth / 100;
+    var scalar = (deviceWidthPercent / 3).floor();
+    var titlePadding = 3.0;
+
+
+
+    print(
+        "height: $deviceHeight , width: $deviceWidth , devicePercent: $deviceWidthPercent , titlePadding: $titlePadding");
+    print(
+        "textFactor: ${media.textScaleFactor} , pxlRatio: ${media.devicePixelRatio} , scalar: $scalar");
 
     return GestureDetector(
       child: Container(
-        margin: EdgeInsets.all(15),
+        margin: EdgeInsets.only(top: 10, left: 15, right: 15),
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
@@ -33,7 +48,8 @@ class ProductBackBtn extends StatelessWidget {
             Visibility(
               child: Center(
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.3,
+                  width: deviceWidth * 0.28,
+                  height: deviceWidth * 0.12,
                   child: CachedNetworkImage(
                     imageUrl: productImage,
                     placeholder: (context, text) => Text(productName),
@@ -47,16 +63,14 @@ class ProductBackBtn extends StatelessWidget {
               visible: title.isNotEmpty,
               child: Align(
                 alignment: hasImageAndText
-                    ? AlignmentDirectional(0, 3)
+                    ? AlignmentDirectional(0, titlePadding)
                     : Alignment.center,
                 child: Container(
-                  width: MediaQuery.of(context).size.width *
-                      (productImage.isNotEmpty ? 0.7 : 0.55),
+                  width: titleContainerWidth,
                   child: FittedBox(
                     child: Text(
                       "Сунгах сарын тоогоо оруулна уу",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
                     ),
                     fit: BoxFit.contain,
                   ),
