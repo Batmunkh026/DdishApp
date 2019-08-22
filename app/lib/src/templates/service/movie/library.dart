@@ -38,40 +38,43 @@ class LibraryState extends State<Library> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: ProgramSearchWidget(
-                  formKey: formKey,
-                  searchById: true,
-                  onSearchTap: onRentButtonTap,
-                  controller: movieIdFieldController,
-                ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 15, bottom: 15),
+              child: ProgramSearchWidget(
+                formKey: formKey,
+                searchById: true,
+                onSearchTap: onRentButtonTap,
+                controller: movieIdFieldController,
               ),
-              Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Шинээр нэмэгдэх',
-                  style: const TextStyle(
-                      color: const Color(0xff071f49),
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 13.0),
-                ),
+            ),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.only(bottom: 15),
+              width: MediaQuery.of(context).size.width * 0.7,
+              child: Text(
+                'Шинээр нэмэгдэх',
+                style: const TextStyle(
+                    color: const Color(0xff071f49),
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 13.0),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         BlocBuilder<MovieLibraryEvent, MovieLibraryState>(
           bloc: _bloc,
           builder: (BuildContext context, MovieLibraryState state) {
-            if (state is ContentOrderRequestFinished)
+            if (state is ContentOrderRequestFinished && !state.isPresented) {
+              state.isPresented = true;
               WidgetsBinding.instance.addPostFrameCallback(
                   (_) => _showResultMessage(state.result));
+            }
             if (state is ContentListLoading) {
               _bloc.dispatch(ContentLibraryStarted());
               return Expanded(

@@ -27,6 +27,7 @@ class ContentOrderRequestProcessing extends MovieLibraryState {
 
 class ContentOrderRequestFinished extends MovieLibraryState {
   final Result result;
+  bool isPresented = false;
 
   ContentOrderRequestFinished({this.result});
 

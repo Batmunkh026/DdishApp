@@ -9,24 +9,32 @@ class MoviePage extends StatefulWidget {
   State<StatefulWidget> createState() => MoviePageState();
 }
 
-class MoviePageState extends State<MoviePage> {
+class MoviePageState extends State<MoviePage>
+    with SingleTickerProviderStateMixin {
   Library library;
   TheatreWidget threatre;
 
+  TabController _tabController;
+
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() => FocusScope.of(context).unfocus());
     library = Library();
     threatre = TheatreWidget();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
+    return GestureDetector(
+      onHorizontalDragUpdate: tabChanged,
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: TabBar(
+          controller: _tabController,
           indicatorPadding: const EdgeInsets.symmetric(horizontal: 30.0),
           labelStyle: style.activeTabLabelStyle,
           labelColor: const Color(0xff071f49),
@@ -42,6 +50,7 @@ class MoviePageState extends State<MoviePage> {
           ],
         ),
         body: TabBarView(
+          controller: _tabController,
           children: <Widget>[
             library,
             threatre,
@@ -49,5 +58,22 @@ class MoviePageState extends State<MoviePage> {
         ),
       ),
     );
+  }
+
+  void tabChanged(DragUpdateDetails details) {
+    double delta = details.delta.dx;
+    if (delta != 0.0) {
+      bool isRight = delta < 0;
+
+      var currentIndex = _tabController.index;
+      if (isRight && currentIndex == 1)
+        _tabController.animateTo(2);
+      else if (!isRight && currentIndex == 2) _tabController.animateTo(1);
+    }
+  }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 }

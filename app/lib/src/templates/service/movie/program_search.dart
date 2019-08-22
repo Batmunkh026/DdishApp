@@ -1,7 +1,8 @@
-import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:ddish/src/widgets/message.dart' as message;
 
 class ProgramSearchWidget extends StatelessWidget {
   final VoidCallback onSearchTap;
@@ -11,7 +12,11 @@ class ProgramSearchWidget extends StatelessWidget {
   final GlobalKey<FormState> formKey;
 
   ProgramSearchWidget(
-      {this.formKey, this.searchById, this.onSearchTap, this.controller, this.onReturnTap});
+      {this.formKey,
+      this.searchById,
+      this.onSearchTap,
+      this.controller,
+      this.onReturnTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +25,10 @@ class ProgramSearchWidget extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Flexible(
+              Container(
+                width: MediaQuery.of(context).size.width * 0.43,
                 child: InputField(
                   hasBorder: true,
                   align: TextAlign.center,
@@ -33,20 +40,29 @@ class ProgramSearchWidget extends StatelessWidget {
                   fontSize: 12,
                   hasClearButton: true,
                   padding: EdgeInsets.all(3),
-                  validateFunction: InputValidations.validateNotNullValue,
                 ),
               ),
-              SubmitButton(
-                text: searchById ? 'Түрээслэх' : 'Хайх',
-                padding: const EdgeInsets.all(5.0),
-                onPressed: () {
-                  if (formKey.currentState.validate()) Future(onSearchTap);
-                },
+              Container(
+                child: SubmitButton(
+                  text: searchById ? 'Түрээслэх' : 'Хайх',
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  onPressed: () => _validateNotEmpty(context),
+                ),
+                width: MediaQuery.of(context).size.width * 0.3,
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  _validateNotEmpty(context) {
+    var input = controller.text;
+    if (input.isEmpty) {
+      FocusScope.of(context).unfocus();
+      message.show(context, "Утга оруулна уу", message.SnackBarType.ERROR);
+    } else
+      Future(onSearchTap);
   }
 }

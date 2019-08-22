@@ -80,7 +80,7 @@ class InputField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 )
               : null,
-          contentPadding: const EdgeInsets.only(bottom: 5.0, top: 10.0),
+          contentPadding: const EdgeInsets.only(bottom: 10.0, top: 10.0, left: 5, right: 5),
           hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),

@@ -135,6 +135,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
             closeButtonText: 'Хаах',
             content: result.isSuccess
                 ? RichText(
+                    textAlign: TextAlign.center,
                     text: TextSpan(style: style.dialogTextStyle, children: [
                       TextSpan(text: 'Та '),
                       TextSpan(
