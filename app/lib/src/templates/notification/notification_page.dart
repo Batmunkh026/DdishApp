@@ -27,22 +27,32 @@ class NotificationPageState extends State<NotificationPage> {
           return Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: Column(children: [
-              Text('Сонордуулга',
-                  style: TextStyle(fontSize: 17, color: Colors.white)),
-              Expanded(
-                child: SafeArea(
-                  minimum: EdgeInsets.only(top: 16),
+            padding: EdgeInsets.only(top: 30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.only(left: 1, bottom: 15),
+                  child: Text(
+                    'Сонордуулга',
+                    style: TextStyle(fontSize: 17, color: Colors.white),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Expanded(
                   child: Container(
+                    height: MediaQuery.of(context).size.height * 0.75,
+                    padding: EdgeInsets.only(top: 26),
                     decoration: new BoxDecoration(
                       color: Colors.white,
-                      borderRadius: new BorderRadius.all(Radius.circular(20)),
+                      borderRadius: new BorderRadius.all(Radius.circular(35)),
                     ),
                     child: buildNotification(state),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
           );
         });
   }
@@ -72,40 +82,41 @@ class NotificationPageState extends State<NotificationPage> {
 
   Widget buildNotifications(notifications) {
     return ListView(
-      children: List<Widget>.from(notifications.map((notification) {
-        return Material(
-          color: Colors.transparent,
-          child: InkWell(
-            highlightColor: Color.fromRGBO(154, 199, 255, 1),
-            onTap: () => {},
-            child: Container(
-              padding:
-                  EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        child: Text(
-                          notification.name,
-                          softWrap: true,
+      children: List<Widget>.from(
+        notifications.map((notification) {
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+              highlightColor: Color.fromRGBO(154, 199, 255, 1),
+              onTap: () => {},
+              child: Container(
+                padding: EdgeInsets.only(top: 10, bottom: 5, right: 15, left: 15),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Text(
+                            notification.name,
+                            softWrap: true,
+                          ),
                         ),
-                      ),
-                      Text(DateUtil.formatDateTime(notification.date)),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15),
-                    child: Text(notification.text),
-                  )
-                ],
+                        Text(DateUtil.formatDateTime(notification.date)),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text(notification.text),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      })),
+          );
+        }),
+      ),
     );
   }
 }
