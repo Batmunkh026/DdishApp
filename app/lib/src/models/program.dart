@@ -21,4 +21,21 @@ class Program {
         endDate = DateTime.parse(json['endDate']),
         posterUrl = json['posterUrl'],
         contentGenres = json['contentGenres'];
+
+  @override
+  String toString() =>
+      "id: $productId , contentId: $contentId , name: $contentNameMon , beginDate: $beginDate , endDate: $endDate";
+
+  Map<String, dynamic> toJson() => {
+        'productId': productId,
+        'smsCode': smsCode,
+        'contentId': contentId,
+        'contentNameMon': contentNameMon,
+        'contentNameEng': contentNameEng,
+        'contentPrice': contentPrice,
+        'beginDate': beginDate.toString(),
+        'endDate': endDate.toString(),
+        'posterUrl': posterUrl,
+        'contentGenres': contentGenres
+      };
 }
