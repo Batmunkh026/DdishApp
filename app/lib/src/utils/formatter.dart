@@ -8,10 +8,10 @@ class PriceFormatter {
     var values = price.toString().split(".");
     if (values.isEmpty) return price;
 
-    return "${insertPrecisionChar(values[0])}${values.length > 1 ? ".${values[1]}" : ""}";
+    return "${_insertPrecisionChar(values[0])}${values.length > 1 ? ".${values[1]}" : ""}";
   }
 
-  static String insertPrecisionChar(String value) {
+  static String _insertPrecisionChar(String value) {
     if (value == null || value.isEmpty) return "";
 
     var newValue = value.replaceAllMapped(
@@ -20,7 +20,7 @@ class PriceFormatter {
 
     if (!newValue.startsWith(RegExp(r"[\d]{4,}"))) return newValue;
 
-    return insertPrecisionChar(newValue);
+    return _insertPrecisionChar(newValue);
   }
 }
 
@@ -74,4 +74,9 @@ class StringFormatter {
 
     return result;
   }
+
+  ///тоон утга эсэх
+  bool isNumeric(String value) =>
+      value != null &&
+      (num.tryParse(value) != null || double.tryParse(value) != null);
 }

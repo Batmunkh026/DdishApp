@@ -95,10 +95,13 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
           style: style.userInfoValueStyle),
       Visibility(
         visible: hasActiveCounters,
-        child: Text(
-          "Урамшууллын данс болон эрх:",
-          style: style.userInfoIndicatorStyle,
-          softWrap: true,
+        child: Container(
+          child: Text(
+            "Урамшууллын данс болон эрх:",
+            style: style.userInfoIndicatorStyle,
+            softWrap: true,
+          ),
+          margin: EdgeInsets.only(top: 8),
         ),
       ): null,
     };
@@ -130,19 +133,20 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
         .map(
           (counter) => userInfoChildren.add(
             Container(
-              padding: EdgeInsets.only(bottom: 5),
+              padding: EdgeInsets.only(bottom: 3),
               child: createChildRow(
-                Text(
-                  counter.counterName,
-                  style: style.activeProductsStyle,
-                  softWrap: true,
-                ),
-                Text(
-                  '${counter.counterBalance} ₮',
-                  style: style.activeProductsStyle,
-                  softWrap: true,
-                ),
-              ),
+                  Text(
+                    counter.counterName,
+                    style: style.activeProductsStyle,
+                    softWrap: true,
+                  ),
+                  Text(
+                    '${StringFormatter().isNumeric(counter.counterBalance) ? PriceFormatter.productPriceFormat(counter.counterBalance) + "₮" : counter.counterBalance} ',
+                    style: style.activeProductsStyle,
+                    softWrap: true,
+                  ),
+                  childWidth: MediaQuery.of(context).size.width * 0.4,
+                  isDependOnDevice: true),
             ),
           ),
         )
@@ -150,25 +154,27 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
     userInfoChildren.add(
       Visibility(
         visible: hasActiveProducts,
-        child: Text("Идэвхтэй багцууд:", style: style.userInfoIndicatorStyle),
+        child: Container(
+          child: Text("Идэвхтэй багцууд:", style: style.userInfoIndicatorStyle),
+          margin: EdgeInsets.only(top: 8),
+        ),
       ),
     );
     user.activeProducts
         .map(
           (product) => userInfoChildren.add(
-            Container(
-              padding: EdgeInsets.only(bottom: 5),
-              child: createChildRow(
-                Text(
-                  product.name,
-                  style: style.activeProductsStyle,
-                ),
-                Text(
-                  '${DateUtil.formatDateTimeWithDot(product.expireDate)}-нд дуусна',
-                  style: style.activeProductsStyle,
-                  softWrap: true,
-                ),
+            createChildRow(
+              Text(
+                product.name,
+                style: style.activeProductsStyle,
+                softWrap: true,
               ),
+              Text(
+                'Дуусах хугацаа: ${DateUtil.formatDateTimeWithDot(product.expireDate)}',
+                style: style.activeProductsStyle,
+                softWrap: true,
+              ),
+              childWidth: width * 0.6,
             ),
           ),
         )
@@ -176,57 +182,82 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
     userInfoChildren.add(
       Visibility(
         visible: hasAdditionalProducts,
-        child: Text("Идэвхтэй нэмэлт сувгууд:",
-            style: style.userInfoIndicatorStyle),
+        child: Container(
+          child: Text("Идэвхтэй нэмэлт сувгууд:",
+              style: style.userInfoIndicatorStyle),
+          margin: EdgeInsets.only(top: 8),
+        ),
       ),
     );
     user.additionalProducts
         .map(
           (product) => userInfoChildren.add(
-            Container(
-              padding: EdgeInsets.only(bottom: 5),
-              child: createChildRow(
-                Text(
-                  product.name,
-                  style: style.activeProductsStyle,
-                ),
-                Text(
-                  '${DateUtil.formatDateTimeWithDot(product.expireDate)}-нд дуусна',
-                  style: style.activeProductsStyle,
-                ),
+            createChildRow(
+              Text(
+                product.name,
+                style: style.activeProductsStyle,
+                softWrap: true,
               ),
+              Text(
+                'Дуусах хугацаа: ${DateUtil.formatDateTimeWithDot(product.expireDate)}',
+                style: style.activeProductsStyle,
+                softWrap: true,
+              ),
+              childWidth: width * 0.6,
             ),
           ),
         )
         .toList();
     Column userInfo = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: List<Widget>.from(userInfoChildren.map((child) => Container(
-              padding: EdgeInsets.only(bottom: 15),
-              child: child,
-            ))));
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List<Widget>.from(
+        userInfoChildren.map(
+          (child) => Container(
+            padding: EdgeInsets.only(bottom: 15),
+            child: child,
+          ),
+        ),
+      ),
+    );
     return userInfo;
   }
 
-  createChildRow(Widget widget, Widget widget2) {
+  createChildRow(Widget widget, Widget widget2,
+      {childWidth = 0.0, bool isDependOnDevice = false}) {
     List<Widget> children = [];
+    var deviceWidth = MediaQuery.of(context).size.width;
+    if (childWidth == 0) childWidth = deviceWidth * 0.5;
+
+    Widget rightWidget = Flexible(
+      child: Container(
+        padding: EdgeInsets.only(left: 10),
+        width: isDependOnDevice && deviceWidth > 350
+            ? deviceWidth * 0.4
+            : childWidth,
+        child: widget2,
+      ),
+    );
+    if (deviceWidth < 350)
+      rightWidget = Container(
+        padding: EdgeInsets.only(left: 10),
+        width: childWidth,
+        child: widget2,
+      );
+
+    Widget leftChild = deviceWidth > 350 && deviceWidth * 0.5 < childWidth
+        ? widget
+        : Flexible(
+            child: widget,
+          );
+
     if (widget2 != null)
-      children = [
-        Flexible(
-          child: widget,
-        ),
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.only(left: 20),
-            child: widget2,
-          ),
-        )
-      ];
+      children = [leftChild, rightWidget];
     else
       children.add(widget);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: children,
     );
   }

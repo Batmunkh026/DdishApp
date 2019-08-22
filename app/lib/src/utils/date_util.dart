@@ -17,13 +17,15 @@ class DateUtil {
   static String formatDateTime(DateTime dateTime) {
     return formatter.format(dateTime);
   }
+
   ///yyyy-MM-dd HH:mm
   static String formatDateAndTime(DateTime dateTime) {
     return formatterDateAndTime.format(dateTime);
   }
-  ///yyyy.MM.dd
+
+  ///yyyy'MM'dd
   static String formatDateTimeWithDot(DateTime dateTime) {
-    return formatterWithDot.format(dateTime);
+    return formatterWithDot.format(dateTime).replaceAll(".", "'");
   }
 
   ///yyyyMMdd
