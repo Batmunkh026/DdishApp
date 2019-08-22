@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:ddish/src/abstract/abstract.dart';
@@ -13,6 +14,7 @@ import 'package:bloc/bloc.dart';
 import 'package:ddish/src/templates/login/login_page.dart';
 import 'package:ddish/src/templates/main/main_widget.dart';
 import 'package:ddish/src/repositiories/globals.dart' as globals;
+import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:oauth2/oauth2.dart';
 
@@ -57,7 +59,9 @@ class SimpleBlocDelegate extends BlocDelegate {
 
       Timer expireTask =
           Timer(Duration(milliseconds: difference.inMilliseconds.abs()), () {
-        if (expireTime == globals.client.credentials.expiration)//credentials нь шинэчлэгдсэн эсэх?
+        if (expireTime ==
+            globals.client.credentials
+                .expiration) //credentials нь шинэчлэгдсэн эсэх?
           bloc.connectionExpired(
               "session expired on sessionTimerTask: bloc > $bloc");
       });
@@ -96,6 +100,8 @@ Future<Widget> initializeApp(routes) async {
 
   FirebaseNotifications().setUpFirebase();
 
+  setStatusBarFontColor();
+
   return MaterialApp(
     theme: ThemeData(
       primaryColor: Color(0xFF2a68b8),
@@ -105,5 +111,15 @@ Future<Widget> initializeApp(routes) async {
     ),
     home: LoginWidget(),
     routes: routes,
+  );
+}
+
+void setStatusBarFontColor() {
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: Colors.transparent,//android
+      statusBarIconBrightness: Brightness.light,//android
+      statusBarBrightness: Brightness.dark,//ios
+    ),
   );
 }
