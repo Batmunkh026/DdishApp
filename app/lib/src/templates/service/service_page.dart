@@ -34,6 +34,7 @@ class ServicePageState extends State<ServicePage>
   void initState() {
     bloc = ServiceBloc(this);
     _tabController = TabController(length: serviceTabs.length, vsync: this);
+    _tabController.addListener(()=>FocusScope.of(context).unfocus());
     bloc.tabController = _tabController;
     tabContainer = Container(); //Үйлчилгээ багцын дэд таб ын content container
 
