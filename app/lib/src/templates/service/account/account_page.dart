@@ -1,4 +1,4 @@
-import 'package:ddish/src/utils/price_format.dart';
+import 'package:ddish/src/utils/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:ddish/src/blocs/service/account/account_bloc.dart';
 import 'package:ddish/src/blocs/service/account/account_event.dart';

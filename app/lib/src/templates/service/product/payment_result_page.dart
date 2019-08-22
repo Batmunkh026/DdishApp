@@ -8,7 +8,7 @@ import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/templates/service/product/underlined_text.dart';
 import 'package:ddish/src/utils/constants.dart';
-import 'package:ddish/src/utils/price_format.dart';
+import 'package:ddish/src/utils/formatter.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';

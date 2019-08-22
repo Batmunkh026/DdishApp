@@ -4,6 +4,7 @@ import 'package:ddish/src/blocs/menu/user/user_information_state.dart';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/templates/menu/user_info/style.dart' as style;
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:ddish/src/utils/formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,13 +70,15 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
         user.additionalProducts != null && user.additionalProducts.isNotEmpty;
 
     List<Widget> userInfoChildren = [];
+    var formatter = StringFormatter();
+
     Map<Widget, Widget> userInfoMap = {
       Text(
         'Смарт картын дугаар:',
         style: style.userInfoIndicatorStyle,
         softWrap: true,
       ): Text(
-        user.cardNo.toString(),
+        formatter.formatCardNumber(user.cardNo.toString()),
         style: style.userInfoValueStyle,
       ),
       Text(
@@ -88,7 +91,8 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
         'Админ утасны дугаар:',
         style: style.userInfoIndicatorStyle,
         softWrap: true,
-      ): Text('${user.adminNumber}', style: style.userInfoValueStyle),
+      ): Text('${formatter.formatPhoneNumber(user.adminNumber.toString())}',
+          style: style.userInfoValueStyle),
       Visibility(
         visible: hasActiveCounters,
         child: Text(
@@ -96,7 +100,7 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
           style: style.userInfoIndicatorStyle,
           softWrap: true,
         ),
-      ): Container(),
+      ): null,
     };
 
 //    Function mapper = (keyChild, valueChild) => Row(
@@ -205,16 +209,25 @@ class UserInformationWidgetState extends State<UserInformationWidget> {
   }
 
   createChildRow(Widget widget, Widget widget2) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
+    List<Widget> children = [];
+    if (widget2 != null)
+      children = [
         Flexible(
           child: widget,
         ),
         Flexible(
-          child: Container(padding: EdgeInsets.only(left: 20), child: widget2,),
+          child: Container(
+            padding: EdgeInsets.only(left: 20),
+            child: widget2,
+          ),
         )
-      ],
+      ];
+    else
+      children.add(widget);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: children,
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/utils/converter.dart';
 import 'package:ddish/src/utils/input_validations.dart';
-import 'package:ddish/src/utils/price_format.dart';
+import 'package:ddish/src/utils/formatter.dart';
 import 'package:ddish/src/widgets/product_back_btn.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
