@@ -93,14 +93,14 @@ class LoginViewState extends State<LoginView> {
                       obscureText: false,
                       textInputType: TextInputType.number,
                       validateFunction: InputValidations.validateNumberValue,
-                      fontSize: 12,
+                      hintFontSize: 12,
                     ),
                     InputField(
                       placeholder: 'НУУЦ КОД / * * * * /',
                       textController: _passwordController,
                       obscureText: true,
                       validateFunction: InputValidations.validateNotNullValue,
-                      fontSize: 12,
+                      hintFontSize: 12,
                     ),
                     Center(
                       child: Container(

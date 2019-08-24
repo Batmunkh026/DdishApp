@@ -10,6 +10,7 @@ class InputField extends StatelessWidget {
   bool obscureText;
   double bottomMargin;
   double fontSize;
+  double hintFontSize;
   var validateFunction;
   var onSaved;
   var onFieldSubmitted;
@@ -34,6 +35,7 @@ class InputField extends StatelessWidget {
       this.bottomMargin,
       this.validateFunction,
       this.fontSize,
+      this.hintFontSize,
       this.onSaved,
       this.textController,
       this.hasBorder = false,
@@ -80,13 +82,14 @@ class InputField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 )
               : null,
-          contentPadding: const EdgeInsets.only(bottom: 10.0, top: 10.0, left: 5, right: 5),
+          contentPadding:
+              const EdgeInsets.only(bottom: 10.0, top: 10.0, left: 5, right: 5),
           hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),
             fontWeight: FontWeight.w400,
             fontStyle: FontStyle.normal,
-            fontSize: fontSize,
+            fontSize: hintFontSize,
           ),
         ),
       ),
