@@ -120,9 +120,8 @@ class ProductPageState extends State<ProductPage>
         productAppBarContent.children.add(
           Expanded(
             child: Align(
-              child: FittedBox(
-                  child: _createProductPicker(state), fit: BoxFit.fitHeight),
-              alignment: Alignment.centerRight,
+              child: _createProductPicker(state),
+              alignment: Alignment.topRight,
             ),
           ),
         );
@@ -136,7 +135,7 @@ class ProductPageState extends State<ProductPage>
 
   Widget _createProductPicker(ProductState state) {
     List<Product> items = _bloc.products;
-    double pickerWidth = queryData.size.width * 0.22;
+    double pickerWidth = queryData.size.width * 0.24;
 
     Product activeProduct = _bloc.getUserActiveProduct();
 
@@ -161,7 +160,7 @@ class ProductPageState extends State<ProductPage>
     activeProduct =
         _bloc.selectedProduct == null ? items.first : _bloc.selectedProduct;
 
-    var productPicker = Selector<Product>(
+    Selector<Product> productPicker = Selector<Product>(
       initialValue: activeProduct,
       items: items,
       onSelect: (value) => _bloc.dispatch(
@@ -169,6 +168,7 @@ class ProductPageState extends State<ProductPage>
       childMap: (p) {
         return Container(
           width: pickerWidth,
+          padding: EdgeInsets.only(top: 3, bottom: 3),
           child: CachedNetworkImage(
             imageUrl: p.image,
             placeholder: (context, url) => Center(
@@ -184,46 +184,7 @@ class ProductPageState extends State<ProductPage>
       },
     );
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-//        productPicker,
-        DropdownButton(
-          iconSize: 0,
-          isDense: true,
-          underline: Container(),
-          items: items
-              .map((product) => DropdownMenuItem<Product>(
-                  value: product,
-                  child: Container(
-                    width: pickerWidth,
-                    child: CachedNetworkImage(
-                      imageUrl: product.image,
-                      placeholder: (context, url) => Center(
-                        child: SizedBox(
-                          height: 15,
-                          width: 15,
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                      fit: BoxFit.contain,
-                    ),
-                  )))
-              .toList(),
-          //TODO Багц сунгах таб биш бол яах?
-          value: activeProduct,
-          onChanged: (value) => _bloc.dispatch(
-              ProductTypeSelectorClicked(state.selectedProductTab, value)),
-        ),
-        Container(
-          height: 10,
-          child: Icon(
-            Icons.arrow_drop_down,
-            color: Color.fromRGBO(48, 105, 178, 1),
-          ),
-        )
-      ],
-    );
+    return productPicker;
   }
 
   @override
