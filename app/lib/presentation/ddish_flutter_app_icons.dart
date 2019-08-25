@@ -12,10 +12,6 @@
 ///       - asset: fonts/DdishFlutterApp.ttf
 ///
 /// 
-/// * Elusive, Copyright (C) 2013 by Aristeides Stathopoulos
-///         Author:    Aristeides Stathopoulos
-///         License:   SIL (http://scripts.sil.org/OFL)
-///         Homepage:  http://aristeides.com/
 ///
 import 'package:flutter/widgets.dart';
 
@@ -28,10 +24,10 @@ class DdishAppIcons {
   static const IconData before = const IconData(0xe801, fontFamily: _kFontFam);
   static const IconData location_closed = const IconData(0xe802, fontFamily: _kFontFam);
   static const IconData location_open = const IconData(0xe803, fontFamily: _kFontFam);
-  static const IconData arrow_down = const IconData(0xe804, fontFamily: _kFontFam);
   static const IconData menu = const IconData(0xe805, fontFamily: _kFontFam);
   static const IconData next = const IconData(0xe806, fontFamily: _kFontFam);
   static const IconData notifications = const IconData(0xe807, fontFamily: _kFontFam);
   static const IconData satellite = const IconData(0xe808, fontFamily: _kFontFam);
   static const IconData satellite_bg = const IconData(0xe809, fontFamily: _kFontFam);
+  static const IconData arrow_down = const IconData(0xe80a, fontFamily: _kFontFam);
 }

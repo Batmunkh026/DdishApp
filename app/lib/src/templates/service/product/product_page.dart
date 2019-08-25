@@ -39,7 +39,7 @@ class ProductPageState extends State<ProductPage>
   double contentContainerHeight = 0;
 
   MediaQueryData queryData;
-  double fontSize = 0;
+  double fontSize = 11;
 
   @override
   void initState() {
@@ -90,15 +90,16 @@ class ProductPageState extends State<ProductPage>
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Text("Идэвхтэй багц", style: fontStyle),
-                new Text("Дуусах хугацаа: ", style: fontStyle),
-              ],
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Text("Идэвхтэй багц", style: fontStyle),
+              Divider(
+                height: 5,
+              ),
+              new Text("Дуусах хугацаа: ", style: fontStyle),
+            ],
           ),
           new Text(
             "${DateUtil.formatProductDate(productExpireDate)}",
@@ -106,7 +107,7 @@ class ProductPageState extends State<ProductPage>
               color: Color(0xff071f49),
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.normal,
-              fontSize: fontSize * 1.1,
+              fontSize: fontSize,
             ),
           ),
         ],
@@ -163,6 +164,7 @@ class ProductPageState extends State<ProductPage>
     Selector<Product> productPicker = Selector<Product>(
       initialValue: activeProduct,
       items: items,
+      iconFontSize: fontSize - 3,
       onSelect: (value) => _bloc.dispatch(
           ProductTypeSelectorClicked(state.selectedProductTab, value)),
       childMap: (p) {

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -18,34 +19,42 @@ class Selector<T> extends StatefulWidget {
   ///тухайн item ыг харуулах widget template
   final ChildWidgetMap<T> childMap;
 
-  bool visibleChildren = false;
+  double iconFontSize;
+
+  bool _visibleChildren = false;
+
+  ///сонгогдсон элементийг selector дээр харуулах эсэх
+  bool visibleSelectorElementOnSelector;
 
   Selector({
     @required this.items,
     @required this.initialValue,
     @required this.onSelect,
     @required this.childMap,
-  });
+    this.iconFontSize = 10,
+    this.visibleSelectorElementOnSelector = false,
+  }) : assert(items != null);
 
   @override
-  State<StatefulWidget> createState() => SelectorState<T>(
-        childMap,
-        onSelect,
-      );
+  State<StatefulWidget> createState() =>
+      SelectorState<T>(childMap, onSelect, items);
 }
 
 class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
   Logger _logger = Logger("Selector");
+
+  List<T> items = [];
   ChildWidgetMap<T> childMap;
   Select<T> onSelect;
   Rect _rect = Rect.zero;
   Rect _btnRect;
-  EdgeInsetsGeometry _selectorItemPadding =
-      EdgeInsets.only(left: 2, right: 2, bottom: 5);
+  EdgeInsetsGeometry _selectorItemPadding = EdgeInsets.only(left: 2, right: 2);
+  Color _iconColor = Color(0xff3069b2);
 
   SelectorState(
     this.childMap,
     this.onSelect,
+    this.items,
   );
 
   @override
@@ -62,37 +71,37 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    _logger.finer("visibleChildren : ${widget.visibleChildren}");
-    if (widget.visibleChildren) {
-      _checkSizes();
+    _logger.finer("visibleChildren : ${widget._visibleChildren}");
+    if (widget._visibleChildren) {
+      _initializeSizes();
 
       WidgetsBinding.instance.addPostFrameCallback((_) => _openSelector());
     }
 
+    IconData icon = DdishAppIcons.arrow_down;
     return InkWell(
-      child: Stack(
-        alignment: Alignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           childMap(widget.initialValue),
-          Container(
-            height: 0,
-            child: Icon(
-              Icons.arrow_drop_down,
-              size: 30,
-              color: Color.fromRGBO(48, 105, 178, 1),
-            ),
+          Icon(
+            icon,
+            size: widget.iconFontSize,
+            color: _iconColor,
           )
         ],
       ),
-      onTap: () => setState(() => widget.visibleChildren = true),
+      onTap: () => setState(() => widget._visibleChildren = true),
     );
   }
 
   void _openSelector() {
     _logger.finer("opening selector ...");
-    int itemsSize = widget.items.length;
+    int itemsSize = widget.visibleSelectorElementOnSelector
+        ? items.length
+        : items.length - 1; // сонгогдсон элементийг
     double _verticalPadding = _selectorItemPadding.vertical;
-    double _height = itemsSize * _rect.height + itemsSize * _verticalPadding;
+    double _height = itemsSize * _rect.height + itemsSize;
 
     Rect _containerRect = Rect.fromCenter(
         center: _rect.bottomLeft, width: _rect.width, height: _height);
@@ -110,11 +119,11 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
             child: Container(
               width: _containerRect.width,
               height: _containerRect.height,
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.blue),
+                border: Border.all(color: _iconColor),
               ),
               child: Material(
                 type: MaterialType.transparency,
@@ -122,9 +131,7 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List<Widget>.of(
-                    widget.items
-                        .where((item) => widget.initialValue != item)
-                        .map(
+                    items.where((item) => widget.initialValue != item).map(
                           (item) => InkWell(
                             child: Padding(
                               padding: _selectorItemPadding,
@@ -141,20 +148,20 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
         ),
         rect: _containerRect,
       ),
-    ).then((_) => setState(() => widget.visibleChildren = false));
+    ).then((_) => setState(() => widget._visibleChildren = false));
   }
 
-  void _checkSizes() {
+  void _initializeSizes() {
     final RenderBox itemBox = context.findRenderObject();
     _btnRect = itemBox.localToGlobal(Offset.zero) & itemBox.size;
     final EdgeInsetsGeometry _btnPadding = ButtonTheme.of(context).padding;
 
     if (_btnPadding.horizontal != 0) {
-      double padding = (_btnPadding.horizontal) / 2;
+      double _padding = (_btnPadding.horizontal) / 2;
       var leftWithPadding = _btnRect.left;
       _btnRect = Rect.fromLTWH(
         leftWithPadding,
-        _btnRect.top,
+        _btnRect.top - widget.iconFontSize,
         _btnRect.width,
         _btnRect.height,
       );
