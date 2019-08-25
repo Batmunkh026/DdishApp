@@ -318,6 +318,7 @@ class ProductPageState extends State<ProductPage>
   createTabBar() {
     return PreferredSize(
       child: TabBar(
+        indicatorPadding: EdgeInsets.symmetric(vertical: 6),
         isScrollable: true,
         controller: _tabController,
         tabs: _productTabs.map((tabItem) => Tab(text: tabItem.title)).toList(),
