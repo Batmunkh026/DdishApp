@@ -22,6 +22,7 @@ class InputField extends StatelessWidget {
   List<TextInputFormatter> inputFormatters;
   final bool hasClearButton;
   final VoidCallback onClear;
+  EdgeInsets contentPadding;
 
   //passing props in the Constructor.
   //Java like style
@@ -44,7 +45,9 @@ class InputField extends StatelessWidget {
       this.inputFormatters,
       this.onFieldSubmitted,
       this.hasClearButton = false,
-      this.onClear});
+      this.onClear,
+      this.contentPadding =
+          const EdgeInsets.only(bottom: 5, top: 5, left: 5, right: 5)});
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +82,11 @@ class InputField extends StatelessWidget {
                 ),
           border: hasBorder
               ? OutlineInputBorder(
+//                  borderSide: BorderSide(color: Color(0xff3069b2)),
                   borderRadius: BorderRadius.circular(20.0),
                 )
               : null,
-          contentPadding:
-              const EdgeInsets.only(bottom: 10.0, top: 10.0, left: 5, right: 5),
+          contentPadding: contentPadding,
           hintText: placeholder,
           hintStyle: TextStyle(
             color: hasBorder ? Color(0xFF071f49) : Color(0xffa4cafb),

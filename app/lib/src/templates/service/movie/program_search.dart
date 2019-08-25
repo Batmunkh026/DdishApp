@@ -40,6 +40,7 @@ class ProgramSearchWidget extends StatelessWidget {
                   fontSize: 12,
                   hasClearButton: true,
                   padding: EdgeInsets.all(3),
+                  contentPadding: EdgeInsets.only(bottom: 10.0, top: 10.0, left: 5, right: 5),
                 ),
               ),
               Container(

@@ -96,10 +96,11 @@ class CustomProductChooserState extends State<CustomProductChooser>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        onTap: () => FocusScope.of(context).unfocus(),
         child: Align(
           alignment: Alignment.topCenter,
           child: Container(
+            color: Colors.transparent,
             width: isUpgradeOrChannel ? deviceWidth * 0.7 : deviceWidth * 0.8,
             child: Form(
               key: _formKey,
