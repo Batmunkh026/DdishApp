@@ -90,6 +90,9 @@ class CustomProductChooserState extends State<CustomProductChooser>
         state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             state.selectedProductTab == ProductTabType.UPGRADE;
 
+    monthEditingController.selection =
+        TextSelection.collapsed(offset: monthEditingController.text.length);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
