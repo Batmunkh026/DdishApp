@@ -45,6 +45,8 @@ class BranchLocationState extends State<BranchLocationView> {
   var textStyle =
       TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 11);
 
+  bool _mapIsUpdating = false;
+
   @override
   void initState() {
     _bloc = MenuBloc(this);
@@ -60,6 +62,7 @@ class BranchLocationState extends State<BranchLocationView> {
     });
 
     _branchFilterStreamController.stream.listen((branchFilter) {
+      _mapIsUpdating = true;
       //branch location data load
       _bloc
           .getBranches(branchFilter.cityCode, branchFilter.typeCode,
@@ -68,6 +71,7 @@ class BranchLocationState extends State<BranchLocationView> {
         setState(() {
           this.branches = branches;
           _loading = false;
+          _mapIsUpdating = false;
         });
       });
     }).onDone(() {
@@ -109,7 +113,21 @@ class BranchLocationState extends State<BranchLocationView> {
           Container(
             padding: EdgeInsets.only(top: 5, bottom: 5),
             height: height,
-            child: Card(child: createGoogleMap()),
+            child: Stack(
+              children: <Widget>[
+                Card(child: createGoogleMap()),
+                Visibility(
+                  child: Center(
+                    child: SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  visible: _mapIsUpdating,
+                )
+              ],
+            ),
           ),
           Flexible(
             child: createInfoOfSelectedbranch(),
@@ -381,11 +399,11 @@ class BranchLocationState extends State<BranchLocationView> {
   /// хэрэв тийм icon олдоогүй бол ddish default icon буцаана.
   ///
   BitmapDescriptor _getMarkerIcon(bool isClosed, String branchType) {
+    String _state = isClosed ? "closed" : "open";
     String key = _markerIcons.keys.firstWhere(
         (_name) =>
-            branchType.contains(_name.split("_")[0]) &&
-            _name.endsWith(isClosed ? "closed" : "open"),
-        orElse: () => branchNames[0]);
+            branchType.contains(_name.split("_")[0]) && _name.endsWith(_state),
+        orElse: () => branchNames[0] + "_$_state");
 
     return _markerIcons[key];
   }
