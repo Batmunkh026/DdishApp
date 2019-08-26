@@ -107,7 +107,7 @@ class NotificationPageState extends State<NotificationPage> {
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.only(top: 5),
                       child: Text(notification.text),
                     )
                   ],

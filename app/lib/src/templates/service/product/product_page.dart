@@ -140,33 +140,20 @@ class ProductPageState extends State<ProductPage>
 
     Product activeProduct = _bloc.getUserActiveProduct();
 
+    if (state.selectedProductTab == ProductTabType.EXTEND)
+      activeProduct =
+          _bloc.selectedProduct == null ? items.first : _bloc.selectedProduct;
+
     if (activeProduct == null) return Container();
-
-    if (state.selectedProductTab != ProductTabType.EXTEND)
-      return Container(
-        width: pickerWidth,
-        child: CachedNetworkImage(
-          imageUrl: activeProduct.image,
-          placeholder: (context, url) => Center(
-            child: SizedBox(
-              height: 15,
-              width: 15,
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          fit: BoxFit.contain,
-        ),
-      );
-
-    activeProduct =
-        _bloc.selectedProduct == null ? items.first : _bloc.selectedProduct;
 
     Selector<Product> productPicker = Selector<Product>(
       initialValue: activeProduct,
       items: items,
       iconFontSize: fontSize - 3,
-      onSelect: (value) => _bloc.dispatch(
-          ProductTypeSelectorClicked(state.selectedProductTab, value)),
+      onSelect: state.selectedProductTab != ProductTabType.EXTEND
+          ? null
+          : (value) => _bloc.dispatch(
+              ProductTypeSelectorClicked(state.selectedProductTab, value)),
       childMap: (p) {
         return Container(
           width: pickerWidth,

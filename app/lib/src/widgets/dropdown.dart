@@ -26,6 +26,8 @@ class Selector<T> extends StatefulWidget {
   ///сонгогдсон элементийг selector дээр харуулах эсэх
   bool visibleSelectorElementOnSelector;
 
+  bool isSelectable = true;
+
   Selector({
     @required this.items,
     @required this.initialValue,
@@ -33,7 +35,9 @@ class Selector<T> extends StatefulWidget {
     @required this.childMap,
     this.iconFontSize = 10,
     this.visibleSelectorElementOnSelector = false,
-  }) : assert(items != null);
+  }) : assert(items != null) {
+    isSelectable = onSelect != null;
+  }
 
   @override
   State<StatefulWidget> createState() =>
@@ -84,14 +88,21 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           childMap(widget.initialValue),
-          Icon(
-            icon,
-            size: widget.iconFontSize,
-            color: _iconColor,
-          )
+          widget.isSelectable
+              ? Icon(
+                  icon,
+                  size: widget.iconFontSize,
+                  color: _iconColor,
+                )
+              : Container(
+                  height: widget.iconFontSize,
+                  width: widget.iconFontSize,
+                )
         ],
       ),
-      onTap: () => setState(() => widget._visibleChildren = true),
+      onTap: widget.isSelectable
+          ? () => setState(() => widget._visibleChildren = true)
+          : null,
     );
   }
 
@@ -174,7 +185,7 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
 
   _onItemSelected(item) {
     Navigator.pop(context);
-    onSelect(item);
+    if (widget.isSelectable) onSelect(item);
   }
 }
 
