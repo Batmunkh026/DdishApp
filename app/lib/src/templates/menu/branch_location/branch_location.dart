@@ -25,6 +25,10 @@ class BranchLocationState extends State<BranchLocationView> {
   BranchType selectedType;
   BranchService selectedService;
 
+  //default ub zoom
+  double zoom = 9.8;
+  LatLng position = LatLng(47.9179405, 106.9132983);
+
   Map<String, BitmapDescriptor> _markerIcons = Map<String, BitmapDescriptor>();
 
   Completer<GoogleMapController> _mapController = Completer();
@@ -206,6 +210,15 @@ class BranchLocationState extends State<BranchLocationView> {
             _params.branchAreas,
             (area) => setState(() {
                   this.selectedArea = area;
+                  if (area.code == "ub") {
+                    zoom = 9.8;
+                    position = LatLng(47.9179405, 106.9132983);
+                  } else {
+                    zoom = 3.6;
+                    position = LatLng(47.9179405, 103.9132983);
+                  }
+                  _mapController.future.then((_controller) => _controller
+                      .moveCamera(CameraUpdate.newLatLngZoom(position, zoom)));
                   addToBranchFilterStream();
                 }),
             selectedArea),
@@ -286,8 +299,8 @@ class BranchLocationState extends State<BranchLocationView> {
 
   GoogleMap createGoogleMap() {
     final CameraPosition defaultPosition = CameraPosition(
-      target: LatLng(47.9179405, 106.9132983),
-      zoom: 10.4746,
+      target: position,
+      zoom: zoom,
     );
     return GoogleMap(
       markers: (isStateFilter ? widget.filteredBranch : branches)
@@ -296,7 +309,7 @@ class BranchLocationState extends State<BranchLocationView> {
       initialCameraPosition: defaultPosition,
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
         new Factory<OneSequenceGestureRecognizer>(
-              () => new EagerGestureRecognizer(),
+          () => new EagerGestureRecognizer(),
         ),
       ].toSet(),
       onMapCreated: (controller) {
@@ -369,7 +382,9 @@ class BranchLocationState extends State<BranchLocationView> {
   ///
   BitmapDescriptor _getMarkerIcon(bool isClosed, String branchType) {
     String key = _markerIcons.keys.firstWhere(
-        (_name) => branchType.contains(_name.split("_")[0]) && _name.endsWith(isClosed ? "closed" : "open"),
+        (_name) =>
+            branchType.contains(_name.split("_")[0]) &&
+            _name.endsWith(isClosed ? "closed" : "open"),
         orElse: () => branchNames[0]);
 
     return _markerIcons[key];
