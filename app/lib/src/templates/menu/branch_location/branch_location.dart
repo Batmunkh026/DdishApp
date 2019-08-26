@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:ddish/src/blocs/menu/menu_bloc.dart';
 import 'package:ddish/src/models/branch.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -23,12 +25,14 @@ class BranchLocationState extends State<BranchLocationView> {
   BranchType selectedType;
   BranchService selectedService;
 
-  BitmapDescriptor markerIconClosed;
-  BitmapDescriptor markerIconOpen;
+  Map<String, BitmapDescriptor> _markerIcons = Map<String, BitmapDescriptor>();
 
   Completer<GoogleMapController> _mapController = Completer();
 
   final _branchFilterStreamController = StreamController<BranchFilter>();
+
+  final branchNames = ["ddish", "unitel"];
+  final branchStates = ["open", "closed"];
 
   Branch selectedBranch = null;
 
@@ -81,7 +85,7 @@ class BranchLocationState extends State<BranchLocationView> {
         selectedState.isNotEmpty &&
         selectedState != "Бүгд";
 
-    loadMarkerImages(context);
+    _loadMarkerImages(context);
 
     if (_loading)
       return Center(
@@ -290,6 +294,11 @@ class BranchLocationState extends State<BranchLocationView> {
           .map((branch) => createMarker(branch.lat, branch.lon, branch))
           .toSet(),
       initialCameraPosition: defaultPosition,
+      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+        new Factory<OneSequenceGestureRecognizer>(
+              () => new EagerGestureRecognizer(),
+        ),
+      ].toSet(),
       onMapCreated: (controller) {
         _mapController.complete(controller);
       },
@@ -299,7 +308,9 @@ class BranchLocationState extends State<BranchLocationView> {
   Marker createMarker(double latitude, double longitude, Branch branch) {
     var position = LatLng(latitude, longitude);
 
-    var icon = branch.state == 'Хаалттай' ? markerIconClosed : markerIconOpen;
+    bool isClosed = branch.state == 'Хаалттай';
+
+    var icon = _getMarkerIcon(isClosed, branch.type);
     return Marker(
       markerId: MarkerId(position.toString()),
       position: position,
@@ -347,15 +358,40 @@ class BranchLocationState extends State<BranchLocationView> {
     }).toList();
   }
 
-  loadMarkerImages(BuildContext context) {
-    if (markerIconClosed == null) {
+  ///branchType нь аль салбар болохыг илтгэнэ.
+  ///
+  /// дараах бүтэцтэй утга ирнэ
+  /// 'all, ddish', 'unitel'
+  ///
+  /// iconName ыг агуулсан салбарын төрөл байвал тухайн харгалзах icon ыг нээлттэй, хаалттай төлвөөс хамааран ялгаж өгнө.
+  ///
+  /// хэрэв тийм icon олдоогүй бол ddish default icon буцаана.
+  ///
+  BitmapDescriptor _getMarkerIcon(bool isClosed, String branchType) {
+    String key = _markerIcons.keys.firstWhere(
+        (_name) => branchType.contains(_name.split("_")[0]) && _name.endsWith(isClosed ? "closed" : "open"),
+        orElse: () => branchNames[0]);
+
+    return _markerIcons[key];
+  }
+
+  ///marker icon уудыг уншаад
+  ///салбарын нэр болон салбарын төлөв ийн хамт map д хадгалах
+  ///
+  /// {'ddish_open':openIcon, 'ddish_closed':closedIcon}
+  _loadMarkerImages(BuildContext context) {
+    if (_markerIcons.isEmpty) {
       final ImageConfiguration config = createLocalImageConfiguration(context);
 
-      BitmapDescriptor.fromAssetImage(config, 'assets/location_closed.png')
-          .then((icon) => setState(() => markerIconClosed = icon));
-
-      BitmapDescriptor.fromAssetImage(config, 'assets/location_open.png')
-          .then((icon) => setState(() => markerIconOpen = icon));
+      branchNames.forEach((branchName) => branchStates.forEach((branchState) {
+            String branchInfo = "${branchName}_$branchState";
+            String fileName = 'assets/map/$branchInfo.png';
+            BitmapDescriptor.fromAssetImage(config, fileName).then((icon) {
+              //[unitel_closed, unitel_open]...
+              setState(
+                  () => _markerIcons.putIfAbsent("$branchInfo", () => icon));
+            });
+          }));
     }
   }
 

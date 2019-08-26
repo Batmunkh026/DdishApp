@@ -64,11 +64,13 @@ flutter:
     - assets/background.jpg
     - assets/logo.png
     - assets/program/poster_placeholder.png
-    - assets/location_closed.png
-    - assets/location_open.png
     - assets/antenna/app_stb_01.jpg
     - assets/antenna/app_stb_02.jpg
     - assets/antenna/app_stb_03.jpg
+    - assets/map/ddish_closed.png
+    - assets/map/ddish_open.png
+    - assets/map/unitel_closed.png
+    - assets/map/unitel_open.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
