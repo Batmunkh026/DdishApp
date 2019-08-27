@@ -242,7 +242,7 @@ class BranchLocationState extends State<BranchLocationView> {
             selectedArea),
         createSelector(
             "Салбарын төлөв",
-            ["Бүгд", "Нээлттэй", "Хаалттай"],
+            ["Бүгд", "Нээлттэй"],
             (branchState) => setState(() {
                   this.selectedState = branchState;
                   filterByBranchState();
@@ -339,7 +339,7 @@ class BranchLocationState extends State<BranchLocationView> {
   Marker createMarker(double latitude, double longitude, Branch branch) {
     var position = LatLng(latitude, longitude);
 
-    bool isClosed = branch.state == 'Хаалттай';
+    bool isClosed = branch.state != 'Нээлттэй';
 
     var icon = _getMarkerIcon(isClosed, branch.type);
     return Marker(
