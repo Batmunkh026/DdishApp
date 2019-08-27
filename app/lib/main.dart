@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:ddish/src/abstract/abstract.dart';
@@ -9,6 +8,7 @@ import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
 import 'package:ddish/src/integration/integration.dart';
 import 'package:ddish/src/utils/connectivity.dart';
 import 'package:ddish/src/utils/constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:ddish/src/templates/login/login_page.dart';
@@ -24,11 +24,12 @@ class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    log.info(transition);
+    log.severe(transition);
   }
 
   @override
   void onEvent(Bloc bloc, Object event) {
+    log.severe(event);
     Client client = globals.client;
     if (!(event is AuthenticationEvent) && client != null) {
       log.warning("session will expire: ${client.credentials.expiration}}");
@@ -117,9 +118,9 @@ Future<Widget> initializeApp(routes) async {
 void setStatusBarFontColor() {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Colors.transparent,//android
-      statusBarIconBrightness: Brightness.light,//android
-      statusBarBrightness: Brightness.dark,//ios
+      statusBarColor: Colors.transparent, //android
+      statusBarIconBrightness: Brightness.light, //android
+      statusBarBrightness: Brightness.dark, //ios
     ),
   );
 }
