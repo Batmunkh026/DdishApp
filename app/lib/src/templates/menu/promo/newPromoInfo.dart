@@ -107,30 +107,8 @@ class PromoWidgetState extends State<PromoWidget> {
                 itemCount: state.selectedPromo.detials.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: GestureDetector(
-                      child: Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          child: CachedNetworkImage(
-                            imageUrl: state.selectedPromo.detials[index]
-                                .PromoDetialPosterUrl,
-                            placeholder: (context, url) => Container(
-                              color: Colors.black12,
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: 100,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                new Icon(Icons.error),
-                          ),
-                        ),
-                      ),
-                      onTap: () => onPromotionDetialTap(state.selectedPromo),
-                    ),
-                  );
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: buildChild(index, state.selectedPromo));
                 },
               ),
             ),
@@ -173,5 +151,47 @@ class PromoWidgetState extends State<PromoWidget> {
   onPromotionDetialTap(NewPromoMdl promo) {
     _bloc.dispatch(PromoDetialTapped(promo));
     widget.onBack = () => _bloc.dispatch(BackToState());
+  }
+
+  Widget buildChild(int index, selectedPromo) {
+    var poster = Container(
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        child: CachedNetworkImage(
+          imageUrl: selectedPromo.detials[index].PromoDetialPosterUrl,
+          placeholder: (context, url) => Container(
+            color: Colors.black12,
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: 100,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          errorWidget: (context, url, error) => new Icon(Icons.error),
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+    if (index != 0) return poster;
+
+    return Column(
+      children: <Widget>[
+        poster,
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: RichText(
+            text: TextSpan(
+                text: selectedPromo.PromoDescText,
+                style: const TextStyle(
+                  color: const Color(0xffFFFFF0),
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.normal,
+                  //fontSize: 16.0,
+                  fontFamily: 'Montserrat',
+                )),
+          ),
+        )
+      ],
+    );
   }
 }
