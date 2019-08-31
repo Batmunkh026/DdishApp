@@ -124,6 +124,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
                   Visibility(
                     child: Divider(
                       height: deviceWidth * 0.13,
+                      color: Colors.transparent,
                     ),
                     visible: isUpgradeOrChannel,
                   ),
