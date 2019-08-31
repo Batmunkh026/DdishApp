@@ -177,11 +177,19 @@ class LibraryState extends State<Library> {
   }
 
   _showResultMessage(Result result) {
-    message.show(
-        context,
-        result.resultMessage,
-        result.isSuccess
-            ? message.SnackBarType.SUCCESS
-            : message.SnackBarType.ERROR);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialog(
+            important: true,
+            title: result.isSuccess ? 'Санамж' : 'Анхааруулга',
+            closeButtonText: 'Болих',
+            onSubmit: _onRentAgreeTap,
+            content: Text(
+              result.resultMessage,
+              textAlign: TextAlign.center,
+            ),
+          );
+        });
   }
 }
