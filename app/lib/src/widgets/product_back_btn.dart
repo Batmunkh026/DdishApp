@@ -19,7 +19,7 @@ class ProductBackBtn extends StatelessWidget {
     var deviceHeight = media.size.height;
     var deviceWidth = media.size.width;
     var titleContainerWidth =
-        deviceWidth * (productImage.isNotEmpty ? 0.7 : 0.5);
+        deviceWidth * (productImage.isNotEmpty ? 0.7 : 0.57);
     var deviceWidthPercent = deviceWidth / 100;
     var scalar = (deviceWidthPercent / 3).floor();
     var titlePadding = 3.0;
@@ -33,7 +33,7 @@ class ProductBackBtn extends StatelessWidget {
 
     return GestureDetector(
       child: Container(
-        margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+        margin: EdgeInsets.only(top: 10, left: 10, right: 15),
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[

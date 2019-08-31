@@ -95,6 +95,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.transparent,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Align(
@@ -148,8 +149,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
                           ),
                         ),
                         Container(
-                          width:
-                              deviceWidth * (isUpgradeOrChannel ? 0.48 : 0.44),
+                          width: deviceWidth * (isUpgradeOrChannel ? 0.5 : 0.44),
                           child: FittedBox(
                             child: Text(
                               "Сунгах сарын үнийн дүн",

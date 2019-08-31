@@ -82,6 +82,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
     var paymentInfoContainerWidth = deviceWidth * 0.8;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
