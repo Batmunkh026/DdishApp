@@ -33,6 +33,7 @@ class MoviePageState extends State<MoviePage>
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
+        backgroundColor: Colors.transparent,
         appBar: TabBar(
           controller: _tabController,
           indicatorPadding: const EdgeInsets.symmetric(horizontal: 30.0),

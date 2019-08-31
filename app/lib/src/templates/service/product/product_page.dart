@@ -246,6 +246,7 @@ class ProductPageState extends State<ProductPage>
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.transparent,
       body: Container(
           child: Column(
         children: [
