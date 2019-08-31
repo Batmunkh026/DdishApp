@@ -191,6 +191,7 @@ class OrderWidgetState extends State<OrderWidget> {
             },
             content: Text(
               state.result.resultMessage,
+              textAlign: TextAlign.center,
               style: style.messageStyle,
             ),
           );
