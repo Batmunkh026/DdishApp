@@ -85,22 +85,27 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver {
     return WillPopScope(
         child: Scaffold(
             resizeToAvoidBottomPadding: false,
-            body: Container(
-              decoration: new BoxDecoration(
-                image: new DecorationImage(
-                  colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.23), BlendMode.darken),
-                  alignment: Alignment(0.3, 0),
-                  image: new AssetImage("assets/background.jpg"),
-                  fit: BoxFit.cover,
+            body: Stack(
+              children: [
+                Container(
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                      alignment: Alignment(0.3, 0),
+                      image: new AssetImage("assets/background.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-              child: SafeArea(
-                minimum: EdgeInsets.all(16),
-                child: Container(
-                  child: content[_currentTabIndex],
+                Container(
+                  color: Color.fromRGBO(9, 32, 69, 0.73),
                 ),
-              ),
+                SafeArea(
+                  minimum: EdgeInsets.all(16),
+                  child: Container(
+                    child: content[_currentTabIndex],
+                  ),
+                )
+              ],
             ),
             bottomNavigationBar: Container(
               height: MediaQuery.of(context).size.height * 0.09,

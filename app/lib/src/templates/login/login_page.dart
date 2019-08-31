@@ -60,32 +60,37 @@ class LoginWidgetState extends State<LoginWidget> {
           children: <Widget>[
             GestureDetector(
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-              child: Container(
-                decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                    colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.27), BlendMode.darken),
-                    alignment: Alignment(0.3, 0),
-                    image: new AssetImage("assets/background.jpg"),
-                    fit: BoxFit.cover,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: new BoxDecoration(
+                      image: new DecorationImage(
+                        alignment: Alignment(0.3, 0),
+                        image: new AssetImage("assets/background.jpg"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-                child: Container(
-                  child: prefsLoaded
-                      ? (menuOpened
-                          ? MenuPage(
-                              onBackButtonTap: () => onMenuTap(),
-                            )
-                          : LoginView(
-                              authenticationBloc: authenticationBloc,
-                              loginBloc: loginBloc,
-                              username: username,
-                              useFingerprint: useFingerprint,
-                              canCheckBiometrics: canCheckBiometrics,
-                            ))
-                      : Container(),
+                  Container(
+                    color: Color.fromRGBO(9, 32, 69, 0.73),
+                  ),
+                  Container(
+                    child: prefsLoaded
+                        ? (menuOpened
+                            ? MenuPage(
+                                onBackButtonTap: () => onMenuTap(),
+                              )
+                            : LoginView(
+                                authenticationBloc: authenticationBloc,
+                                loginBloc: loginBloc,
+                                username: username,
+                                useFingerprint: useFingerprint,
+                                canCheckBiometrics: canCheckBiometrics,
+                              ))
+                        : Container(),
 //                  color: Color.fromRGBO(23, 43, 77, 0.8),
-                ),
+                  )
+                ],
               ),
             ),
             Align(
