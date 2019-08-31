@@ -95,6 +95,10 @@ class LoginViewState extends State<LoginView> {
                       validateFunction: InputValidations.validateNumberValue,
                       hintFontSize: 12,
                     ),
+                    Divider(
+                      height: 5,
+                      color: Colors.transparent,
+                    ),
                     InputField(
                       placeholder: 'НУУЦ КОД / * * * * /',
                       textController: _passwordController,
