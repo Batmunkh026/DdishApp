@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'dart:ui' as prefix0;
 
 import 'package:ddish/src/blocs/service/movie/description_bloc.dart';
 import 'package:ddish/src/blocs/service/movie/description_event.dart';
@@ -297,30 +298,51 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          final height = MediaQuery.of(context).size.height;
-          return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      height: height * 0.7,
-                      child: PosterImage(
-                        url: content.posterUrl,
+          final width = MediaQuery.of(context).size.width;
+          final double dialogWidth = width * 0.96;
+          final double dialogHeight = dialogWidth * 1.5;
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(50, 88, 150, 1),
+                  borderRadius: BorderRadius.all(Radius.circular(18)),
+                ),
+                height: dialogHeight,
+                width: dialogWidth,
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+                        height: dialogHeight - 60,
+                        child: PosterImage(
+                          url: content.posterUrl,
+                        ),
                       ),
+                      DialogCloseButton(onTap: () => Navigator.pop(context))
+                    ],
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      stops: [0.01, 0.2, 0.8, 0.99],
+                      colors: [
+                        Color.fromRGBO(34, 72, 133, 0.1),
+                        Colors.white24.withOpacity(0.1),
+                        Colors.white24.withOpacity(0.1),
+                        Color.fromRGBO(34, 72, 133, 0.1),
+                      ],
                     ),
                   ),
-                  Align(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: DialogCloseButton(
-                          onTap: () => Navigator.pop(context)),
-                    ),
-                    alignment: Alignment.bottomCenter,
-                  )
-                ],
-              ));
+                ),
+              )
+            ],
+          );
         });
   }
 
