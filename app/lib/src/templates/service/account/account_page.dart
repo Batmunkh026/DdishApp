@@ -39,6 +39,7 @@ class AccountPageState extends State<AccountPage> {
       builder: (BuildContext context, AccountState state) {
         _bloc.dispatch(AccountTabSelected());
         return Container(
+          padding: EdgeInsets.only(top: 5),
           height: height * 0.8,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,7 +92,7 @@ class AccountPageState extends State<AccountPage> {
               Container(
                 padding: EdgeInsets.all(10),
                 width: MediaQuery.of(context).size.width,
-                height: height * 0.89,
+                height: height * 0.88,
                 child: showAccountChargeInstruction(),
               )
             ],
