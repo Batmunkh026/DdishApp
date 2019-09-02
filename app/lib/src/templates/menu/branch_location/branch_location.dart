@@ -85,6 +85,7 @@ class BranchLocationState extends State<BranchLocationView> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height * 0.4;
+    double width = MediaQuery.of(context).size.width;
     pickersContainerHeight = MediaQuery.of(context).size.height * 0.18;
 
     //state filter нь service учир static зааж өглөө
@@ -105,10 +106,14 @@ class BranchLocationState extends State<BranchLocationView> {
         children: <Widget>[
           Container(
             height: pickersContainerHeight,
-            child: Row(
+            width: width * 0.84,
+            child: Center(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: createFilterComponents(branches)),
+                children: createFilterComponents(branches),
+              ),
+            ),
           ),
           Container(
             padding: EdgeInsets.only(top: 5, bottom: 5),
@@ -155,7 +160,7 @@ class BranchLocationState extends State<BranchLocationView> {
             data: ThemeData(canvasColor: Theme.of(context).primaryColor),
             child: Container(
               padding: EdgeInsets.only(right: 5, left: 5, top: 0, bottom: 0),
-              height: MediaQuery.of(context).size.height * 0.05,
+              height: MediaQuery.of(context).size.height < 620 ? 28 : 35,
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
@@ -182,7 +187,8 @@ class BranchLocationState extends State<BranchLocationView> {
                                 item is String ? item : item.name,
                                 style: TextStyle(
                                     color: Color.fromRGBO(202, 224, 252, 1),
-                                    fontSize: 12),
+                                    fontSize: 12,
+                                    fontFamily: "Montserrat"),
                                 softWrap: true,
                                 textAlign: TextAlign.center,
                               ),
@@ -205,9 +211,10 @@ class BranchLocationState extends State<BranchLocationView> {
   }
 
   createSelectorColumn(selector1, selector2) {
+    var width = MediaQuery.of(context).size.width;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      width: MediaQuery.of(context).size.width * 0.45,
+      padding: EdgeInsets.symmetric(horizontal: 5),
+      width: 133 + (width/370),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
