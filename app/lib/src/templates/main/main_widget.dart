@@ -100,7 +100,7 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver {
                   color: Color.fromRGBO(19, 43, 83, 0.75),
                 ),
                 SafeArea(
-                  minimum: EdgeInsets.all(16),
+                  minimum: EdgeInsets.only(bottom: 16, top: 16),
                   child: Container(
                     child: content[_currentTabIndex],
                   ),
