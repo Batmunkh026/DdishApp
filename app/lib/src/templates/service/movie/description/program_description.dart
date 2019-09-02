@@ -162,19 +162,19 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
   }
 
   showOverview(Movie content) {
-    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return CustomDialog(
-              content: Column(
-            children: <Widget>[
-              Container(
-                height: height * 0.2,
-                child: Row(
+            content: Column(
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
+                    Container(
                       padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
+                      width: width * 0.26,
                       child: PosterImage(
                         url: content.posterUrl,
                       ),
@@ -197,7 +197,8 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                                   style: style.programGenresStyleDialog),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 5.0),
+                              padding:
+                                  const EdgeInsets.only(top: 5.0, bottom: 10),
                               child: Text(DateUtil.formatTime(_beginDate),
                                   style: style.programStartTimeStyleDialog),
                             ),
@@ -207,16 +208,18 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                     )
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  content.contentDescr,
-                  style: style.contentDescriptionStyle,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    content.contentDescr,
+                    textAlign: TextAlign.justify,
+                    style: style.contentDescriptionStyle,
+                  ),
                 ),
-              ),
-            ],
-          ));
+              ],
+            ),
+            backgroundBlurFilter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+          );
         });
   }
 

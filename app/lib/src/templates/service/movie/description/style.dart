@@ -39,6 +39,7 @@ TextStyle contentDescriptionStyle = const TextStyle(
     color: const Color(0xffe4f0ff),
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
+    fontFamily: "Montserrat",
     fontSize: 14.0);
 
 TextStyle programTitleStyleDialog = const TextStyle(

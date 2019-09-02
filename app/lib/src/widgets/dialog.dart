@@ -12,6 +12,7 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback onClose;
   final String closeButtonText;
   final EdgeInsets padding;
+  ImageFilter backgroundBlurFilter = ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0);
 
   CustomDialog(
       {this.title,
@@ -22,11 +23,17 @@ class CustomDialog extends StatelessWidget {
       this.onClose,
       this.closeButtonText,
       this.padding =
-          const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)});
+          const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      backgroundBlurFilter}) {
+    if (backgroundBlurFilter != null)
+      this.backgroundBlurFilter = backgroundBlurFilter;
+  }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+
+    bool hasCloseText = closeButtonText != null;
 
     return SimpleDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -36,7 +43,7 @@ class CustomDialog extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            filter: backgroundBlurFilter,
             child: Column(
               children: <Widget>[
                 Padding(
@@ -61,14 +68,14 @@ class CustomDialog extends StatelessWidget {
                   padding: padding,
                 ),
                 Visibility(
-                  visible: closeButtonText != null,
+                  visible: hasCloseText,
                   child: Divider(
                     height: 1.0,
                   ),
                 ),
                 FittedBox(
                   child: Container(
-                      height: height * 0.06,
+                      height: height * (hasCloseText ? 0.06 : 0.08),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
