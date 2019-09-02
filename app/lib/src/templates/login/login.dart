@@ -81,7 +81,7 @@ class LoginViewState extends State<LoginView> {
                         children: <Widget>[
                           Image(
                             image: AssetImage('assets/logo.png'),
-                            width: width * 0.25,
+                            width: width * 0.29,
                           ),
                         ],
                       ),
