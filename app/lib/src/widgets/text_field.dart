@@ -76,13 +76,16 @@ class InputField extends StatelessWidget {
         inputFormatters: inputFormatters,
         decoration: new InputDecoration(
           enabledBorder: hasBorder
-              ? null
+              ? OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff3069b2)),
+                  borderRadius: BorderRadius.circular(20.0),
+                )
               : UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
                 ),
           border: hasBorder
               ? OutlineInputBorder(
-//                  borderSide: BorderSide(color: Color(0xff3069b2)),
+                  borderSide: BorderSide(color: Color(0xff3069b2)),
                   borderRadius: BorderRadius.circular(20.0),
                 )
               : null,
