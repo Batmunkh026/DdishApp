@@ -142,7 +142,8 @@ class LoginViewState extends State<LoginView> {
                       },
                     ),
                     Visibility(
-                      visible: widget.canCheckBiometrics,
+//                      visible: widget.canCheckBiometrics,
+                      visible: false,
                       child: new ToggleSwitch(
                         value: _loginBloc.useFingerprint,
                         hint: "Цаашид хурууны хээгээр нэвтэрнэ",
