@@ -85,7 +85,7 @@ class LoginViewState extends State<LoginView> {
                           ),
                         ],
                       ),
-                      margin: EdgeInsets.only(bottom: 25),
+                      margin: EdgeInsets.only(bottom: 35),
                     ),
                     InputField(
                       placeholder: 'АДМИН ДУГААР / СМАРТ КАРТЫН ДУГААР',
@@ -158,7 +158,7 @@ class LoginViewState extends State<LoginView> {
                     ),
                     Divider(
                       color: Colors.transparent,
-                      height: 11,
+                      height: 18,
                     ),
                     Center(
                       child: SubmitButton(

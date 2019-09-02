@@ -72,7 +72,7 @@ class LoginWidgetState extends State<LoginWidget> {
                     ),
                   ),
                   Container(
-                    color: Color.fromRGBO(9, 32, 69, 0.73),
+                    color: Color.fromRGBO(19, 43, 83, 0.75),
                   ),
                   Container(
                     child: prefsLoaded
