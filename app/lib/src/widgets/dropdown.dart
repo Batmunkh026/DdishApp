@@ -320,8 +320,12 @@ class _SelectorChildDelegate extends SingleChildLayoutDelegate {
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    ///тухайн элементийн одоогийн байршлаас дэлгэцний доод зах хүртэлх зайны 80 хувь
-    double maxHeight = (deviceHeight - rect.top) * 0.8;
+    ///тухайн элементийн одоогийн байршлаас дэлгэцний доод зах хүртэлх зайны 60 хувь
+    double maxHeight = (deviceHeight - rect.top) * 0.6;
+    double minHeight = rect.height;
+
+    if (maxHeight < minHeight) minHeight = maxHeight;
+
     return BoxConstraints(
         minHeight: rect.height,
         maxHeight: maxHeight,
