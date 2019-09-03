@@ -157,23 +157,8 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
       );
 
     if (widget.underline != null)
-      selectorBody = Stack(
-        children: <Widget>[
-          selectorBody,
-          Positioned(
-            left: 0.0,
-            right: 0.0,
-            bottom: 3.0,
-            child: widget.underline ??
-                Container(
-                  height: 1.0,
-                  decoration: const BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Color(0xFFBDBDBD), width: 0.0))),
-                ),
-          )
-        ],
+      selectorBody = Column(
+        children: <Widget>[selectorBody, widget.underline],
       );
 
     return InkWell(
@@ -192,8 +177,10 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
     double _verticalPadding = _selectorItemPadding.vertical;
     double _height = itemsSize * _rect.height + itemsSize;
 
+    var width = _rect.width + _selectorItemPadding.horizontal;
+
     Rect _containerRect = Rect.fromCenter(
-        center: _rect.bottomLeft, width: _rect.width, height: _height);
+        center: _rect.bottomLeft, width: width, height: _height);
 
     Navigator.push(
       context,
@@ -248,16 +235,23 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
     if (_btnPadding.horizontal != 0) {
       double _padding = (_btnPadding.horizontal) / 2;
       var leftWithPadding = _btnRect.left;
-      var offsetTop = _btnRect.top - widget.iconFontSize;
+      var offsetTop = _btnRect.top;
 
-      if (!widget.isIconOnBottom) offsetTop = offsetTop + _padding + 5;
-
-      _btnRect = Rect.fromLTWH(
-        leftWithPadding,
-        offsetTop,
-        _btnRect.width,
-        _btnRect.height,
-      );
+      if (widget.isIconOnBottom) {
+        offsetTop = offsetTop - widget.iconFontSize;
+        _btnRect = Rect.fromLTWH(
+          leftWithPadding,
+          offsetTop,
+          _btnRect.width,
+          _btnRect.height,
+        );
+      } else
+        _btnRect = Rect.fromLTWH(
+          leftWithPadding - 4,
+          offsetTop + 1,
+          _btnRect.width + 6,
+          _btnRect.height,
+        );
     }
 
     _logger.finer(
