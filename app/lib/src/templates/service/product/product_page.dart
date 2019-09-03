@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
@@ -150,6 +151,9 @@ class ProductPageState extends State<ProductPage>
       initialValue: activeProduct,
       items: items,
       iconFontSize: fontSize - 3,
+      icon: DdishAppIcons.arrow_down,
+      iconColor: Color(0xff3069b2),
+      isIconOnBottom: true,
       onSelect: state.selectedProductTab != ProductTabType.EXTEND
           ? null
           : (value) => _bloc.dispatch(

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -28,13 +29,28 @@ class Selector<T> extends StatefulWidget {
 
   bool isSelectable = true;
 
+  IconData icon;
+  Color iconColor;
+
+  ///icon ын default location нь баруун талд нь байх бас доод талд нь байршуулж болно
+  bool isIconOnBottom;
+
+  Color backgroundColor;
+
+  TextStyle defaultTextStyle;
+
   Selector({
     @required this.items,
     @required this.initialValue,
     @required this.onSelect,
     @required this.childMap,
-    this.iconFontSize = 10,
+    this.iconFontSize = 20,
     this.visibleSelectorElementOnSelector = false,
+    this.icon = Icons.keyboard_arrow_down,
+    this.iconColor = const Color.fromRGBO(202, 224, 252, 1),
+    this.isIconOnBottom = false,
+    this.backgroundColor = Colors.white,
+    this.defaultTextStyle,
   }) : assert(items != null) {
     isSelectable = onSelect != null;
   }
@@ -53,7 +69,6 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
   Rect _rect = Rect.zero;
   Rect _btnRect;
   EdgeInsetsGeometry _selectorItemPadding = EdgeInsets.only(left: 2, right: 2);
-  Color _iconColor = Color(0xff3069b2);
 
   SelectorState(
     this.childMap,
@@ -76,30 +91,53 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     _logger.finer("visibleChildren : ${widget._visibleChildren}");
+
+    if (widget.initialValue == null && items.isNotEmpty)
+      setState(() => widget.initialValue = items.first);
+
     if (widget._visibleChildren) {
       _initializeSizes();
 
       WidgetsBinding.instance.addPostFrameCallback((_) => _openSelector());
     }
 
-    IconData icon = DdishAppIcons.arrow_down;
-    return InkWell(
-      child: Column(
+    var childElement = childMap(widget.initialValue);
+
+    if (widget.defaultTextStyle != null)
+      childElement = Expanded(
+        child: DefaultTextStyle(
+          child: childElement,
+          style: TextStyle(fontSize: 12),
+        ),
+      );
+
+    var children = [
+      childElement,
+      widget.isSelectable
+          ? Icon(
+              widget.icon,
+              size: widget.iconFontSize,
+              color: widget.iconColor,
+            )
+          : Container(
+              height: widget.iconFontSize,
+              width: widget.iconFontSize,
+            )
+    ];
+
+    Widget selectorBody = Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: children,
+    );
+    if (widget.isIconOnBottom)
+      selectorBody = Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          childMap(widget.initialValue),
-          widget.isSelectable
-              ? Icon(
-                  icon,
-                  size: widget.iconFontSize,
-                  color: _iconColor,
-                )
-              : Container(
-                  height: widget.iconFontSize,
-                  width: widget.iconFontSize,
-                )
-        ],
-      ),
+        children: children,
+      );
+
+    return InkWell(
+      child: selectorBody,
       onTap: widget.isSelectable
           ? () => setState(() => widget._visibleChildren = true)
           : null,
@@ -126,15 +164,15 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
           explicitChildNodes: true,
           label: MaterialLocalizations.of(context).popupMenuLabel,
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+            scrollDirection: Axis.vertical,
             child: Container(
               width: _containerRect.width,
-              height: _containerRect.height,
+//              height: _containerRect.height,
               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: widget.backgroundColor,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: _iconColor),
+                border: Border.all(color: widget.iconColor),
               ),
               child: Material(
                 type: MaterialType.transparency,
@@ -172,7 +210,7 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
       var leftWithPadding = _btnRect.left;
       _btnRect = Rect.fromLTWH(
         leftWithPadding,
-        _btnRect.top - widget.iconFontSize,
+        _btnRect.top - widget.iconFontSize + _padding,
         _btnRect.width,
         _btnRect.height,
       );
@@ -185,6 +223,7 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
 
   _onItemSelected(item) {
     Navigator.pop(context);
+    setState(() => widget.initialValue = item);
     if (widget.isSelectable) onSelect(item);
   }
 }
@@ -208,8 +247,9 @@ class _SelectorRoute extends PopupRoute {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
+    var deviceHeight = MediaQuery.of(context).size.height;
     return CustomSingleChildLayout(
-      delegate: _SelectorChildDelegate(rect),
+      delegate: _SelectorChildDelegate(rect, deviceHeight),
       child: child,
     );
   }
@@ -229,12 +269,21 @@ class _SelectorRoute extends PopupRoute {
 
 class _SelectorChildDelegate extends SingleChildLayoutDelegate {
   Rect rect;
+  double deviceHeight = 0;
 
-  _SelectorChildDelegate(this.rect) : assert(rect != Rect.zero);
+  _SelectorChildDelegate(this.rect, this.deviceHeight)
+      : assert(rect != Rect.zero);
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return BoxConstraints.tightFor(width: rect.width, height: rect.height);
+    ///тухайн элементийн одоогийн байршлаас дэлгэцний доод зах хүртэлх зайны 80 хувь
+    double maxHeight = (deviceHeight - rect.top) * 0.8;
+    return BoxConstraints(
+        minHeight: rect.height,
+        maxHeight: maxHeight,
+        minWidth: rect.width,
+        maxWidth: rect.width);
+//    return BoxConstraints.tightFor(width: rect.width, height: rect.height);
   }
 
   @override
