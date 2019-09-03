@@ -45,7 +45,7 @@ class BranchLocationState extends State<BranchLocationView> {
   bool isStateFilter = false;
 
   var textStyle =
-      TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 11);
+      TextStyle(color: Color.fromRGBO(202, 224, 252, 1), fontSize: 12);
 
   bool _mapIsUpdating = false;
 
@@ -187,7 +187,7 @@ class BranchLocationState extends State<BranchLocationView> {
             data: ThemeData(canvasColor: Theme.of(context).primaryColor),
             child: Container(
               padding: EdgeInsets.only(right: 5, left: 5, top: 0, bottom: 0),
-              height: MediaQuery.of(context).size.height < 620 ? 28 : 35,
+              height: MediaQuery.of(context).size.height < 620 ? 26 : 34,
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
@@ -276,7 +276,8 @@ class BranchLocationState extends State<BranchLocationView> {
   Widget createInfoOfSelectedbranch() {
     if (selectedBranch == null) return Container();
 
-    var addressContainerWidth = MediaQuery.of(context).size.width * 0.35;
+    var deviceWidth = MediaQuery.of(context).size.width;
+    var addressContainerWidth = deviceWidth * 0.35;
 
     return Padding(
       padding: EdgeInsets.all(5),
@@ -289,26 +290,30 @@ class BranchLocationState extends State<BranchLocationView> {
               padding: EdgeInsets.only(bottom: 10),
               child: Text(
                 selectedBranch.name,
-                style: TextStyle(color: textStyle.color),
+                style: TextStyle(color: textStyle.color, fontSize: 14),
               ),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  width: addressContainerWidth,
-                  margin: EdgeInsets.only(right: 15),
-                  child: RichText(
-                    softWrap: true,
-                    text: TextSpan(
-                        text: clearSpecialChars(selectedBranch.address),
-                        style: textStyle),
+                ConstrainedBox(
+                  constraints:
+                      BoxConstraints(minWidth: 1, maxWidth: deviceWidth * .5),
+                  child: Container(
+                    margin: EdgeInsets.only(right: 15),
+                    child: RichText(
+                      softWrap: true,
+                      text: TextSpan(
+                          text: clearSpecialChars(selectedBranch.address),
+                          style: textStyle),
+                    ),
                   ),
                 ),
                 Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: createTimeTableWidgets(selectedBranch))
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: createTimeTableWidgets(selectedBranch),
+                )
               ],
             )
           ],
