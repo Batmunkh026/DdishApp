@@ -39,6 +39,10 @@ class Selector<T> extends StatefulWidget {
 
   TextStyle defaultTextStyle;
 
+  String placeholder;
+
+  Widget underline;
+
   Selector({
     @required this.items,
     @required this.initialValue,
@@ -51,6 +55,8 @@ class Selector<T> extends StatefulWidget {
     this.isIconOnBottom = false,
     this.backgroundColor = Colors.white,
     this.defaultTextStyle,
+    this.placeholder,
+    this.underline,
   }) : assert(items != null) {
     isSelectable = onSelect != null;
   }
@@ -92,7 +98,9 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     _logger.finer("visibleChildren : ${widget._visibleChildren}");
 
-    if (widget.initialValue == null && items.isNotEmpty)
+    if (widget.initialValue == null &&
+        items.isNotEmpty &&
+        widget.placeholder == null)
       setState(() => widget.initialValue = items.first);
 
     if (widget._visibleChildren) {
@@ -101,17 +109,29 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
       WidgetsBinding.instance.addPostFrameCallback((_) => _openSelector());
     }
 
-    var childElement = childMap(widget.initialValue);
+    var childElement;
 
-    if (widget.defaultTextStyle != null)
+    if (widget.initialValue != null)
+      childElement = childMap(widget.initialValue);
+
+    //хэрэв placeholder тохируулж өгөөгүй бол жагсаалтын эхний элемент сонгогдсон харагдана
+    if (widget.placeholder != null && widget.initialValue == null)
+      childElement = Expanded(
+        child: Text(
+          widget.placeholder,
+          style: widget.defaultTextStyle,
+          textAlign: TextAlign.center,
+        ),
+      );
+    else if (childElement != null && widget.defaultTextStyle != null)
       childElement = Expanded(
         child: DefaultTextStyle(
           child: childElement,
-          style: TextStyle(fontSize: 12),
+          style: widget.defaultTextStyle,
         ),
       );
 
-    var children = [
+    List<Widget> children = [
       childElement,
       widget.isSelectable
           ? Icon(
@@ -134,6 +154,26 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
       selectorBody = Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: children,
+      );
+
+    if (widget.underline != null)
+      selectorBody = Stack(
+        children: <Widget>[
+          selectorBody,
+          Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 3.0,
+            child: widget.underline ??
+                Container(
+                  height: 1.0,
+                  decoration: const BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              color: Color(0xFFBDBDBD), width: 0.0))),
+                ),
+          )
+        ],
       );
 
     return InkWell(
@@ -208,9 +248,13 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
     if (_btnPadding.horizontal != 0) {
       double _padding = (_btnPadding.horizontal) / 2;
       var leftWithPadding = _btnRect.left;
+      var offsetTop = _btnRect.top - widget.iconFontSize;
+
+      if (!widget.isIconOnBottom) offsetTop = offsetTop + _padding + 5;
+
       _btnRect = Rect.fromLTWH(
         leftWithPadding,
-        _btnRect.top - widget.iconFontSize + _padding,
+        offsetTop,
         _btnRect.width,
         _btnRect.height,
       );

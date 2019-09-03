@@ -10,6 +10,7 @@ import 'package:ddish/src/repositiories/menu_repository.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/dialog.dart';
+import 'package:ddish/src/widgets/dropdown.dart';
 import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
@@ -61,6 +62,41 @@ class OrderWidgetState extends State<OrderWidget> {
           SchedulerBinding.instance
               .addPostFrameCallback((_) => showMessage(state));
         }
+
+        var defaultTextStyle = TextStyle(
+          color: const Color(0xffa4cafb),
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+          fontSize: 16,
+        );
+
+        Selector<District> districtSelector = Selector<District>(
+          initialValue: selectedDistrict,
+          items: Constants.districtItems,
+          defaultTextStyle: defaultTextStyle,
+          onSelect: (value) => setState(() => selectedDistrict = value),
+          iconFontSize: 30,
+          placeholder: "ДҮҮРЭГ СОНГОХ",
+          underline:
+              Line(color: !submitError ? Color(0xffffffff) : Color(0xffd32f2f),),
+          childMap: (district) {
+            return Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  district.name.toUpperCase(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          },
+        );
+
         return Expanded(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
@@ -107,44 +143,7 @@ class OrderWidgetState extends State<OrderWidget> {
                             validateFunction:
                                 InputValidations.validatePhoneNumber,
                           ),
-                          Theme(
-                            data: ThemeData(
-                                canvasColor: Theme.of(context).primaryColor),
-                            child: DropdownButton<dynamic>(
-                              isExpanded: true,
-                              icon: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: Color.fromRGBO(202, 224, 252, 1),
-                              ),
-                              underline: Line(
-                                  color: !submitError
-                                      ? Color(0xffffffff)
-                                      : Color(0xffd32f2f)),
-                              value: selectedDistrict,
-                              items: dropDownItems,
-                              elevation: 1,
-                              style: TextStyle(
-                                color: Color(0xffe8e8e8),
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 15.0,
-                              ),
-                              hint: Center(
-                                child: Text(
-                                  'ДҮҮРЭГ СОНГОХ',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color(0xffa4cafb),
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 15.0,
-                                  ),
-                                ),
-                              ),
-                              onChanged: (value) =>
-                                  setState(() => selectedDistrict = value),
-                            ),
-                          ),
+                          districtSelector,
                           !submitError
                               ? SizedBox.shrink()
                               : Align(
