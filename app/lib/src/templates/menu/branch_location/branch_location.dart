@@ -146,16 +146,14 @@ class BranchLocationState extends State<BranchLocationView> {
 
   Widget createSelector(String title, List<dynamic> items,
       Function(dynamic) event, selectedItem) {
-
     var defaultStyle = TextStyle(
-        color: Color.fromRGBO(202, 224, 252, 1),
         fontSize: 12,
+        color: Color.fromRGBO(202, 224, 252, 1),
         fontFamily: "Montserrat");
 
     Selector itemSelector = Selector(
       items: items,
       onSelect: (selectedItem) => Function.apply(event, [selectedItem]),
-      backgroundColor: Colors.blue,
       initialValue: selectedItem,
       defaultTextStyle: defaultStyle,
       childMap: (item) {
@@ -164,7 +162,7 @@ class BranchLocationState extends State<BranchLocationView> {
             padding: EdgeInsets.all(3),
             child: Text(
               item is String ? item : item.name,
-              style: defaultStyle,
+              style: TextStyle(fontSize: 12, fontFamily: "Montserrat"),
               softWrap: true,
               textAlign: TextAlign.center,
             ),
@@ -200,39 +198,6 @@ class BranchLocationState extends State<BranchLocationView> {
                 ),
               ),
               child: itemSelector,
-//              child: DropdownButton<dynamic>(
-//                isExpanded: true,
-//                icon: Icon(
-//                  Icons.keyboard_arrow_down,
-//                  color: textStyle.color,
-//                ),
-//                underline: Container(),
-//                items: items
-//                    .map(
-//                      (item) => DropdownMenuItem(
-//                          child: Center(
-//                            child: Container(
-//                              padding: EdgeInsets.all(3),
-//                              child: Text(
-//                                item is String ? item : item.name,
-//                                style: TextStyle(
-//                                    color: Color.fromRGBO(202, 224, 252, 1),
-//                                    fontSize: 12,
-//                                    fontFamily: "Montserrat"),
-//                                softWrap: true,
-//                                textAlign: TextAlign.center,
-//                              ),
-//                            ),
-//                          ),
-//                          value: item),
-//                    )
-//                    .toList(),
-//                value: selectedItem == null && items.isNotEmpty
-//                    ? items.first
-//                    : selectedItem,
-//                onChanged: (selectedItem) =>
-//                    Function.apply(event, [selectedItem]),
-//              ),
             ),
           )
         ],

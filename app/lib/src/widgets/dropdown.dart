@@ -172,7 +172,7 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
               decoration: BoxDecoration(
                 color: widget.backgroundColor,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: widget.iconColor),
+                border: Border.all(color: Color(0xff3069b2)),
               ),
               child: Material(
                 type: MaterialType.transparency,
