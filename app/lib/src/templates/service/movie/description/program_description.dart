@@ -261,39 +261,54 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
   showTrailer(Movie content) {
     Timer sessionUpdateTask = _bloc.updateSession();
 
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Stack(
-                children: <Widget>[
-                  SimpleDialog(
-                    contentPadding: const EdgeInsets.all(0.0),
-                    children: <Widget>[
-                      Align(
-                        child: YoutubePlayer(
-                          context: context,
-                          videoId: content.trailerUrl,
-                          showVideoProgressIndicator: true,
-                          videoProgressIndicatorColor: Colors.red,
-                        ),
-                        alignment: Alignment.center,
-                      ),
-                    ],
+          return Stack(
+            children: <Widget>[
+              BackdropFilter(
+                child: Container(
+                  height: height,
+                  width: width,
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(7, 28, 67, 0.6),
                   ),
-                  Align(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 50.0),
-                      child: DialogCloseButton(onTap: () {
-                        Navigator.pop(context);
-                        _bloc.cancelSessionUpdateTask(sessionUpdateTask);
-                      }),
+                  child: BackdropFilter(child: Align(
+                    child: BackdropFilter(
+                      child: Container(
+                        width: width * 0.95,
+                        height: width * 0.5,
+                        child: Center(
+                          child: YoutubePlayer(
+                            context: context,
+                            videoId: content.trailerUrl,
+                            showVideoProgressIndicator: true,
+                            videoProgressIndicatorColor: Colors.red,
+                          ),
+                        ),
+                      ),
+                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                     ),
-                    alignment: Alignment.bottomCenter,
-                  )
-                ],
-              ));
+                    alignment: Alignment.center,
+                  ), filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),),
+                ),
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              ),
+              Align(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 50.0),
+                  child: DialogCloseButton(onTap: () {
+                    Navigator.pop(context);
+                    _bloc.cancelSessionUpdateTask(sessionUpdateTask);
+                  }),
+                ),
+                alignment: Alignment.bottomCenter,
+              )
+            ],
+          );
         }).then((_) => _bloc.cancelSessionUpdateTask(sessionUpdateTask));
   }
 
