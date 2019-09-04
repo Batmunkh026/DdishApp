@@ -26,7 +26,7 @@ class Preview extends StatefulWidget {
     this.label,
     this.previewWidget,
     this.contentPadding = const EdgeInsets.only(left: 30, right: 30, top: 30),
-    this.contentBackgroundColor = const Color.fromRGBO(50, 88, 150, 1),
+    this.contentBackgroundColor = const Color.fromRGBO(49, 114, 199, 1),
     this.isClickAble = true,
   });
 
@@ -102,7 +102,7 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
                       padding: widget.contentPadding,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(18)),
-                        color: widget.contentBackgroundColor.withOpacity(0.8),
+                        color: widget.contentBackgroundColor.withOpacity(0.5),
                       ),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
@@ -141,7 +141,7 @@ class _PreviewRoute extends PopupRoute {
   final Widget child;
 
   @override
-  Color get barrierColor => null;
+  Color get barrierColor => Colors.black54;
 
   @override
   bool get barrierDismissible => true;

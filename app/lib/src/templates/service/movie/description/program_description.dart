@@ -255,6 +255,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
   }
 
   buildButtons() {
+    var width = MediaQuery.of(context).size.width * .98;
     List<Widget> buttons = [
       Preview(
         label: 'Тайлбар',
@@ -262,8 +263,8 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
             _content.contentDescr != null || _content.contentDescr.isNotEmpty,
         previewWidget: createContentOverview(_content),
         size: Size(
-          MediaQuery.of(context).size.width * .98,
-          MediaQuery.of(context).size.height * .65,
+          width,
+          width * 1.2,
         ),
       ),
       DetailButton(
