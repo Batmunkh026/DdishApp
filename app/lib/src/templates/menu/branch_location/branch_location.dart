@@ -86,9 +86,11 @@ class BranchLocationState extends State<BranchLocationView> {
   double pickersContainerHeight = 0;
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height * 0.4;
+    var deviceHeight = MediaQuery.of(context).size.height;
+
+    double height = deviceHeight * (deviceHeight < 600 ? 0.35 : 0.4);
     double width = MediaQuery.of(context).size.width;
-    pickersContainerHeight = MediaQuery.of(context).size.height * 0.18;
+    pickersContainerHeight = deviceHeight * 0.18;
 
     //state filter нь service учир static зааж өглөө
     //TODO тодруулах
