@@ -98,8 +98,8 @@ class LoginWidgetState extends State<LoginWidget> {
               child: IconButton(
                 icon: Icon(
                   Icons.more_horiz,
-                  size: 40,
-                  color: Colors.grey,
+                  size: 35,
+                  color: menuOpened ? Colors.white : Colors.grey,
                 ),
                 disabledColor: Colors.white,
                 alignment: Alignment.bottomLeft,

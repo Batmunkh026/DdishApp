@@ -132,7 +132,7 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver {
                   BottomNavigationBarItem(
                     icon: Icon(
                       //TODO more icon сонгох
-                      Icons.more_horiz,
+                      Icons.more_horiz, size: 35,
                     ),
                     title: SizedBox.shrink(),
                   )
