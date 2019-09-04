@@ -177,7 +177,9 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
           Center(
             child: Container(
               child: SubmitButton(
-                  text: "Сунгах",
+                  text: _state.selectedProductTab == ProductTabType.UPGRADE
+                      ? "Ахиулах"
+                      : "Сунгах",
 //                padding: EdgeInsets.only(top: 20),
                   onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
                       _state.selectedProductTab,
