@@ -91,47 +91,42 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
           label: MaterialLocalizations.of(context).popupMenuLabel,
           child: Material(
             type: MaterialType.transparency,
-            child: Container(
-              height: rect.height,
-              width: rect.width,
-              child: BackdropFilter(
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(18)),
-                    child: BackdropFilter(
-                      child: Container(
-                        width: rect.width,
-                        height: rect.height,
-                        padding: widget.contentPadding,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(18)),
-                          color: widget.contentBackgroundColor.withOpacity(0.8),
-                        ),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Flexible(
+            child: BackdropFilter(
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(18)),
+                  child: BackdropFilter(
+                    child: Container(
+                      width: rect.width,
+                      height: rect.height,
+                      padding: widget.contentPadding,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(18)),
+                        color: widget.contentBackgroundColor.withOpacity(0.8),
+                      ),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Flexible(
                                 child: SingleChildScrollView(
-                                  child: widget.previewWidget,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 5),
-                                child: DialogCloseButton(
-                                    onTap: () => Navigator.pop(context)),
-                              )
-                            ],
-                          ),
+                              child: widget.previewWidget,
+                            )),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 5),
+                              child: DialogCloseButton(
+                                  onTap: () => Navigator.pop(context)),
+                            )
+                          ],
                         ),
                       ),
-                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                     ),
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                   ),
                 ),
-                filter: ImageFilter.blur(sigmaX: .1, sigmaY: .1),
               ),
+              filter: ImageFilter.blur(sigmaX: .1, sigmaY: .1),
             ),
           ),
         ),
