@@ -25,7 +25,7 @@ class VodRepository extends AbstractRepository {
 
   Future<List> fetchProgramList(VodChannel channel, {DateTime date}) async {
     var response;
-    bool isToday = date == null;
+    bool isToday = date == null || DateUtil.today(date);
 
     date = date == null ? DateTime.now() : date;
 
@@ -70,6 +70,9 @@ class VodRepository extends AbstractRepository {
   ///цаг нь дууссан кинонуудыг цэвэрлэх
   ///
   /// хэрэв хугацаа нь дууссан киног хассан бол true үгүй бол false утга буцаана
+  ///
+  /// хөтөлбөрийн эхлэх цагаас 29 минут өнгөрсөн бол хугацаа нь дууссан хөтөлбөрт тооцогдоно
+  ///
   _clearOldPrograms(List<Program> programs, DateTime now) {
     _logger.info("Хугацаа нь дууссан програмуудыг шалгаж байна.....");
     bool isRemovedExpiredProgram = false;
@@ -77,7 +80,14 @@ class VodRepository extends AbstractRepository {
     int total = programs.length;
     int counter = 0;
     programs.removeWhere((program) {
-      bool isExpired = program.endDate.isBefore(now);
+      bool isBefore = program.endDate.microsecond < now.microsecond;
+      bool diffIsValid =
+          isBefore && now.difference(program.beginDate).inMinutes < 30;
+      bool isExpired = isBefore && !diffIsValid;
+
+      _logger.info(
+          "now: $now , startedDate: ${program.beginDate} , diff : ${now.difference(program.beginDate).inMinutes} , isBeforeNow: $isBefore ,  diffIsValid: $diffIsValid , isExpired: $isExpired");
+
       if (isExpired) {
         isRemovedExpiredProgram = true;
         counter++;
