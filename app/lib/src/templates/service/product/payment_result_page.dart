@@ -26,6 +26,8 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
   ServiceBloc _serviceBloc;
   var _state;
 
+  String paymentStateTitle = "";
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +42,11 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
 
   @override
   Widget build(BuildContext context) {
+    if (paymentStateTitle.isEmpty)
+      paymentStateTitle = _state.selectedProductTab == ProductTabType.UPGRADE
+          ? "Ахиулах"
+          : "Сунгах";
+
     var deviceWidth = MediaQuery.of(context).size.width;
     var fontSize = MediaQuery.of(context).size.aspectRatio * 30;
     var titles = ["Багц", "Хугацаа", "Дүн"];
@@ -93,7 +100,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                   width: deviceWidth,
                   padding: EdgeInsets.all(10),
                   child: Text(
-                    "Сунгах",
+                    paymentStateTitle,
                     style: boldStyle,
                     textAlign: TextAlign.start,
                   )),
@@ -177,9 +184,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
           Center(
             child: Container(
               child: SubmitButton(
-                  text: _state.selectedProductTab == ProductTabType.UPGRADE
-                      ? "Ахиулах"
-                      : "Сунгах",
+                  text: paymentStateTitle,
 //                padding: EdgeInsets.only(top: 20),
                   onPressed: () => _bloc.dispatch(ExtendSelectedProduct(
                       _state.selectedProductTab,
