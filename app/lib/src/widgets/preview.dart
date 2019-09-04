@@ -91,8 +91,10 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
           label: MaterialLocalizations.of(context).popupMenuLabel,
           child: Material(
             type: MaterialType.transparency,
-            child: BackdropFilter(
-              child: SingleChildScrollView(
+            child: Container(
+              height: rect.height,
+              width: rect.width,
+              child: BackdropFilter(
                 child: Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(18)),
@@ -110,10 +112,9 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Expanded(
-                                child: ListView(
-                                  scrollDirection: Axis.vertical,
-                                  children: [widget.previewWidget],
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  child: widget.previewWidget,
                                 ),
                               ),
                               Padding(
@@ -129,8 +130,8 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
                     ),
                   ),
                 ),
+                filter: ImageFilter.blur(sigmaX: .1, sigmaY: .1),
               ),
-              filter: ImageFilter.blur(sigmaX: .1, sigmaY: .1),
             ),
           ),
         ),

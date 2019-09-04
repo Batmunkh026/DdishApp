@@ -263,7 +263,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         previewWidget: createContentOverview(_content),
         size: Size(
           MediaQuery.of(context).size.width * .98,
-          MediaQuery.of(context).size.height * .6,
+          MediaQuery.of(context).size.height * .65,
         ),
       ),
       DetailButton(
@@ -276,14 +276,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         label: 'Зураг',
         isClickAble:
             _content.posterUrl != null && _content.posterUrl.isNotEmpty,
-        previewWidget: Container(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-            child: PosterImage(url: _content.posterUrl),
-          ),
-          padding: EdgeInsets.all(5),
-          color: Colors.white24,
-        ),
+        previewWidget: PosterImage(url: _content.posterUrl),
       )
     ];
     return List<Widget>.from(buttons.map((btn) => Container(
@@ -301,15 +294,8 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
           Container(
             padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
             width: width * 0.26,
-            child: Container(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                child: PosterImage(
-                  url: content.posterUrl,
-                ),
-              ),
-              padding: EdgeInsets.all(1),
-              color: Colors.white24,
+            child: PosterImage(
+              url: content.posterUrl,
             ),
           ),
           Flexible(
