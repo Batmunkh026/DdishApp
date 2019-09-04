@@ -52,7 +52,8 @@ class ProductPageState extends State<ProductPage>
   @override
   Widget build(BuildContext context) {
     queryData = MediaQuery.of(context);
-    fontSize = queryData.size.width * 0.02 + 5;
+    fontSize = queryData.size.width * 0.02 +
+        (MediaQuery.of(context).size.width < 340 ? 5 : 7);
 
     var _serviceBloc = BlocProvider.of<ServiceBloc>(context);
     return BlocBuilder(
@@ -128,9 +129,12 @@ class ProductPageState extends State<ProductPage>
           ),
         );
     }
+
+    var deviceWidth = queryData.size.width;
+    var scalar = deviceWidth > 400 ? 0.83 : 0.9;
     return Container(
       padding: EdgeInsets.all(5),
-      width: queryData.size.width,
+      width: deviceWidth < 380 ? deviceWidth : deviceWidth * scalar,
       child: productAppBarContent,
     );
   }
@@ -319,11 +323,9 @@ class ProductPageState extends State<ProductPage>
         },
         labelStyle: TextStyle(fontWeight: FontWeight.w600),
         labelColor: Color(0xff071f49),
-        indicatorSize: TabBarIndicatorSize.label,
-        unselectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize:
-                MediaQuery.of(context).size.width < 340 ? fontSize : null),
+        indicatorSize: TabBarIndicatorSize.tab,
+        unselectedLabelStyle:
+            TextStyle(fontWeight: FontWeight.w500, fontSize: fontSize),
         indicatorColor: Color(0xFF3069b2),
       ),
       preferredSize: Size(queryData.size.width, 25),
