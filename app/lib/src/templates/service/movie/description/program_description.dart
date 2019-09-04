@@ -162,68 +162,6 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         });
   }
 
-  showOverview(Movie content) {
-    final width = MediaQuery.of(context).size.width;
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CustomDialog(
-            content: Column(
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
-                      width: width * 0.26,
-                      child: PosterImage(
-                        url: content.posterUrl,
-                      ),
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(
-                              child: Text(content.contentNameMon,
-                                  style: style.programTitleStyleDialog),
-                            ),
-                            Visibility(
-                              visible: content.contentGenres != null &&
-                                  content.contentGenres.isNotEmpty,
-                              child: Text(content.contentGenres,
-                                  style: style.programGenresStyleDialog),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 5.0, bottom: 10),
-                              child: Text(DateUtil.formatTime(_beginDate),
-                                  style: style.programStartTimeStyleDialog),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    content.contentDescr,
-                    textAlign: TextAlign.justify,
-                    style: style.contentDescriptionStyle,
-                  ),
-                ),
-              ],
-            ),
-            backgroundBlurFilter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-          );
-        });
-  }
-
   onRentButtonTap() {
     return showDialog(
         context: context,
@@ -318,11 +256,15 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
 
   buildButtons() {
     List<Widget> buttons = [
-      DetailButton(
-        text: 'Тайлбар',
-        onTap: _content.contentDescr != null || _content.contentDescr.isNotEmpty
-            ? () => showOverview(_content)
-            : null,
+      Preview(
+        label: 'Тайлбар',
+        isClickAble:
+            _content.contentDescr != null || _content.contentDescr.isNotEmpty,
+        previewWidget: createContentOverview(_content),
+        size: Size(
+          MediaQuery.of(context).size.width * .98,
+          MediaQuery.of(context).size.height * .6,
+        ),
       ),
       DetailButton(
         text: 'Видео',
@@ -334,12 +276,78 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         label: 'Зураг',
         isClickAble:
             _content.posterUrl != null && _content.posterUrl.isNotEmpty,
-        previewWidget: PosterImage(url: _content.posterUrl),
+        previewWidget: Container(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: PosterImage(url: _content.posterUrl),
+          ),
+          padding: EdgeInsets.all(5),
+          color: Colors.white24,
+        ),
       )
     ];
     return List<Widget>.from(buttons.map((btn) => Container(
           child: btn,
           width: MediaQuery.of(context).size.width * 0.25,
         )));
+  }
+
+  createContentOverview(content) {
+    final width = MediaQuery.of(context).size.width;
+    return Column(children: [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
+            width: width * 0.26,
+            child: Container(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: PosterImage(
+                  url: content.posterUrl,
+                ),
+              ),
+              padding: EdgeInsets.all(1),
+              color: Colors.white24,
+            ),
+          ),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    child: Text(content.contentNameMon,
+                        style: style.programTitleStyleDialog),
+                  ),
+                  Visibility(
+                    visible: content.contentGenres != null &&
+                        content.contentGenres.isNotEmpty,
+                    child: Text(content.contentGenres,
+                        style: style.programGenresStyleDialog),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0, bottom: 10),
+                    child: Text(DateUtil.formatTime(_beginDate),
+                        style: style.programStartTimeStyleDialog),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Text(
+          content.contentDescr,
+          textAlign: TextAlign.justify,
+          style: style.contentDescriptionStyle,
+        ),
+      )
+    ]);
   }
 }

@@ -14,7 +14,7 @@ typedef Widget ChildWidgetMap<T>(T value);
 
 class Preview extends StatefulWidget {
   ///default rect нь өргөн нь 96%, өндөр нь өргөнтэй 1.5 харьцаатай , centered байна
-  Rect rect;
+  Size size;
   String label;
   Widget previewWidget;
   EdgeInsets contentPadding;
@@ -22,7 +22,7 @@ class Preview extends StatefulWidget {
   bool isClickAble;
 
   Preview({
-    this.rect,
+    this.size,
     this.label,
     this.previewWidget,
     this.contentPadding = const EdgeInsets.only(left: 30, right: 30, top: 30),
@@ -31,14 +31,15 @@ class Preview extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => PreviewState(rect);
+  State<StatefulWidget> createState() => PreviewState(size);
 }
 
 class PreviewState extends State<Preview> with WidgetsBindingObserver {
   Logger _logger = Logger("Selector");
+  Size size;
   Rect rect;
 
-  PreviewState(this.rect);
+  PreviewState(this.size);
 
   @override
   void initState() {
@@ -55,11 +56,11 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     if (rect == null) {
-      Size size = MediaQuery.of(context).size;
-      var width = size.width * .96;
-      var height = width * 1.5;
-      var offsetLeft = (size.width - width) / 2;
-      var offsetTop = (size.height - height) / 2;
+      Size deviceSize = MediaQuery.of(context).size;
+      var width = size != null ? size.width : deviceSize.width * .96;
+      var height = size != null ? size.height : width * 1.5;
+      var offsetLeft = (deviceSize.width - width) / 2;
+      var offsetTop = (deviceSize.height - height) / 2;
 
       rect = Rect.fromLTWH(
         offsetLeft,
@@ -109,19 +110,17 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Flexible(
-                                child: Container(
-                                  child: BackdropFilter(
-                                    filter:
-                                        ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                                    child: widget.previewWidget,
-                                  ),
-                                  padding: EdgeInsets.all(5),
-                                  color: Colors.white24,
+                              Expanded(
+                                child: ListView(
+                                  scrollDirection: Axis.vertical,
+                                  children: [widget.previewWidget],
                                 ),
                               ),
-                              DialogCloseButton(
-                                  onTap: () => Navigator.pop(context))
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 5),
+                                child: DialogCloseButton(
+                                    onTap: () => Navigator.pop(context)),
+                              )
                             ],
                           ),
                         ),
@@ -136,6 +135,7 @@ class PreviewState extends State<Preview> with WidgetsBindingObserver {
           ),
         ),
         rect: rect,
+        specifiedSize: size,
       ),
     );
   }
@@ -154,15 +154,16 @@ class _PreviewRoute extends PopupRoute {
   String get barrierLabel => "";
 
   Rect rect;
+  Size specifiedSize;
 
-  _PreviewRoute({@required this.child, this.rect});
+  _PreviewRoute({@required this.child, this.rect, this.specifiedSize});
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
     var deviceHeight = MediaQuery.of(context).size.height;
 
     return CustomSingleChildLayout(
-      delegate: _PreviewChildDelegate(rect, deviceHeight),
+      delegate: _PreviewChildDelegate(rect, deviceHeight, specifiedSize),
       child: child,
     );
   }
@@ -182,14 +183,24 @@ class _PreviewRoute extends PopupRoute {
 
 class _PreviewChildDelegate extends SingleChildLayoutDelegate {
   Rect rect;
+  Size specifiedSize;
   double deviceHeight = 0;
 
-  _PreviewChildDelegate(this.rect, this.deviceHeight)
+  _PreviewChildDelegate(this.rect, this.deviceHeight, this.specifiedSize)
       : assert(rect != Rect.zero);
 
   @override
-  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
-      BoxConstraints.tightFor(width: rect.width, height: rect.height);
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    if (specifiedSize == null)
+      return BoxConstraints.tightFor(width: rect.width, height: rect.height);
+
+    var minWidth =
+        specifiedSize.width < rect.width ? specifiedSize.width : rect.width;
+    var minHeight =
+        specifiedSize.height < rect.height ? specifiedSize.height : rect.height;
+    return BoxConstraints(minWidth: minWidth, minHeight: minHeight);
+  }
+
   @override
   Offset getPositionForChild(Size size, Size childSize) =>
       Offset(rect.left, rect.top);
