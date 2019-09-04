@@ -10,6 +10,7 @@ import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:ddish/src/widgets/preview.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/movie/poster_image.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
@@ -276,24 +277,27 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                   decoration: BoxDecoration(
                     color: Color.fromRGBO(7, 28, 67, 0.6),
                   ),
-                  child: BackdropFilter(child: Align(
-                    child: BackdropFilter(
-                      child: Container(
-                        width: width * 0.95,
-                        height: width * 0.5,
-                        child: Center(
-                          child: YoutubePlayer(
-                            context: context,
-                            videoId: content.trailerUrl,
-                            showVideoProgressIndicator: true,
-                            videoProgressIndicatorColor: Colors.red,
+                  child: BackdropFilter(
+                    child: Align(
+                      child: BackdropFilter(
+                        child: Container(
+                          width: width * 0.95,
+                          height: width * 0.5,
+                          child: Center(
+                            child: YoutubePlayer(
+                              context: context,
+                              videoId: content.trailerUrl,
+                              showVideoProgressIndicator: true,
+                              videoProgressIndicatorColor: Colors.red,
+                            ),
                           ),
                         ),
+                        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                       ),
-                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                      alignment: Alignment.center,
                     ),
-                    alignment: Alignment.center,
-                  ), filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),),
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                  ),
                 ),
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
               ),
@@ -312,58 +316,6 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
         }).then((_) => _bloc.cancelSessionUpdateTask(sessionUpdateTask));
   }
 
-  showPoster(Movie content) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          final width = MediaQuery.of(context).size.width;
-          final double dialogWidth = width * 0.96;
-          final double dialogHeight = dialogWidth * 1.5;
-
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(50, 88, 150, 1),
-                  borderRadius: BorderRadius.all(Radius.circular(18)),
-                ),
-                height: dialogHeight,
-                width: dialogWidth,
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(top: 30, left: 30, right: 30),
-                        height: dialogHeight - 60,
-                        child: PosterImage(
-                          url: content.posterUrl,
-                        ),
-                      ),
-                      DialogCloseButton(onTap: () => Navigator.pop(context))
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      stops: [0.01, 0.2, 0.8, 0.99],
-                      colors: [
-                        Color.fromRGBO(34, 72, 133, 0.1),
-                        Colors.white24.withOpacity(0.1),
-                        Colors.white24.withOpacity(0.1),
-                        Color.fromRGBO(34, 72, 133, 0.1),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          );
-        });
-  }
-
   buildButtons() {
     List<Widget> buttons = [
       DetailButton(
@@ -378,11 +330,11 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
             ? () => showTrailer(_content)
             : null,
       ),
-      DetailButton(
-        text: 'Зураг',
-        onTap: _content.posterUrl != null && _content.posterUrl.isNotEmpty
-            ? () => showPoster(_content)
-            : null,
+      Preview(
+        label: 'Зураг',
+        isClickAble:
+            _content.posterUrl != null && _content.posterUrl.isNotEmpty,
+        previewWidget: PosterImage(url: _content.posterUrl),
       )
     ];
     return List<Widget>.from(buttons.map((btn) => Container(
