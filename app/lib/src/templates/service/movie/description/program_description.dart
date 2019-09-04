@@ -329,7 +329,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Text(
-          content.contentDescr+"dfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaksdfasl dkfj asdf jlalsdf jaks",
+          content.contentDescr,
           textAlign: TextAlign.justify,
           style: style.contentDescriptionStyle,
         ),
