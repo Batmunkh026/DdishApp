@@ -155,8 +155,9 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                     ]),
                   )
                 : Text(
-                    'Таны дансны үлдэгдэгдэл хүрэлцэхгүй байна. Та дансаа цэнэглээд дахин оролдоно уу.',
+                    'Таны дансны үлдэгдэл хүрэлцэхгүй байна. Та дансаа цэнэглээд дахин оролдоно уу.',
                     style: style.dialogTextStyle,
+                    textAlign: TextAlign.center,
                   ),
           );
         });
