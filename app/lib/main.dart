@@ -19,7 +19,7 @@ import 'package:logging/logging.dart';
 import 'package:oauth2/oauth2.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
-  Timer sessionExpire;
+
   final Logger log = new Logger('SimpleBlocDelegate');
   @override
   void onTransition(Bloc bloc, Transition transition) {
@@ -30,48 +30,9 @@ class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
     log.severe(event);
-    Client client = globals.client;
-    if (!(event is AuthenticationEvent) && client != null) {
-      log.warning("session will expire: ${client.credentials.expiration}}");
 
-      //хэрэглэгчийн эвент бүрт credential update хийх
-      if (client.credentials.canRefresh)
-        client.refreshCredentials().then((newClient) {
-          globals.client = newClient;
-
-          log.warning(
-              "NEW EXPIRE DATE >> : ${newClient.credentials.expiration}");
-          updateExpireTimeOfLogoutTask(newClient.credentials.expiration, bloc);
-        });
-    }
-//
     if (event is NetworkAccessRequired)
       NetworkConnectivity().checkNetworkConnectivity();
-  }
-
-  void updateExpireTimeOfLogoutTask(DateTime expireTime, Bloc bloc) {
-    if (expireTime == null) return;
-
-    if (bloc is AbstractBloc && !(bloc is LoginBloc)) {
-      DateTime now = DateTime.now();
-      Duration difference = now.isBefore(expireTime)
-          ? now.difference(expireTime)
-          : Duration(seconds: 0);
-
-      Timer expireTask =
-          Timer(Duration(milliseconds: difference.inMilliseconds.abs()), () {
-        if (expireTime ==
-            globals.client.credentials
-                .expiration) //credentials нь шинэчлэгдсэн эсэх?
-          bloc.connectionExpired(
-              "session expired on sessionTimerTask: bloc > $bloc");
-      });
-
-      //өмнөх таск ыг цуцлах
-      if (sessionExpire != null) sessionExpire.cancel();
-
-      sessionExpire = expireTask;
-    }
   }
 }
 
