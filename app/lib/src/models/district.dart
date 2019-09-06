@@ -3,4 +3,7 @@ class District {
   final String name;
 
   District({this.id, this.name});
+
+  @override
+  String toString() => name ?? "null";
 }

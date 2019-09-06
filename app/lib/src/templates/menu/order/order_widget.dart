@@ -5,13 +5,11 @@ import 'package:ddish/src/blocs/menu/order/order_event.dart';
 import 'package:ddish/src/blocs/menu/order/order_state.dart';
 import 'package:ddish/src/models/district.dart';
 import 'package:ddish/src/models/order.dart';
-import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/repositiories/menu_repository.dart';
 import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/input_validations.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/dropdown.dart';
-import 'package:ddish/src/widgets/line.dart';
+import 'package:ddish/src/widgets/dialog_picker.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:ddish/src/widgets/text_field.dart';
 import 'package:flutter/material.dart';
@@ -63,40 +61,6 @@ class OrderWidgetState extends State<OrderWidget> {
               .addPostFrameCallback((_) => showMessage(state));
         }
 
-        var defaultTextStyle = TextStyle(
-          color: const Color(0xffa4cafb),
-          fontWeight: FontWeight.w400,
-          fontStyle: FontStyle.normal,
-          fontSize: 16,
-        );
-
-        Selector<District> districtSelector = Selector<District>(
-          initialValue: selectedDistrict,
-          items: Constants.districtItems,
-          defaultTextStyle: defaultTextStyle,
-          onSelect: (value) => setState(() => selectedDistrict = value),
-          iconFontSize: 30,
-          placeholder: "ДҮҮРЭГ СОНГОХ",
-          underline:
-              Line(color: !submitError ? Color(0xffffffff) : Color(0xffd32f2f),),
-          childMap: (district) {
-            return Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  district.name.toUpperCase(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          },
-        );
-
         return Expanded(
           child: Scaffold(
             resizeToAvoidBottomInset: false,
@@ -143,7 +107,19 @@ class OrderWidgetState extends State<OrderWidget> {
                             validateFunction:
                                 InputValidations.validatePhoneNumber,
                           ),
-                          districtSelector,
+                          DialogPickerButton(
+                            pickerDialog: DialogPicker<District>(
+                              title: "ДҮҮРЭГ СОНГОХ",
+                              items: Constants.districtItems,
+                              selectedItem: selectedDistrict,
+                              itemMap: (district) => Text(district.name),
+                              onSelect: (value) =>
+                                  setState(() => selectedDistrict = value),
+                              closeButtonText: "Хаах",
+                            ),
+                            textStyle: TextStyle(color: Color(0xffa4cafb)),
+                            iconColor: Color(0xffa4cafb),
+                          ),
                           !submitError
                               ? SizedBox.shrink()
                               : Align(
