@@ -14,17 +14,17 @@ class CustomDialog extends StatelessWidget {
   final EdgeInsets padding;
   ImageFilter backgroundBlurFilter = ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0);
 
-  CustomDialog(
-      {this.title,
-      this.content,
-      this.important = false,
-      this.submitButtonText,
-      this.onSubmit,
-      this.onClose,
-      this.closeButtonText,
-      this.padding =
-          const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-      backgroundBlurFilter}) {
+  CustomDialog({
+    this.title,
+    this.content,
+    this.important = false,
+    this.submitButtonText,
+    this.onSubmit,
+    this.onClose,
+    this.closeButtonText,
+    this.padding = const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+    backgroundBlurFilter,
+  }) {
     if (backgroundBlurFilter != null)
       this.backgroundBlurFilter = backgroundBlurFilter;
   }
@@ -75,7 +75,7 @@ class CustomDialog extends StatelessWidget {
                 ),
                 FittedBox(
                   child: Container(
-                      height: height * (hasCloseText ? 0.06 : 0.08),
+                      height: 45 + MediaQuery.of(context).devicePixelRatio,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
