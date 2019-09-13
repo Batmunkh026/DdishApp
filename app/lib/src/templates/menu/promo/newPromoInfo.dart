@@ -102,7 +102,7 @@ class PromoWidgetState extends State<PromoWidget> {
         if (state is PromoWidgetTapped) {
           return Flexible(
             child: Container(
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 36.0),
               child: ListView.builder(
                 itemCount: state.selectedPromo.detials.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -180,6 +180,7 @@ class PromoWidgetState extends State<PromoWidget> {
         Padding(
           padding: EdgeInsets.all(8),
           child: RichText(
+            textAlign: TextAlign.justify,
             text: TextSpan(
                 text: selectedPromo.PromoDescText,
                 style: const TextStyle(
