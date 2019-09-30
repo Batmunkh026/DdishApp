@@ -1,3 +1,4 @@
+import 'package:ddish/presentation/ddish_flutter_app_icons.dart';
 import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/district.dart';
 import 'package:ddish/src/models/tab_models.dart';
@@ -87,8 +88,9 @@ class Constants {
         title: 'Гарах',
         secure: true,
         trailing: Icon(
-          Icons.exit_to_app,
-          color: Colors.white,
+          DdishAppIcons.logout,
+          size: 26,
+          color: Color(0xFFe4f0ff),
         )),
   ];
 

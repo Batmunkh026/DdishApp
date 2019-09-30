@@ -12,6 +12,10 @@
 ///       - asset: fonts/DdishFlutterApp.ttf
 ///
 /// 
+/// * Entypo, Copyright (C) 2012 by Daniel Bruce
+///         Author:    Daniel Bruce
+///         License:   SIL (http://scripts.sil.org/OFL)
+///         Homepage:  http://www.entypo.com
 ///
 import 'package:flutter/widgets.dart';
 
@@ -24,6 +28,7 @@ class DdishAppIcons {
   static const IconData before = const IconData(0xe801, fontFamily: _kFontFam);
   static const IconData location_closed = const IconData(0xe802, fontFamily: _kFontFam);
   static const IconData location_open = const IconData(0xe803, fontFamily: _kFontFam);
+  static const IconData logout = const IconData(0xe804, fontFamily: _kFontFam);
   static const IconData menu = const IconData(0xe805, fontFamily: _kFontFam);
   static const IconData next = const IconData(0xe806, fontFamily: _kFontFam);
   static const IconData notifications = const IconData(0xe807, fontFamily: _kFontFam);
