@@ -114,30 +114,30 @@ class PromoWidgetState extends State<PromoWidget> {
             ),
           );
         }
-        if (state is PromoWidgetDetialTapped) {
-          return Expanded(
-            child: Container(
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                reverse: false,
-                children: <Widget>[
-                  RichText(
-                    text: TextSpan(
-                        text: state.selectedPromo.PromoDescText,
-                        style: const TextStyle(
-                          color: const Color(0xffFFFFF0),
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.normal,
-                          //fontSize: 16.0,
-                          fontFamily: 'Montserrat',
-                        )),
-                  )
-                ].reversed.toList(),
-              ),
-              padding: EdgeInsets.only(right: 15, left: 15),
-            ),
-          );
-        }
+//        if (state is PromoWidgetDetialTapped) {
+//          return Expanded(
+//            child: Container(
+//              child: ListView(
+//                scrollDirection: Axis.vertical,
+//                reverse: false,
+//                children: <Widget>[
+//                  RichText(
+//                    text: TextSpan(
+//                        text: state.selectedPromo.PromoDescText,
+//                        style: const TextStyle(
+//                          color: const Color(0xffFFFFF0),
+//                          fontWeight: FontWeight.bold,
+//                          fontStyle: FontStyle.normal,
+//                          //fontSize: 16.0,
+//                          fontFamily: 'Montserrat',
+//                        )),
+//                  )
+//                ].reversed.toList(),
+//              ),
+//              padding: EdgeInsets.only(right: 15, left: 15),
+//            ),
+//          );
+//        }
         return Container();
       },
     );
@@ -147,11 +147,11 @@ class PromoWidgetState extends State<PromoWidget> {
     _bloc.dispatch(PromoTapped(promo));
     widget.onBack = () => _bloc.dispatch(BackToState());
   }
-
-  onPromotionDetialTap(NewPromoMdl promo) {
-    _bloc.dispatch(PromoDetialTapped(promo));
-    widget.onBack = () => _bloc.dispatch(BackToState());
-  }
+//
+//  onPromotionDetialTap(NewPromoMdl promo) {
+//    _bloc.dispatch(PromoDetialTapped(promo));
+//    widget.onBack = () => _bloc.dispatch(BackToState());
+//  }
 
   Widget buildChild(int index, selectedPromo) {
     var poster = Container(
