@@ -43,6 +43,10 @@ class Selector<T> extends StatefulWidget {
 
   Widget underline;
 
+  double pickerWidth;
+  EdgeInsets padding;
+  EdgeInsets dropdownChildPadding;
+
   Selector({
     @required this.items,
     @required this.initialValue,
@@ -57,6 +61,9 @@ class Selector<T> extends StatefulWidget {
     this.defaultTextStyle,
     this.placeholder,
     this.underline,
+    this.pickerWidth = 100,
+    this.padding = const EdgeInsets.only(top: 3, bottom: 3),
+    this.dropdownChildPadding = const EdgeInsets.only(top: 6, bottom: 6),
   }) : assert(items != null) {
     isSelectable = onSelect != null;
   }
@@ -112,7 +119,11 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
     var childElement;
 
     if (widget.initialValue != null)
-      childElement = childMap(widget.initialValue);
+      childElement = Container(
+        width: widget.pickerWidth,
+        padding: widget.padding,
+        child: childMap(widget.initialValue),
+      );
 
     //хэрэв placeholder тохируулж өгөөгүй бол жагсаалтын эхний элемент сонгогдсон харагдана
     if (widget.placeholder != null && widget.initialValue == null)
@@ -211,7 +222,11 @@ class SelectorState<T> extends State<Selector> with WidgetsBindingObserver {
                           (item) => InkWell(
                             child: Padding(
                               padding: _selectorItemPadding,
-                              child: childMap(item),
+                              child: Container(
+                                width: widget.pickerWidth,
+                                padding: widget.dropdownChildPadding,
+                                child: childMap(item),
+                              ),
                             ),
                             onTap: () => _onItemSelected(item),
                           ),
