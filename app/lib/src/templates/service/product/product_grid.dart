@@ -198,7 +198,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
                 height: 5,
               ),
               Text(
-                "₮ ${selectedProduct is UpProduct ? price : PriceFormatter.productPriceFormat(month * (price))}",
+                "₮ ${selectedProduct is UpProduct ? PriceFormatter.productPriceFormat(price) : PriceFormatter.productPriceFormat(month * (price))}",
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: pickerTextStyle.fontSize),
