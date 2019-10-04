@@ -82,36 +82,36 @@ class ProductPageState extends State<ProductPage>
 
     var productAppBarContent;
 
+    List<Widget> activeProductStatusChildren = [
+      new Text("Идэвхтэй багц", style: fontStyle)
+    ];
+
     if (_bloc.currentState is Started ||
         _bloc.currentState is Loading && productExpireDate == null)
       productAppBarContent = Center(
         child: CircularProgressIndicator(),
       );
     else {
-      productAppBarContent = Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Column(
+      productAppBarContent = Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Text("Идэвхтэй багц", style: fontStyle),
-              Divider(
-                height: 5,
+            children: activeProductStatusChildren,
+          ),
+          Row(children: [
+            new Text("Дуусах хугацаа: ", style: fontStyle),
+            Text(
+              "${DateUtil.formatProductDate(productExpireDate)}",
+              style: TextStyle(
+                color: Color(0xff071f49),
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.normal,
+                fontSize: fontSize,
               ),
-              new Text("Дуусах хугацаа: ", style: fontStyle),
-            ],
-          ),
-          new Text(
-            "${DateUtil.formatProductDate(productExpireDate)}",
-            style: TextStyle(
-              color: Color(0xff071f49),
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.normal,
-              fontSize: fontSize,
             ),
-          ),
+          ])
         ],
       );
 
@@ -120,12 +120,11 @@ class ProductPageState extends State<ProductPage>
       else if (state is ProductTabState ||
           state is CustomProductSelector ||
           state is ProductSelectionState)
-        productAppBarContent.children.add(
-          Expanded(
-            child: Align(
-              child: _createProductPicker(state),
-              alignment: Alignment.topRight,
-            ),
+        activeProductStatusChildren.add(
+          Container(
+            transform:
+                Transform.translate(offset: Offset(0, fontSize / 2)).transform,
+            child: _createProductPicker(state),
           ),
         );
     }
@@ -141,7 +140,7 @@ class ProductPageState extends State<ProductPage>
 
   Widget _createProductPicker(ProductState state) {
     List<Product> items = _bloc.products;
-    double pickerWidth = queryData.size.width * 0.24;
+    var pickerWidth = queryData.size.width * 0.2;
 
     Product activeProduct = _bloc.getUserActiveProduct();
 
@@ -152,21 +151,20 @@ class ProductPageState extends State<ProductPage>
     if (activeProduct == null) return Container();
 
     Selector<Product> productPicker = Selector<Product>(
-      initialValue: activeProduct,
-      items: items,
-      iconFontSize: fontSize - 3,
-      icon: DdishAppIcons.arrow_down,
-      iconColor: Color(0xff3069b2),
-      isIconOnBottom: true,
-      onSelect: state.selectedProductTab != ProductTabType.EXTEND
-          ? null
-          : (value) => _bloc.dispatch(
-              ProductTypeSelectorClicked(state.selectedProductTab, value)),
-      childMap: (p) {
-        return Container(
-          width: pickerWidth,
-          padding: EdgeInsets.only(top: 3, bottom: 3),
-          child: CachedNetworkImage(
+        initialValue: activeProduct,
+        items: items,
+        iconFontSize: fontSize - 3,
+        icon: DdishAppIcons.arrow_down,
+        iconColor: Color(0xff3069b2),
+        isIconOnBottom: true,
+        onSelect: state.selectedProductTab != ProductTabType.EXTEND
+            ? null
+            : (value) => _bloc.dispatch(
+                ProductTypeSelectorClicked(state.selectedProductTab, value)),
+        pickerWidth: pickerWidth,
+        dropdownChildPadding: EdgeInsets.only(top: 8, bottom: 8),
+        childMap: (p) {
+          return CachedNetworkImage(
             imageUrl: p.image,
             placeholder: (context, url) => Center(
               child: SizedBox(
@@ -176,10 +174,8 @@ class ProductPageState extends State<ProductPage>
               ),
             ),
             fit: BoxFit.contain,
-          ),
-        );
-      },
-    );
+          );
+        });
 
     return productPicker;
   }

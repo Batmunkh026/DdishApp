@@ -10,6 +10,7 @@ import 'package:ddish/src/models/program.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/models/vod_channel.dart';
 import 'package:ddish/src/utils/date_util.dart';
+import 'package:ddish/src/utils/formatter.dart';
 import 'package:ddish/src/widgets/preview.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/movie/poster_image.dart';
@@ -95,7 +96,7 @@ class ProgramDescriptionStatus extends State<ProgramDescription> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),
-                        child: Text('${widget.selectedProgram.contentPrice} ₮',
+                        child: Text('${PriceFormatter.productPriceFormat(widget.selectedProgram.contentPrice)} ₮',
                             style: style.priceStyle),
                       ),
                     ],

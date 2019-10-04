@@ -30,11 +30,13 @@ class ServicePageState extends State<ServicePage>
   double titleContainerHeight = 0;
   double contentContainerHeight = 0;
 
+  double _contentContainerPadding = 10;
+
   @override
   void initState() {
     bloc = ServiceBloc(this);
     _tabController = TabController(length: serviceTabs.length, vsync: this);
-    _tabController.addListener(()=>FocusScope.of(context).unfocus());
+    _tabController.addListener(() => FocusScope.of(context).unfocus());
     bloc.tabController = _tabController;
     tabContainer = Container(); //Үйлчилгээ багцын дэд таб ын content container
 
@@ -45,14 +47,20 @@ class ServicePageState extends State<ServicePage>
   Widget build(BuildContext context) {
     if (contentContainerHeight == 0) {
       double screenHeight = MediaQuery.of(context).size.height;
-      double bottomBarHeight = screenHeight*0.09;
+      double bottomBarHeight = screenHeight * 0.09;
       //not initialized
       tabBar = createTabBar;
       double tabBarHeight = tabBar.preferredSize.height;
       titleContainerHeight = screenHeight * 0.05;
 
-      contentContainerHeight =
-          screenHeight - titleContainerHeight - tabBarHeight - bottomBarHeight - screenHeight * 0.11;
+      contentContainerHeight = screenHeight -
+          titleContainerHeight -
+          tabBarHeight -
+          bottomBarHeight -
+          screenHeight * 0.11;
+
+      titleContainerHeight =
+          titleContainerHeight + _contentContainerPadding * 1.5;
     }
 
     return BlocProvider(bloc: bloc, child: createBuilder(context));
@@ -63,19 +71,24 @@ class ServicePageState extends State<ServicePage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
-            height: titleContainerHeight,
-            child: Text("Үйлчилгээ",
-                style: TextStyle(
-                  color: Color(0xfff8f8f8),
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 17,
-                )),
+          Expanded(
+            child: Container(
+              child: Center(
+                child: Text(
+                  "Үйлчилгээ",
+                  style: TextStyle(
+                    color: Color(0xfff8f8f8),
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 17,
+                  ),
+                ),
+              ),
+            ),
           ),
           tabBar,
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(_contentContainerPadding),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: new BorderRadius.circular(20.0),
@@ -84,7 +97,11 @@ class ServicePageState extends State<ServicePage>
               height: contentContainerHeight,
               child: TabBarView(
                 controller: _tabController,
-                children: [AccountPage(contentContainerHeight), ProductPage(contentContainerHeight), MoviePage()],
+                children: [
+                  AccountPage(contentContainerHeight),
+                  ProductPage(contentContainerHeight),
+                  MoviePage()
+                ],
               ),
             ),
           ),
@@ -95,7 +112,7 @@ class ServicePageState extends State<ServicePage>
 
   ///Үйлчилгээний үндсэн таб ууд
   TabBar get createTabBar => TabBar(
-    labelPadding: EdgeInsets.symmetric(horizontal: 30.0),
+        labelPadding: EdgeInsets.symmetric(horizontal: 30.0),
         indicatorSize: TabBarIndicatorSize.label,
         isScrollable: true,
         controller: _tabController,
@@ -114,7 +131,8 @@ class ServicePageState extends State<ServicePage>
         ),
         indicator: BubbleTabIndicator(
             indicatorColor: Color(0xff2a68b8),
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0)),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0)),
         indicatorColor: Colors.transparent,
         unselectedLabelStyle: TextStyle(color: Color(0xfff9f9f9)),
         unselectedLabelColor: Color(0xfff9f9f9),
