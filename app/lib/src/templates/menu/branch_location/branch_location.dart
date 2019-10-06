@@ -90,7 +90,7 @@ class BranchLocationState extends State<BranchLocationView> {
 
     double height = deviceHeight * (deviceHeight < 600 ? 0.35 : 0.4);
     double width = MediaQuery.of(context).size.width;
-    pickersContainerHeight = deviceHeight * 0.18;
+    pickersContainerHeight = deviceHeight * 0.2;
 
     //state filter нь service учир static зааж өглөө
     //TODO тодруулах
@@ -161,7 +161,6 @@ class BranchLocationState extends State<BranchLocationView> {
       childMap: (item) {
         return Center(
           child: Container(
-            padding: EdgeInsets.all(3),
             child: Text(
               item is String ? item : item.name,
               style: TextStyle(fontSize: 12, fontFamily: "Montserrat"),
@@ -174,7 +173,7 @@ class BranchLocationState extends State<BranchLocationView> {
     );
 
     return Container(
-      height: pickersContainerHeight / 2.2,
+      height: pickersContainerHeight * .5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
