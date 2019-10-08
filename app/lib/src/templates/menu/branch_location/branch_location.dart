@@ -53,9 +53,7 @@ class BranchLocationState extends State<BranchLocationView> {
   void initState() {
     _bloc = MenuBloc(this);
     _bloc.getBranchParam().then((params) {
-      setState(() {
-        _params = params;
-      });
+      setState(() => _params = params);
       selectedArea = params.branchAreas.first;
       BranchType type = params.branchTypes.first;
       BranchService service = params.branchServices.first;
@@ -74,11 +72,10 @@ class BranchLocationState extends State<BranchLocationView> {
           this.branches = branches;
           _loading = false;
           _mapIsUpdating = false;
+          if (isStateFilter) filterByBranchState();
         });
       });
-    }).onDone(() {
-      print("filtered.");
-    });
+    }).onDone(() => print("filtered."));
 
     super.initState();
   }
