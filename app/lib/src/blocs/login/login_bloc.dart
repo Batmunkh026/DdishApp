@@ -3,7 +3,6 @@ import 'package:ddish/src/abstract/abstract.dart';
 import 'package:flutter/widgets.dart';
 import 'package:oauth2/oauth2.dart' as oauth;
 import 'package:ddish/src/blocs/authentication/authentication_bloc.dart';
-import 'package:ddish/src/blocs/authentication/authentication_event.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:ddish/src/widgets/message.dart' as message;
