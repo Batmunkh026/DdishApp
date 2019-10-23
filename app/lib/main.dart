@@ -1,22 +1,16 @@
 import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:ddish/src/abstract/abstract.dart';
-import 'package:ddish/src/blocs/authentication/authentication_event.dart';
-import 'package:ddish/src/blocs/login/login_bloc.dart';
 import 'package:ddish/src/blocs/mixin/bloc_mixin.dart';
 import 'package:ddish/src/integration/integration.dart';
 import 'package:ddish/src/utils/connectivity.dart';
 import 'package:ddish/src/utils/constants.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:ddish/src/templates/login/login_page.dart';
 import 'package:ddish/src/templates/main/main_widget.dart';
-import 'package:ddish/src/repositiories/globals.dart' as globals;
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
-import 'package:oauth2/oauth2.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
 

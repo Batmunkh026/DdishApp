@@ -1,12 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart' as framework;
 import 'package:logging/logging.dart';
 
-abstract class AbstractBloc<Event, State> extends Bloc<Event, State> {
+abstract class AbstractBloc<Event, S> extends Bloc<Event, S> {
   final Logger log = new Logger('AbstractBloc');
-  framework.State pageState;
+  State pageState;
 
   @mustCallSuper
   AbstractBloc(this.pageState) : assert(pageState != null);
