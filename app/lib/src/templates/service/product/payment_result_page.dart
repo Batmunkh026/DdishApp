@@ -4,10 +4,8 @@ import 'package:ddish/src/blocs/service/product/product_bloc.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
 import 'package:ddish/src/blocs/service/service_bloc.dart';
-import 'package:ddish/src/models/design.dart';
 import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/templates/service/product/underlined_text.dart';
-import 'package:ddish/src/utils/constants.dart';
 import 'package:ddish/src/utils/formatter.dart';
 import 'package:ddish/src/widgets/dialog.dart';
 import 'package:ddish/src/widgets/submit_button.dart';
@@ -64,27 +62,6 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
     var isUpgradeOrChannel =
         _state.selectedProductTab == ProductTabType.ADDITIONAL_CHANNEL ||
             isUpgrade;
-
-//
-//    contentsForGrid.addAll(titles.map((title) => Text("$title")).toList());
-//
-//
-//
-//    contentsForGrid.add(
-//      Align(
-//        alignment: Alignment.topCenter,
-//        child: ,
-//      ),
-//    );
-//    contentsForGrid.add(Text("${_state.monthToExtend} сар", style: boldStyle));
-//
-////      TODO сонгосон сарын сарын төлбөрийг яаж бодох ???
-//    contentsForGrid.add(Text(
-//        "₮${PriceFormatter.productPriceFormat(isUpgrade ? _state.priceToExtend : _state.monthToExtend * _state.priceToExtend)}",
-//        style: boldStyle));
-
-//    if (state is ProductPaymentState)
-//      openResultDialog(context, state as ProductPaymentState);
 
     var paymentInfoContainerWidth = deviceWidth * 0.8;
 
@@ -156,7 +133,8 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
                               isUpgradeOrChannel: isUpgradeOrChannel),
                           createPaymentData([
                             Text("Хугацаа"),
-                            Text("${_state.monthToExtend} сар",
+                            Text(
+                                "${_state.monthToExtend} ${isUpgrade ? "хоног" : "сар"}",
                                 style: boldStyle)
                           ],
                               paymentInfoContainerWidth:
@@ -258,7 +236,7 @@ class ProductPaymentPreviewState extends State<ProductPaymentPreview> {
       TextSpan(text: "${state.productToExtend.name} ", style: boldStyle),
       TextSpan(text: isChannel ? 'сувгийг ' : ''),
       TextSpan(text: '${state.monthToExtend} ', style: boldStyle),
-      TextSpan(text: 'сараар '),
+      TextSpan(text: '${isUpgrade ? 'хоногоор' : 'сараар'} '),
       TextSpan(
           text:
               '${isUpgrade ? state.priceToExtend : state.priceToExtend * state.monthToExtend} ₮ ',

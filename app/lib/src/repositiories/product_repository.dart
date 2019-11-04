@@ -17,12 +17,12 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
   Future<List<Product>> getUpgradableProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
-        await _requestJson("upgradeProduct/$productId");
+        await _requestJson("upgradeProductNew/$productId");
 
-    return response["isSuccess"]
-        ? List<UpProduct>.from(response["upProducts"]
-            .map((product) => UpProduct.fromJson(product)))
-        : [];
+    var ps =
+        response["upProducts"].map((product) => UpProduct.fromJson(product));
+
+    return response["isSuccess"] ? List<UpProduct>.from(ps) : List();
   }
 
   ///хэрэв хэрэглэгч дурын сонголтоор сараа оруулсан бол
@@ -33,22 +33,22 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
   /// monthToExtend - ахиулах багцын хугацаа
   ///
   /// тухайн багцыг ахиулахад төлөх дүн [String]
-  Future<String> getUpgradePrice(Product currentProduct,
-      UpProduct productToExtend, int monthToExtend) async {
-    assert(currentProduct != null && productToExtend != null);
-
-    Price priceObj = productToExtend.prices
-        .firstWhere((p) => p.month == monthToExtend, orElse: () => null);
-
-    //хэрэглэгчийн оруулсан утга ахиулах багцын стандарт сарын утгатай ижил бол ахиулах багцын мэдээллээр бодож буцаах
-    if (priceObj != null) return "${priceObj.price}";
-
-    Map<String, dynamic> response = await _requestJson(
-        "upgradeProduct/${currentProduct.id}/$monthToExtend/${productToExtend.id}");
-
-    //TODO үр дүнг амжилтгүй бол???
-    return response["isSuccess"] ? response["priceInfo"]["price"] : "";
-  }
+//  Future<String> getUpgradePrice(Product currentProduct,
+//      UpProduct productToExtend, int monthToExtend) async {
+//    assert(currentProduct != null && productToExtend != null);
+//
+//    Price priceObj = productToExtend.prices
+//        .firstWhere((p) => p.month == monthToExtend, orElse: () => null);
+//
+//    //хэрэглэгчийн оруулсан утга ахиулах багцын стандарт сарын утгатай ижил бол ахиулах багцын мэдээллээр бодож буцаах
+//    if (priceObj != null) return "${priceObj.price}";
+//
+//    Map<String, dynamic> response = await _requestJson(
+//        "upgradeProduct/${currentProduct.id}/$monthToExtend/${productToExtend.id}");
+//
+//    //TODO үр дүнг амжилтгүй бол???
+//    return response["isSuccess"] ? response["priceInfo"]["price"] : "";
+//  }
 
   //Сунгах, Нэмэлт суваг
   Future<ProductPaymentState> chargeProduct(ProductPaymentState state) async {
@@ -69,8 +69,7 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
 
     assert(current != null || toExtend != null);
 
-    var _param =
-        "upgradeProduct/${current.id}/${state.monthToExtend}/${state.priceToExtend}/${toExtend.id}";
+    var _param = "upgradeProductNew/${toExtend.id}/yes";
 
     var _resultState = await productPayment(state, _param);
 

@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:ddish/src/abstract/abstract.dart';
 import 'package:ddish/src/blocs/service/product/product_event.dart';
 import 'package:ddish/src/blocs/service/product/product_state.dart';
@@ -7,7 +6,6 @@ import 'package:ddish/src/models/tab_models.dart';
 import 'package:ddish/src/models/user.dart';
 import 'package:ddish/src/repositiories/product_repository.dart';
 import 'package:ddish/src/repositiories/user_repository.dart';
-import 'package:ddish/src/utils/converter.dart';
 import 'package:logging/logging.dart';
 
 class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
@@ -93,12 +91,6 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
       assert(event.selectedProduct != null);
       yield CustomProductSelector(event.selectedTab, event.selectedProduct,
           event.priceToExtend, products);
-    } else if (event is CustomMonthChanged) {
-      yield Loading(event.selectedTab);
-      String result = await _productRepository.getUpgradePrice(
-          event.currentProduct, event.productToExtend, event.monthToExtend);
-      yield CustomMonthState(event.selectedTab, selectedProduct,
-          event.productToExtend, event.monthToExtend, Converter.toInt(result));
     } else if (event is PreviewSelectedProduct) {
       yield SelectedProductPreview(event.selectedTab, event.selectedProduct,
           event.monthToExtend, event.priceToExtend);
@@ -145,8 +137,7 @@ class ProductBloc extends AbstractBloc<ProductEvent, ProductState> {
     if (!(event is Loading ||
             event is ProductStarted ||
             event is ExtendSelectedProduct ||
-            event is PreviewSelectedProduct ||
-            event is CustomMonthChanged) &&
+            event is PreviewSelectedProduct) &&
         beforeState != currentState) {
       log.info(
           "state changing : before = $beforeState  ,  current = $currentState ");

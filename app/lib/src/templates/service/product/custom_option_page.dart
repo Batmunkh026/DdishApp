@@ -46,16 +46,7 @@ class CustomProductChooserState extends State<CustomProductChooser>
           });
         } else {
           month = Converter.toInt(value);
-          if (_bloc.currentState.selectedProductTab ==
-              ProductTabType.UPGRADE) //server ээс авах
-            _bloc.dispatch(CustomMonthChanged(
-                _bloc.currentState.selectedProductTab,
-                _bloc.selectedProduct,
-                _bloc.currentState.selectedProduct,
-                month));
-          else
-            setState(
-                () => paymentPreview = "${(month * widget.priceToExtend)}");
+          setState(() => paymentPreview = "${(month * widget.priceToExtend)}");
         }
       }
       print("month value: " + value);
@@ -149,7 +140,8 @@ class CustomProductChooserState extends State<CustomProductChooser>
                           ),
                         ),
                         Container(
-                          width: deviceWidth * (isUpgradeOrChannel ? 0.5 : 0.44),
+                          width:
+                              deviceWidth * (isUpgradeOrChannel ? 0.5 : 0.44),
                           child: FittedBox(
                             child: Text(
                               "Сунгах сарын үнийн дүн",

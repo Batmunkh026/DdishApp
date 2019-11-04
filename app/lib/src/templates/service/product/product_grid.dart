@@ -47,7 +47,7 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       return GridView.count(
         padding: EdgeInsets.only(top: 10),
         children: _contentsForGrid,
-        childAspectRatio: 0.4,
+        childAspectRatio: 1.3,
         crossAxisCount: 2,
         scrollDirection: Axis.vertical,
       );
@@ -141,17 +141,11 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
         ),
       ));
 
-      List<Widget> itemsOfProduct = product.prices
-          .map((upProductPrice) => Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: _createComponentForPick(product,
-                    month: upProductPrice.month, price: upProductPrice.price),
-              ))
-          .toList();
-
-      children.addAll(itemsOfProduct);
-
-      children.add(_createComponentForPick(product, isMore: true));
+      children.add(Padding(
+        padding: EdgeInsets.only(bottom: 20),
+        child: _createComponentForPick(product,
+            month: product.convertDay, price: product.price),
+      ));
 
       Column packContainer = Column(children: children);
       _contentItems.add(packContainer);
@@ -179,6 +173,8 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
       ),
     ];
 
+    bool isUpProduct = selectedProduct is UpProduct;
+
     if (!isMore)
       children = isChannelPicker
           ? [
@@ -191,14 +187,14 @@ class ProductGridPicker extends StatelessWidget with WidgetMixin {
             ]
           : [
               Text(
-                "${month} сар",
+                "${month} ${isUpProduct ? "хоног" : "сар"}",
                 style: pickerTextStyle,
               ),
               Container(
                 height: 5,
               ),
               Text(
-                "₮ ${selectedProduct is UpProduct ? PriceFormatter.productPriceFormat(price) : PriceFormatter.productPriceFormat(month * (price))}",
+                "₮ ${isUpProduct ? PriceFormatter.productPriceFormat(price) : PriceFormatter.productPriceFormat(month * (price))}",
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: pickerTextStyle.fontSize),

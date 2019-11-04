@@ -27,10 +27,12 @@ class Product extends Equatable {
 }
 
 class UpProduct extends Product {
-  List<Price> prices = [];
+  //сунгах хоног
+  int convertDay;
 
   UpProduct(map) : super.fromJson(map) {
-    prices = List<Price>.from(map["priceList"].map((value) => Price.fromJson(value)));
+    this.convertDay = Converter.toInt(map["convertDay"]);
+    super.price = Converter.toInt(map["amount"]);
   }
 
   UpProduct.fromJson(Map<String, dynamic> map) : this(map);

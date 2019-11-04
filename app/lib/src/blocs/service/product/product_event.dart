@@ -68,18 +68,6 @@ class CustomProductSelected extends ProductEvent {
             [selectedProductTabType, selectedProduct, monthToExtend]);
 }
 
-///custom month value changed event
-class CustomMonthChanged extends ProductEvent {
-  Product currentProduct;
-  UpProduct productToExtend;
-  int monthToExtend;
-
-  CustomMonthChanged(ProductTabType selectedTab, this.currentProduct,
-      this.productToExtend, this.monthToExtend)
-      : super(selectedTab,
-            [selectedTab, currentProduct, productToExtend, monthToExtend]);
-}
-
 //Сонгогдсон багцын сунгалтын өмнөх төлвийг харах
 class PreviewSelectedProduct extends ProductEvent {
   Product selectedProduct;

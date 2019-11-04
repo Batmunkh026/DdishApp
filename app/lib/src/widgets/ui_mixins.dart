@@ -36,6 +36,8 @@ mixin WidgetMixin {
 
     productName = productName.replaceAll('багц', '');
 
+    bool isUpgrade = selectedProductTab == ProductTabType.UPGRADE;
+
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
@@ -51,11 +53,10 @@ mixin WidgetMixin {
                   ? 'сувгийг '
                   : 'багцыг '),
           TextSpan(text: '$monthToExtend ', style: boldStyle),
-          TextSpan(text: 'сараар '),
+          TextSpan(text: '${isUpgrade ? 'хоногоор' : 'сараар'} '),
           TextSpan(text: '$totalPriceToExtend ₮ ', style: boldStyle),
           TextSpan(
-              text:
-                  ' төлөн ${selectedProductTab == ProductTabType.UPGRADE ? 'ахиулах' : 'сунгах'} гэж байна.'),
+              text: ' төлөн ${isUpgrade ? 'ахиулах' : 'сунгах'} гэж байна.'),
         ],
       ),
     );
