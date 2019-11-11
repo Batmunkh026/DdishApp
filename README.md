@@ -1,7 +1,10 @@
 # DDish app
 
 ## Ашиглагдсан технологи
-  [Flutter](https://flutter.dev/)
+  1. Android studio 3.5.1  *[Android studio тохиргоо хийх заавар](https://flutter.dev/docs/get-started/editor)*
+  2. Flutter 1.9.1 & Dart 2.5.0
+  3. Java 1.8
+  4. Xcode 11.1
 
 ## Google Play store д хуулах
   1. `ddish-flutter-app/app/pubspec.yaml` файл доторх `version: 1.0.2+8` ын version ахиулах
