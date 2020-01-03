@@ -9,6 +9,7 @@ class NotificationRepository extends AbstractRepository {
 
   NotificationRepository(AbstractBloc bloc) : super(bloc);
 
+  /// мэдэгдлүүдийг серверээс авах
   Future<List<Notification>> getNotifications() async {
     var _notificationReponse = await getResponse('notification') as Map;
 

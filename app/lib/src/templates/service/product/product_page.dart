@@ -17,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
+
+///Бүтээгдэхүүний ерөнхий хуудас
 class ProductPage extends StatefulWidget {
   double height;
   ProductPage(this.height);

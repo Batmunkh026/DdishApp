@@ -3,10 +3,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ddish/src/repositiories/globals.dart' as globals;
 import 'package:logging/logging.dart';
 
+/// firebase messaging integration
 class FirebaseNotifications {
   final Logger log = new Logger('FirebaseNotifications');
   FirebaseMessaging _firebaseMessaging;
 
+  /// firebase messaging service ыг ажиллуулах , эвентүүдийг чагнах
   void setUpFirebase()async {
     _firebaseMessaging = FirebaseMessaging();
 
@@ -48,6 +50,7 @@ class FirebaseNotifications {
 
     if (token == null) return;
 
+    /// firebase messagin token авч memory д хадгалах
     globals.FCM_TOKEN = token;
 
     _firebaseMessaging.subscribeToTopic("ddish");

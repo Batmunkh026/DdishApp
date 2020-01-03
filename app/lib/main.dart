@@ -48,7 +48,7 @@ Future<Widget> initializeApp(routes) async {
 
   Connectivity connectivity = Connectivity();
 
-  //холболтын төлвийг чагнах
+  // интернэт холболтын төлвийг чагнах
   connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
     if (ConnectivityResult.none == result)
       Constants.notificationCheckConnection();
@@ -69,7 +69,6 @@ Future<Widget> initializeApp(routes) async {
     routes: routes,
   );
 }
-
 void setStatusBarFontColor() {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle.dark.copyWith(

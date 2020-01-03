@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Киноны зургийг харуулах элемент
 class PosterImage extends StatelessWidget {
   final String url;
 

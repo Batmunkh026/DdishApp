@@ -25,6 +25,7 @@ class AuthenticationBloc
     if (event is AppStarted) {
       final bool hasToken = await userRepository.hasToken();
 
+      ///хэрэглэгч өмнө нь нэвтэрсэн эсэх
       if (hasToken) {
         yield AuthenticationAuthenticated();
       } else {
@@ -32,12 +33,14 @@ class AuthenticationBloc
       }
     }
 
+    ///хэрэглэгч өмнө нь нэвтэрсэн эсэх
     if (event is LoggedIn) {
       yield AuthenticationLoading();
       await userRepository.persistToken(event.token);
       yield AuthenticationAuthenticated();
     }
 
+    /// хэрэглэгч гарах эвент
     if (event is LoggedOut) {
       yield AuthenticationLoading();
       await userRepository.deleteToken();

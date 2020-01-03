@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:ddish/src/models/movie.dart';
 import 'package:flutter/material.dart';
 
+/// Кино харуулах элемент
 class MovieThumbnail extends StatelessWidget {
   final Movie movie;
   var onTap;

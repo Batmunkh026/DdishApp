@@ -12,6 +12,7 @@ import 'package:ddish/src/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// төлбөрийн үр дүнгийн мэдээллийг харуулах UI
 class ProductPaymentPreview extends StatefulWidget {
   ProductPaymentPreview();
 

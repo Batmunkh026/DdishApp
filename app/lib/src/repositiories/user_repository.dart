@@ -44,18 +44,21 @@ class UserRepository extends AbstractRepository {
     return client.credentials.accessToken;
   }
 
+  /// Хэрэглэгчийн мэдээллүүдийг авах
   Future<User> getUserInformation() async {
     var decoded = await getResponse('getUserInfo');
     User userInformation = User.fromJson(decoded);
     return userInformation;
   }
 
+  /// Тоолуурын мэдээллийг авах
   Future<Counter> getMainCounter() async {
     var decoded = await getResponse('getUserInfo/main');
     Counter counter = Counter.fromJson(decoded['mainCounter']);
     return counter;
   }
 
+  /// хадгалсан өгөгдлөөс хэрэглэгчийн нэрийг авах
   Future<String> getUsername() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('username');
@@ -78,6 +81,7 @@ class UserRepository extends AbstractRepository {
     return false;
   }
 
+  /// хэрэглэгчийн мэдээллийг санах эсэх төлвийг авах
   Future<bool> isUsernameRemember()async {
     var prefs = await SharedPreferences.getInstance();
     if(!prefs.containsKey('isUsernameRemember'))
@@ -85,6 +89,7 @@ class UserRepository extends AbstractRepository {
     return prefs.getBool('isUsernameRemember');
   }
 
+  /// хэрэглэгчийн нэрийг санах эсэх төлвийг хадгалах
   Future<bool> rememberUsername(isRemember)async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.setBool('isUsernameRemember', isRemember);

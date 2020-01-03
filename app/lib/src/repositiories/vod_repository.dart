@@ -116,6 +116,7 @@ class VodRepository extends AbstractRepository {
     }
   }
 
+  /// Үзвэрийн дэлгэрэнгүй мэдээллийг авах
   Future<Movie> fetchContentDetails(Program program) async {
     var decoded = await getResponse('vodList/${program.contentId}');
     return Movie.fromJson(decoded);
@@ -134,11 +135,13 @@ class VodRepository extends AbstractRepository {
     return posterUrls;
   }
 
+  /// Үзвэр түрээслэх
   Future<Result> rentContent(int id) async {
     var decoded = await getResponse('pushVod/$id');
     return Result.fromJson(decoded);
   }
 
+  /// үзвэрийн мэдээлэл хайх
   Future<List> searchProgram(String value, int page) async {
     var decoded = await getResponse(
         'searchVodContent/$value/0?pageNumber=${(page / 10 + 1).toInt()}');

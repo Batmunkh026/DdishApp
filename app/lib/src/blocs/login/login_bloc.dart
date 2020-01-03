@@ -39,6 +39,7 @@ class LoginBloc extends AbstractBloc<LoginEvent, LoginState> {
       yield LoginLoading();
 
       try {
+        ///хэрэглэгч нэвтрэх хүсэлт илгээх
         final token = await userRepository.authenticate(
           username: event.username,
           password: event.password,
@@ -63,6 +64,7 @@ class LoginBloc extends AbstractBloc<LoginEvent, LoginState> {
     }
   }
 
+  ///хэрэглэгчийн нэрийг шинэчлэх
   updateRememberUsername({rememberUsername}) {
     userRepository.rememberUsername(rememberUsername);
   }

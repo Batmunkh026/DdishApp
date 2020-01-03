@@ -5,13 +5,13 @@ import 'package:ddish/src/blocs/service/movie/library/library_event.dart';
 import 'package:ddish/src/blocs/service/movie/library/library_state.dart';
 import 'package:ddish/src/models/result.dart';
 import 'package:ddish/src/widgets/dialog.dart';
-import 'package:ddish/src/widgets/message.dart' as message;
 import 'package:ddish/src/widgets/movie/poster_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'program_search.dart';
 
+/// Кино сангийн мэдээллийг харуулах UI
 class Library extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => LibraryState();

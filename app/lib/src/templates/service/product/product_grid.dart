@@ -10,6 +10,7 @@ import 'package:ddish/src/widgets/ui_mixins.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Бүтээгдэхүүний мэдээллүүдийг харуулах ерөнхий grid element
 class ProductGridPicker extends StatelessWidget with WidgetMixin {
   ProductBloc _bloc;
   var _state;

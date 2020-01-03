@@ -5,6 +5,7 @@ import 'package:ddish/src/widgets/line.dart';
 import 'package:ddish/src/widgets/movie/channel_thumbnail.dart';
 import 'package:flutter/material.dart';
 
+/// кино театрын UI-ын толгой хэсэгт харуулах элемент
 class ChannelHeaderWidget extends StatefulWidget {
   final DateTime date;
   final VodChannel selectedChannel;

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ddish/src/templates/service/movie/theatre/movie_theatre.dart';
 import 'style.dart' as style;
 
+/// Кино мэдээллийн ерөнхий хуудас
 class MoviePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => MoviePageState();

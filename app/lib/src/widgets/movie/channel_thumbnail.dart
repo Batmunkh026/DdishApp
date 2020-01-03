@@ -3,6 +3,7 @@ import 'package:ddish/src/models/vod_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+///Кино сувгийг харуулах элемент
 class ChannelThumbnail extends StatelessWidget {
   var onPressed;
   final VodChannel channel;

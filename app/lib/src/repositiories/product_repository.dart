@@ -6,6 +6,7 @@ import 'abstract_repository.dart';
 class ProductRepository extends AbstractRepository<ProductBloc> {
   ProductRepository(ProductBloc bloc) : super(bloc);
 
+  /// Бүтээгдэхүүний мэдээллүүдийг авах
   Future<List<Product>> getProducts() async {
     Map<String, dynamic> response = await _requestJson("productList");
     return response["isSuccess"]
@@ -14,6 +15,7 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
         : [];
   }
 
+  /// Ахиулах боломжтой бүтээгдэхүүнүүдийг авах
   Future<List<Product>> getUpgradableProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
@@ -62,7 +64,7 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
     return _resultState;
   }
 
-  ///Багц ахиулах
+  ///Багц ахиулах хүсэлт илгээх
   Future<ProductPaymentState> extendProduct(ProductPaymentState state) async {
     Product current = state.selectedProduct;
     Product toExtend = state.productToExtend;
@@ -76,6 +78,7 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
     return _resultState;
   }
 
+  /// Багц ахиулалтын төлбөр төлөлт
   Future<ProductPaymentState> productPayment(state, param) async {
     Map<String, dynamic> response = await _requestJson(param);
 
@@ -85,6 +88,7 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
     return state;
   }
 
+  /// Нэмэлт бүтээгдэхүүнүүдийг авах
   Future<List<Product>> getAdditionalProducts(String productId) async {
     assert(productId != null || !productId.isEmpty);
     Map<String, dynamic> response =
@@ -96,6 +100,7 @@ class ProductRepository extends AbstractRepository<ProductBloc> {
         : [];
   }
 
+  /// ерөнхий http хүсэлт илгээх
   Future<Map<String, dynamic>> _requestJson(param) async {
     return await getResponse(param) as Map;
   }

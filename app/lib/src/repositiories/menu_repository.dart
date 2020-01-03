@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:convert';
 
 class MenuRepository {
+  /// захиалга илгээх
   Future<Result> postOrder(Order order) async {
     var response;
     try {
@@ -22,6 +23,7 @@ class MenuRepository {
     return result;
   }
 
+  /// Салбарын мэдээллүүдийг авах
   Future<List<Branch>> fetchBranches(area, type, service) async {
     try {
       var params = _collectParams(area, type, service);
@@ -43,6 +45,7 @@ class MenuRepository {
     }
   }
 
+  /// салбарын шүүлтүүрийн мэдээллүүдийг авах
   Future<BranchParam> fetchBranchParams() async {
     try {
       final _response = await http
@@ -73,6 +76,7 @@ class MenuRepository {
     }
   }
 
+  ///салбарын шүүлтүүрийн мэдээллүүдийг цуглуулах
   String _collectParams(area, type, service) =>
       _createParam(area) + _createParam(type) + _createParam(service);
 

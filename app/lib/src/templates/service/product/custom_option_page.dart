@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// сарын мэдээллийг хэрэглэгч өөрөө оруулахад ашиглах UI
 class CustomProductChooser extends StatefulWidget {
   int priceToExtend;
   int monthToExtend = 1;
