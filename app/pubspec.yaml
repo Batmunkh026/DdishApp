@@ -27,7 +27,7 @@ dependencies:
   equatable: ^0.2.5
   shared_preferences: ^0.5.3+1
   intl: ^0.15.8
-  cached_network_image: ^1.1.1
+  cached_network_image: ^2.0.0-rc
   google_maps_flutter: ^0.5.19+2
   url_launcher: ^5.0.5
   youtube_player_flutter: ^2.0.0
